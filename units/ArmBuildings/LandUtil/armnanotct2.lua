@@ -1,6 +1,6 @@
 return {
 	armnanotct2 = {
-		builddistance = 500,
+		builddistance = 1400,
 		builder = true,
 		buildpic = "ARMNANOTC.DDS",
 		buildtime = 21000,
@@ -25,7 +25,7 @@ return {
 		mass = 5100,
 		maxacc = 0,
 		maxdec = 4.5,
-		maxslope = 10,
+		maxslope = 28,
 		maxwaterdepth = 0,
 		metalcost = 840,
 		movementclass = "NANO",
@@ -33,11 +33,11 @@ return {
 		script = "Units/ARMNANOT2.cob",
 		seismicsignature = 0,
 		selfdestructas = "nanoselfd",
-		sightdistance = 500,
-		terraformspeed = 3000,
+		sightdistance = 1000,
+		terraformspeed = 9000,
 		turnrate = 1,
 		upright = true,
-		workertime = 600,
+		workertime = 1800,
 		customparams = {
 			buildinggrounddecaldecayspeed = 30,
 			buildinggrounddecalsizex = 5,

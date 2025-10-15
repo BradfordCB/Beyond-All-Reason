@@ -100,7 +100,7 @@ return {
 		},
 		weapondefs = {
 			armemp_weapon = {
-				areaofeffect = 312,
+				areaofeffect = 512,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "cruisemissiletrail-emp",
@@ -115,14 +115,14 @@ return {
 				explosiongenerator = "custom:genericshellexplosion-huge-lightning",
 				firestarter = 0,
 				flighttime = 400,
-				impulsefactor = 0,
+				impulsefactor = 0.555,
 				metalpershot = 500,
 				model = "cortronmissile.s3o",
 				name = "Heavy long-range g2g EMP starburst rocket",
 				noselfdamage = true,
 				paralyzer = true,
-				paralyzetime = 35,
-				range = 3650,
+				paralyzetime = 75,
+				range = 8150,
 				reloadtime = 2,
 				smokecolor = 0.9,
 				smokeperiod = 8,
@@ -144,7 +144,7 @@ return {
 				weapontype = "StarburstLauncher",
 				weaponvelocity = 1200,
 				customparams = {
-					stockpilelimit = 10,
+					stockpilelimit = 40,
 				},
 				damage = {
 					default = 50000,

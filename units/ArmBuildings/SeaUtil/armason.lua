@@ -24,8 +24,8 @@ return {
 		script = "Units/ARMASON.cob",
 		seismicsignature = 0,
 		selfdestructas = "mediumBuildingExplosionGenericSelfd-uw",
-		sightdistance = 215,
-		sonardistance = 1600,
+		sightdistance = 915,
+		sonardistance = 2300,
 		yardmap = "yooy oooo oooo yooy",
 		customparams = {
 			buildinggrounddecaldecayspeed = 30,

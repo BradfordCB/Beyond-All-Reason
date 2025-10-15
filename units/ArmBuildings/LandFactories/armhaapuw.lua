@@ -30,8 +30,8 @@ return {
 		seismicsignature = 0,
 		selfdestructas = "largeBuildingExplosionGenericSelfd",
 		sightdistance = 312,
-		terraformspeed = 1000,
-		workertime = 200,
+		terraformspeed = 3000,
+		workertime = 800,
 		yardmap = "ooooooooo ooooooooo ooooooooo ooooooooo ooooooooo ooooooooo ooooooooo ooooooooo ooooooooo",
 		buildoptions = {
 			[1] = "armaca",

@@ -29,8 +29,8 @@ return {
 		script = "Units/ARMARAD.cob",
 		seismicsignature = 0,
 		selfdestructas = "smallBuildingExplosionGenericSelfd",
-		sightdistance = 820,
-		sightemitheight = 40,
+		sightdistance = 2620,
+		sightemitheight = 60,
 		usepiececollisionvolumes = 0,
 		yardmap = "oooo",
 		customparams = {

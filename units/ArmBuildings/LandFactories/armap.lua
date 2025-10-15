@@ -19,7 +19,7 @@ return {
 		idletime = 1800,
 		maxacc = 0,
 		maxdec = 0,
-		maxslope = 15,
+		maxslope = 22,
 		maxwaterdepth = 0,
 		metalcost = 710,
 		metalstorage = 100,
@@ -31,7 +31,7 @@ return {
 		selfdestructas = "largeBuildingExplosionGenericSelfd",
 		sightdistance = 292,
 		terraformspeed = 500,
-		workertime = 150,
+		workertime = 650,
 		yardmap = "ooooooooo ooooooooo ooooooooo ooooooooo ooooooooo ooooooooo",
 		buildoptions = {
 			[1] = "armca",

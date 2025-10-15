@@ -19,7 +19,7 @@ return {
 		idletime = 1800,
 		maxacc = 0,
 		maxdec = 0,
-		maxslope = 10,
+		maxslope = 22,
 		maxwaterdepth = 0,
 		metalcost = 370,
 		objectname = "Units/ARMFUS.s3o",

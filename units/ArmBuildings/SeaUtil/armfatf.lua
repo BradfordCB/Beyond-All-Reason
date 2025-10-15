@@ -20,7 +20,7 @@ return {
 		istargetingupgrade = true,
 		maxacc = 0,
 		maxdec = 0,
-		maxslope = 10,
+		maxslope = 22,
 		metalcost = 800,
 		minwaterdepth = 30,
 		objectname = "Units/ARMFATF.s3o",
@@ -28,7 +28,7 @@ return {
 		script = "Units/ARMFATF.cob",
 		seismicsignature = 0,
 		selfdestructas = "largeBuildingExplosionGenericSelfd",
-		sightdistance = 273,
+		sightdistance = 1273,
 		waterline = 3,
 		yardmap = "wwwwwwwwwwwwwwww",
 		customparams = {

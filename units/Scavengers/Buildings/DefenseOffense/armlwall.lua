@@ -21,15 +21,15 @@ return {
 		idletime = 900,
 		levelground = false,
 		mass = 10000000000,
-		health = 5320, --4x armclaw
-		maxslope = 24,
+		health = 25320, --4x armclaw
+		maxslope = 33,
 		maxwaterdepth = 0,
 		nochasecategory = "MOBILE",
 		objectname = "Units/ARMLWALL.s3o",
 		script = "Units/ARMLWALL.cob",
 		seismicsignature = 0,
 		selfdestructas = "tinyBuildingExplosionGenericSelfd",
-		sightdistance = 330,
+		sightdistance = 1130,
 		stealth = true,
 		turnrate = 0,
 		upright = true,
@@ -121,7 +121,7 @@ return {
 				areaofeffect = 8,
 				avoidfeature = false,
 				beamttl = 1,
-				burst = 10,
+				burst = 20,
 				burstrate = 0.03333,
 				craterareaofeffect = 0,
 				craterboost = 0,
@@ -146,16 +146,16 @@ return {
 				thickness = 2.2, -- was 2.0
 				turret = true,
 				weapontype = "LightningCannon",
-				weaponvelocity = 400,
+				weaponvelocity = 600,
 				customparams = {
 					exclude_preaim = true,
 					spark_ceg = "genericshellexplosion-splash-lightning",
-					spark_forkdamage = "0.3", --was 0.5
-					spark_maxunits = "3", --2x armclaw
-					spark_range = "80", --66% more than armclaw
+					spark_forkdamage = "0.6", --was 0.5
+					spark_maxunits = "5", --2x armclaw
+					spark_range = "110", --66% more than armclaw
 				},
 				damage = {
-					default = 64, --1/2 of armthor | 2.66x armclaw
+					default = 164, --1/2 of armthor | 2.66x armclaw
 				},
 			},
 			-- banisher = {

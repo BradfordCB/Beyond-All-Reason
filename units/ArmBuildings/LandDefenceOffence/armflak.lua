@@ -1,6 +1,6 @@
 return {
 	armflak = {
-		airsightdistance = 1000,
+		airsightdistance = 1300,
 		buildangle = 8192,
 		buildpic = "ARMFLAK.DDS",
 		buildtime = 19000,
@@ -18,7 +18,7 @@ return {
 		idletime = 1800,
 		maxacc = 0,
 		maxdec = 0,
-		maxslope = 10,
+		maxslope = 28,
 		maxwaterdepth = 0,
 		metalcost = 820,
 		nochasecategory = "ALL",
@@ -26,7 +26,7 @@ return {
 		script = "Units/ARMFLAK.cob",
 		seismicsignature = 0,
 		selfdestructas = "mediumBuildingExplosionGenericSelfd",
-		sightdistance = 525,
+		sightdistance = 1425,
 		yardmap = "ooooooooo",
 		customparams = {
 			buildinggrounddecaldecayspeed = 30,
@@ -127,7 +127,7 @@ return {
 				name = "Heavy g2a flak cannon",
 				noselfdamage = true,
 				predictboost = 1,
-				range = 775,
+				range = 1275,
 				reloadtime = 0.53333,
 				smoketrail = false,
 				soundhit = "flakhit2",

@@ -16,7 +16,7 @@ return {
 		explodeas = "WallExplosionMetalXL",
 		footprintx = 2,
 		footprintz = 2,
-		health = 8900,
+		health = 24900,
 		hidedamage = true,
 		idleautoheal = 0,
 		levelground = false,

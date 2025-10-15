@@ -1,6 +1,6 @@
 return {
 	armnanotc2plat = {
-		builddistance = 500,
+		builddistance = 1200,
 		builder = true,
 		buildpic = "armnanotc2plat.DDS",
 		buildtime = 21000,
@@ -26,7 +26,7 @@ return {
 		mass = 5100,
 		maxacc = 0,
 		maxdec = 4.5,
-		maxslope = 10,
+		maxslope = 22,
 		maxwaterdepth = 50000000,
 		metalcost = 840,
 		minwaterdepth = 12,
@@ -36,11 +36,11 @@ return {
 		seismicsignature = 0,
 		selfdestructas = "nanoselfd",
 		sightdistance = 500,
-		terraformspeed = 3000,
+		terraformspeed = 9000,
 		turnrate = 1,
 		upright = true,
 		waterline = 0,
-		workertime = 600,
+		workertime = 1800,
 		customparams = {
 			buildinggrounddecaldecayspeed = 30,
 			buildinggrounddecalsizex = 5,
