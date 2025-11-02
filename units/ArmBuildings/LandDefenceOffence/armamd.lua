@@ -137,7 +137,7 @@ return {
 				soundhitwet = "splslrg",
 				soundstart = "antinukelaunch",
 				stockpile = true,
-				stockpiletime = 55,
+				stockpiletime = 60,
 				texture1 = "bluenovaexplo",
 				texture2 = "smoketrailbar",
 				texture3 = "null",
@@ -145,7 +145,7 @@ return {
 				tracks = true,
 				turnrate = 10000,
 				weaponacceleration = 150,
-				weapontimer = 3,
+				weapontimer = 2.5,
 				weapontype = "StarburstLauncher",
 				weaponvelocity = 6000,
 				customparams = {

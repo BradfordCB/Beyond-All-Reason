@@ -21,6 +21,7 @@ return {
 		maxdec = 0,
 		maxslope = 16,
 		metalcost = 380,
+		metalstorage = 40000,
 		minwaterdepth = 15,
 		objectname = "Units/ARMUWMMM.s3o",
 		script = "Units/ARMUWMMM.cob",
@@ -30,8 +31,8 @@ return {
 		waterline = 5,
 		yardmap = "oooooooooooooooooooo",
 		customparams = {
-			energyconv_capacity = 600,
-			energyconv_efficiency = 0.01724,
+			energyconv_capacity = 6000,
+			energyconv_efficiency = 0.02484,
 			model_author = "FireStorm",
 			normaltex = "unittextures/Arm_normal.dds",
 			removestop = true,

@@ -102,7 +102,7 @@ return {
 		},
 		weapondefs = {
 			fmd_rocket = {
-					areaofeffect = 420,
+					areaofeffect = 520,
 					avoidfeature = false,
 					avoidfriendly = false,
 					burnblow = true,
@@ -111,7 +111,7 @@ return {
 					collidefeature = false,
 					collidefriendly = false,
 					coverage = 2000,
-					craterareaofeffect = 420,
+					craterareaofeffect = 520,
 					craterboost = 0,
 					cratermult = 0,
 					edgeeffectiveness = 0.15,
@@ -119,7 +119,7 @@ return {
 					explosiongenerator = "custom:antinuke",
 					firestarter = 100,
 					flighttime = 20,
-					impulsefactor = 0.123,
+					impulsefactor = 0.423,
 					interceptor = 1,
 					metalpershot = 150,
 					model = "leghomingmissile.s3o",
@@ -137,7 +137,7 @@ return {
 					soundhitwet = "splslrg",
 					soundstart = "antinukelaunch",
 					stockpile = true,
-					stockpiletime = 90,
+					stockpiletime = 60,
 					texture1 = "bluenovaexplo",
 					texture2 = "smoketrailbar",
 					texture3 = "null",
@@ -149,10 +149,10 @@ return {
 					weapontype = "StarburstLauncher",
 					weaponvelocity = 6000,
 					customparams = {
-						stockpilelimit = 20,
+						stockpilelimit = 30,
 					},
 					damage = {
-						default = 1500,
+						default = 8500,
 					},
 			},
 		},

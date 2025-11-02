@@ -1,6 +1,6 @@
 return {
 	armacv = {
-		builddistance = 136,
+		builddistance = 1436,
 		builder = true,
 		buildpic = "ARMACV.DDS",
 		buildtime = 12400,
@@ -21,8 +21,8 @@ return {
 		leavetracks = true,
 		maxacc = 0.02963,
 		maxdec = 0.11852,
-		maxslope = 16,
-		maxwaterdepth = 18,
+		maxslope = 22,
+		maxwaterdepth = 55,
 		metalcost = 550,
 		movementclass = "TANK3",
 		objectname = "Units/ARMACV.s3o",
@@ -30,9 +30,9 @@ return {
 		script = "Units/ARMACV.cob",
 		seismicsignature = 0,
 		selfdestructas = "mediumExplosionGenericSelfd-builder",
-		sightdistance = 289.89999,
-		speed = 52.5,
-		terraformspeed = 1250,
+		sightdistance = 555,
+		speed = 152.5,
+		terraformspeed = 3650,
 		trackstrength = 6,
 		tracktype = "arm_acv_tracks_2",
 		trackwidth = 36,
@@ -40,7 +40,7 @@ return {
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 1.2342,
 		turnrate = 399,
-		workertime = 250,
+		workertime = 750,
 		buildoptions = {
 			"armfus",
 			"armckfus",
@@ -71,6 +71,7 @@ return {
 			"armvp",
 			"armavp",
 			"armshltx",
+			"armlwall",
 		},
 		customparams = {
 			model_author = "FireStorm",

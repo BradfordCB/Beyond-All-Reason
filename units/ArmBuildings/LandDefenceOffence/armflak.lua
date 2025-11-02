@@ -1,6 +1,6 @@
 return {
 	armflak = {
-		airsightdistance = 1300,
+		airsightdistance = 1400,
 		buildangle = 8192,
 		buildpic = "ARMFLAK.DDS",
 		buildtime = 19000,
@@ -14,7 +14,7 @@ return {
 		footprintx = 3,
 		footprintz = 3,
 		health = 1750,
-		idleautoheal = 5,
+		idleautoheal = 45,
 		idletime = 1800,
 		maxacc = 0,
 		maxdec = 0,
@@ -108,11 +108,11 @@ return {
 		weapondefs = {
 			armflak_gun = {
 				accuracy = 1000,
-				areaofeffect = 172,
+				areaofeffect = 292,
 				avoidfeature = false,
 				avoidfriendly = false,
 				burnblow = true,
-				canattackground = false,
+				canattackground = true,
 				cegtag = "flaktrailaa",
 				collidefriendly = false,
 				craterareaofeffect = 192,
@@ -122,12 +122,12 @@ return {
 				edgeeffectiveness = 1,
 				explosiongenerator = "custom:flak",
 				gravityaffected = "true",
-				impulsefactor = 0,
+				impulsefactor = 0.444,
 				mygravity = 0.01,
 				name = "Heavy g2a flak cannon",
 				noselfdamage = true,
 				predictboost = 1,
-				range = 1275,
+				range = 1475,
 				reloadtime = 0.53333,
 				smoketrail = false,
 				soundhit = "flakhit2",
@@ -137,10 +137,11 @@ return {
 				soundstartvolume = 9,
 				stages = 0,
 				turret = true,
-				weapontimer = 1,
+				weapontimer = 0.5,
 				weapontype = "Cannon",
 				weaponvelocity = 1600,
 				damage = {
+					default = 95,
 					vtol = 250,
 				},
 				rgbcolor = {
@@ -152,7 +153,7 @@ return {
 		},
 		weapons = {
 			[1] = {
-				badtargetcategory = "NOTAIR LIGHTAIRSCOUT",
+				badtargetcategory = "LIGHTAIRSCOUT",
 				def = "ARMFLAK_GUN",
 				onlytargetcategory = "VTOL",
 			},

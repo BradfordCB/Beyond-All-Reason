@@ -5,7 +5,7 @@ return {
 		craterboost = 0,
 		cratermult = 0,
 		customparams = {
-			paralyzetime_exception = "isBuilding=false:10,customparams.unitgroup=antinuke:20",	-- UP TO 10s stun duration for mobile units and 20s for antinukes (depending on hp vs damage)
+			paralyzetime_exception = "isBuilding=false:22,customparams.unitgroup=antinuke:33",	-- UP TO 10s stun duration for mobile units and 20s for antinukes (depending on hp vs damage)
 		},
 		edgeeffectiveness = 1,
 		explosiongenerator = "custom:genericshellexplosion-huge-lightning",
@@ -23,7 +23,7 @@ return {
 		tolerance = 7000,
 		turret = 1,
 		damage = {
-			default = 5000,
+			default = 11000,
 		},
 	},
 	spybombxscav = {

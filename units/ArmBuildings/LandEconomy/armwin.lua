@@ -10,7 +10,7 @@ return {
 		corpse = "DEAD",
 		energycost = 175,
 		energyupkeep = -15,
-		energystorage = 400,
+		energystorage = 100,
 		explodeas = "windboom",
 		footprintx = 3,
 		footprintz = 3,

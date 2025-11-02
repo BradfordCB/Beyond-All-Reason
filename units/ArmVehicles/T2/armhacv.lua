@@ -1,6 +1,6 @@
 return {
 	armhacv = {
-		builddistance = 136,
+		builddistance = 1436,
 		builder = true,
 		buildpic = "ARMCONSUL.DDS",
 		buildtime = 33600,
@@ -31,8 +31,8 @@ return {
 		seismicsignature = 0,
 		selfdestructas = "smallExplosionGenericSelfd-builder",
 		sightdistance = 500,
-		speed = 85,
-		terraformspeed = 750,
+		speed = 245,
+		terraformspeed = 2350,
 		trackoffset = 10,
 		trackstrength = 5,
 		tracktype = "armgremlin_tracks",
@@ -41,7 +41,7 @@ return {
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 1.83678,
 		turnrate = 635,
-		workertime = 600,
+		workertime = 1800,
 		buildoptions = {
 			[1] = "armafus",
 			[2] = "armfus",

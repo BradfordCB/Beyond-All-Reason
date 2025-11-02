@@ -30,10 +30,10 @@ return {
 		seismicsignature = 0,
 		selfdestructas = "smallExplosionGenericSelfd-builder",
 		sightdistance = 200,
-		terraformspeed = 225,
+		terraformspeed = 625,
 		turninplaceanglelimit = 360,
 		turnrate = 740,
-		workertime = 100*Spring.GetModOptions().assistdronesbuildpowermultiplier,
+		workertime = 200*Spring.GetModOptions().assistdronesbuildpowermultiplier,
 		buildoptions = {
 			"armsolar",
 			"armadvsol",

@@ -132,9 +132,9 @@ return {
 					smart_priority = true,
 				},
 				damage = {
-					default = 300,
+					default = 400,
 					subs = 150,
-					vtol = 90,
+					vtol = 190,
 				},
 			},
 			plasma_high = {
@@ -165,9 +165,9 @@ return {
 					smart_backup = true,
 				},
 				damage = {
-					default = 300,
+					default = 400,
 					subs = 150,
-					vtol = 90,
+					vtol = 190,
 				},
 			},
 			smart_trajectory_dummy = {

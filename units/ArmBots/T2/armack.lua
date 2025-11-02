@@ -37,7 +37,7 @@ return {
 		turninplacespeedlimit = 0.759,
 		turnrate = 1138.5,
 		upright = true,
-		workertime = 540,
+		workertime = 640,
 		buildoptions = {
 			"armfus",
 			"armafus",
@@ -75,6 +75,7 @@ return {
 			"armannit3",
 			"armbotrail",
 			"armlwall",
+			"armlunchbox",
 		},
 		customparams = {
 			model_author = "Kaiser",

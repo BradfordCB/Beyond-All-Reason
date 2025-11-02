@@ -1,7 +1,7 @@
 return {
 	armca = {
 		blocking = false,
-		builddistance = 136,
+		builddistance = 236,
 		builder = true,
 		buildpic = "ARMCA.DDS",
 		buildtime = 7960,
@@ -29,11 +29,11 @@ return {
 		seismicsignature = 0,
 		selfdestructas = "smallExplosionGenericSelfd-builder",
 		sightdistance = 430,
-		speed = 208.2,
-		terraformspeed = 225,
+		speed = 508.2,
+		terraformspeed = 725,
 		turninplaceanglelimit = 360,
 		turnrate = 240,
-		workertime = 60,
+		workertime = 330,
 		buildoptions = {
 			"armsolar",
 			"armadvsol",

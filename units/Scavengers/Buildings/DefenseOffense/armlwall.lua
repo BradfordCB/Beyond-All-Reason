@@ -136,8 +136,8 @@ return {
 				intensity = 28, --was 24
 				name = "Medium Lightning Cannon",
 				noselfdamage = true,
-				range = 315,
-				reloadtime = 1.33, --was 0.3333
+				range = 815,
+				reloadtime = 0.667, --was 0.3333
 				rgbcolor = "0.5 0.5 1",
 				soundhit = "lashit",
 				soundhitwet = "sizzle",
@@ -155,7 +155,7 @@ return {
 					spark_range = "110", --66% more than armclaw
 				},
 				damage = {
-					default = 164, --1/2 of armthor | 2.66x armclaw
+					default = 194, --1/2 of armthor | 2.66x armclaw
 				},
 			},
 			-- banisher = {

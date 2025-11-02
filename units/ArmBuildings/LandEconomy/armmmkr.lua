@@ -7,7 +7,7 @@ return {
 		canrepeat = false,
 		corpse = "DEAD",
 		energycost = 21000,
-		energystorage = 10000,
+		energystorage = 5000,
 		explodeas = "advmetalmaker",
 		footprintx = 4,
 		footprintz = 4,
