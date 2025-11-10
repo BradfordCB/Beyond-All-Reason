@@ -21,7 +21,7 @@ return {
 		maxslope = 22,
 		maxwaterdepth = 22,
 		metalcost = 100,
-		movementclass = "BOT3",
+		movementclass = "BOT2",
 		movestate = 0,
 		objectname = "Units/ARMMARK.s3o",
 		onoffable = false,

@@ -19,7 +19,7 @@ return {
 		maxdec = 0.6486,
 		maxslope = 22,
 		metalcost = 520,
-		movementclass = "ABOT2",
+		movementclass = "ABOT3",
 		movestate = 0,
 		nochasecategory = "NOTAIR",
 		objectname = "Units/ARMAAK.s3o",
