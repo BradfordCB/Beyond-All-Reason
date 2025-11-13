@@ -1,12 +1,12 @@
 return {
 	dgun_projectile = {
-		areaofeffect = 8,
+		areaofeffect = 9,
 		cratermult = 0,
 		edgeeffectiveness = 1,
 		noselfdamage = true,
 		damage = {
-			default = 111000,
-			scavboss = 1110,
+			default = 999000,
+			scavboss = 5110,
 		},
 	},
 }

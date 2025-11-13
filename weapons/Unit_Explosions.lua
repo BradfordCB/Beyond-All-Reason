@@ -670,14 +670,15 @@ local unitDeaths = {
 
 	decoycommander = {
 		weaponType = "Cannon",
-		AreaOfEffect = 48,
-		cameraShake = 48,
+		AreaOfEffect = 748, -- 48
+		cameraShake = 748, -- 48
 		impulsefactor = impulsefactor,
-		soundhit = "xplomed2",
+		soundhit = "xplonuk3", -- xplomed2
 		soundstart = "largegun",
-		explosiongenerator = "custom:decoycommander",
+		explosiongenerator = "custom:afusexplxl", --custom:decoycommander
 		damage = {
-			default = 20,
+			commanders = 1500,
+			default = 10110, --20
 		},
 		customparams = {
 			unitexplosion = 1,
@@ -685,18 +686,15 @@ local unitDeaths = {
 	},
 	decoycommanderSelfd = {
 		weaponType = "Cannon",
-		AreaOfEffect = 96,
-		cameraShake = 96,
+		AreaOfEffect = 920,
+		cameraShake = 920,
 		impulsefactor = impulsefactor,
-		soundhit = "xplomed2",
+		soundhit = "xplonuk3",
 		soundstart = "largegun",
-		explosiongenerator = "custom:decoycommander-selfd",
+		explosiongenerator = "custom:afusexplxl",
 		damage = {
-			default = 310,
-		},
-		customparams = {
-			unitexplosion = 1,
-		}
+			commanders = 2000,
+			default = 12800,
 	},
 	minifusionExplosion = {
 		weaponType = "Cannon",

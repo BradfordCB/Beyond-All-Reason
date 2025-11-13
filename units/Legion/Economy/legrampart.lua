@@ -22,11 +22,11 @@ return {
         idleautoheal = 18,
         idletime = 1800,
 		radardistancejam = 500,
-		radardistance = 2100,
+		radardistance = 2200,
 		radaremitheight = 72,
-        maxslope = 20,
+        maxslope = 28,
 		mass = 20000,
-        maxwaterdepth = 5,
+        maxwaterdepth = 25,
 		nochasecategory = "VTOL",
 		name = "Gattling",
         objectname = "Units/legrampart.s3o",
@@ -114,22 +114,22 @@ return {
 				soundhitwet = "splslrg",
 				soundstart = "antinukelaunch",
 				stockpile = true,
-				stockpiletime = 90,
+				stockpiletime = 60,
 				texture1 = "bluenovaexplo",
 				texture2 = "smoketrailbar",
 				texture3 = "null",
 				tolerance = 7000,
 				tracks = true,
 				turnrate = 10000,
-				weaponacceleration = 150,
+				weaponacceleration = 250,
 				weapontimer = 2.5,
 				weapontype = "StarburstLauncher",
 				weaponvelocity = 6000,
 				customparams = {
-					stockpilelimit = 20,
+					stockpilelimit = 30,
 				},
 				damage = {
-					default = 1500,
+					default = 4500,
 				},
 			},
 			plasma = {
@@ -161,11 +161,11 @@ return {
 					carried_unit = "legheavydrone",     --Name of the unit spawned by this carrier unit.
 					engagementrange = 1600,
 					spawns_surface = "LAND",    -- "LAND" or "SEA". The SEA option has not been tested currently.
-					spawnrate = 8, 				--Spawnrate roughly in seconds.
-					maxunits = 3,				--Will spawn units until this amount has been reached.
+					spawnrate = 6, 				--Spawnrate roughly in seconds.
+					maxunits = 5,				--Will spawn units until this amount has been reached.
 					energycost = 1000,			--Custom spawn cost. Remove this or set = nil to inherit the cost from the carried_unit unitDef. Cost inheritance is currently not working.
 					metalcost = 90,				--Custom spawn cost. Remove this or set = nil to inherit the cost from the carried_unit unitDef. Cost inheritance is currently not working.
-					controlradius = 1800,			--The spawned units should stay within this radius. Unfinished behavior may cause exceptions. Planned: radius = 0 to disable radius limit.
+					controlradius = 1900,			--The spawned units should stay within this radius. Unfinished behavior may cause exceptions. Planned: radius = 0 to disable radius limit.
 					decayrate = 4,
 					carrierdeaththroe = "release",
 					dockingarmor = 0.2,

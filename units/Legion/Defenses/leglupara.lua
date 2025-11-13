@@ -1,7 +1,7 @@
 return {
 	leglupara = {
 		maxacc = 0,
-		airsightdistance = 1000,
+		airsightdistance = 1400,
 		maxdec = 0,
 		buildangle = 65536,
 		energycost = 8200,
@@ -18,15 +18,15 @@ return {
 		footprintz = 2,
 		idleautoheal = 5,
 		idletime = 1800,
-		health = 4000,
-		maxslope = 10,
+		health = 11000,
+		maxslope = 25,
 		maxwaterdepth = 0,
 		nochasecategory = "ALL",
 		objectname = "Units/LEGLUPARA.s3o",
 		script = "Units/LEGLUPARA.cob",
 		seismicsignature = 0,
 		selfdestructas = "mediumBuildingExplosionGenericSelfd",
-		sightdistance = 380,
+		sightdistance = 980,
 		yardmap = "oooo",
 		customparams = {
 			usebuildinggrounddecal = true,
@@ -106,14 +106,14 @@ return {
 		},
 		weapondefs = {
 			legflak_gun = {
-				accuracy = 1000,
+				accuracy = 500,
 				sprayangle = 200,
-				areaofeffect = 150,
+				areaofeffect = 450,
 				avoidfeature = false,
 				avoidfriendly = false,
 				burnblow = true,
 				canattackground = false,
-				burst = 2,
+				burst = 7,
 				burstrate = 0.01,
 				cegtag = "flaktrailaa",
 				collidefriendly = false,
@@ -129,7 +129,7 @@ return {
 				name = "Medium g2a Flak Blunderbuss",
 				noselfdamage = true,
 				predictboost = 1,
-				range = 1125,
+				range = 1375,
 				reloadtime = 1.8,
 				soundhit = "flakhit2",
 				soundhitwet = "splslrg",
@@ -142,6 +142,7 @@ return {
 				weapontype = "Cannon",
 				weaponvelocity = 1600,
 				damage = {
+					default = 40,
 					vtol = 255,
 				},
 				rgbcolor = {

@@ -1,7 +1,7 @@
 return {
 	legsh = {
-		maxacc = 0.095,
-		maxdec = 0.095,
+		maxacc = 0.125,
+		maxdec = 0.125,
 		energycost = 1200,
 		metalcost = 60,
 		buildpic = "legsh.DDS",
@@ -17,8 +17,8 @@ return {
 		idleautoheal = 5,
 		idletime = 1800,
 		health = 220,
-		maxslope = 16,
-		speed = 96,
+		maxslope = 25,
+		speed = 146,
 		maxwaterdepth = 0,
 		movementclass = "HOVER2",
 		nochasecategory = "VTOL",
@@ -26,7 +26,7 @@ return {
 		script = "Units/legsh.cob",
 		seismicsignature = 0,
 		selfdestructas = "smallExplosionGenericSelfd",
-		sightdistance = 550,
+		sightdistance = 950,
 		turninplace = true,
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 2.9634,
@@ -110,7 +110,7 @@ return {
 		},
 		weapondefs = {
 			heat_ray = {
-				areaofeffect = 8,
+				areaofeffect = 78,
 				avoidfeature = false,
 				beamtime = 0.5,
 				corethickness = 0.14,
@@ -125,7 +125,7 @@ return {
 				laserflaresize = 5,
 				name = "Light Close-Quarters g2g Heat Ray",
 				noselfdamage = true,
-				range = 260,
+				range = 1160,
 				reloadtime = 1,
 				rgbcolor = "1 0.55 0",
 				rgbcolor2 = "0.9 1.0 0.5",

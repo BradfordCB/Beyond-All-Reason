@@ -16,8 +16,8 @@ return {
 		footprintz = 4,
 		idleautoheal = 5,
 		idletime = 1800,
-		health = 4000,
-		maxslope = 10,
+		health = 14000,
+		maxslope = 25,
 		maxwaterdepth = 0,
 		--noautofire = true,
 		objectname = "Units/legperdition.s3o",
@@ -114,7 +114,7 @@ return {
 		},
 		weapondefs = {
 			napalmmissile = {
-				areaofeffect = 425,
+				areaofeffect = 525,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "burnflamexl",
@@ -135,13 +135,13 @@ return {
 
 				flamegfxtime = 1,
 				interceptedByShieldType = 0,
-				impulsefactor = 0.123,
+				impulsefactor = 0.923,
 				metalpershot = 500,
 				model = "legbomb.s3o",
 				name = "Long-Range Tactical Hellfire Napalm Shell",
 				energypershot = 17000,
 				noselfdamage = true,
-				range = 2300,
+				range = 4800,
 				reloadtime = 2,
 
 				soundhit = "xplolrg4",
@@ -153,11 +153,11 @@ return {
 				smokesize = 14.0,
 				smokecolor = 0.7,
 				stockpile = true,
-				stockpiletime = 70,
+				stockpiletime = 60,
 				turret = true,
 				weapontype = "Cannon",
 				--weapontype = "MissileLauncher",
-				weaponvelocity = 550,
+				weaponvelocity = 1250,
 				--mygravity = 1.2,
 
 
@@ -168,7 +168,7 @@ return {
 				--turret = true,
 				turnrate = 5000,
 				--trajectoryheight = 1.35,
-				weaponacceleration = 220,
+				weaponacceleration = 320,
 				weapontimer = 5,
 				weapontype = "Cannon",
 				--weaponvelocity = 650,
@@ -176,14 +176,14 @@ return {
 					area_onhit_ceg = "fire-area-150-repeat",
 					area_onhit_damageCeg = "burnflamexl-gen",
 					area_onhit_resistance = "fire",
-					area_onhit_damage = 175,
-					area_onhit_range = 150,
-					area_onhit_time = 15,
-					stockpilelimit = 10,
+					area_onhit_damage = 275,
+					area_onhit_range = 250,
+					area_onhit_time = 25,
+					stockpilelimit = 30,
 				},
 				damage = {
 					commanders = 700,
-					default = 2000,--plus 150*15 within 150 area
+					default = 4000,--plus 150*15 within 150 area
 				},
 			},
 

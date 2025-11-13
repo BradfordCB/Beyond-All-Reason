@@ -17,8 +17,8 @@ return {
 		footprintz = 3,
 		idleautoheal = 5,
 		idletime = 1800,
-		maxdamage = 7000,
-		maxslope = 13,
+		maxdamage = 37000,
+		maxslope = 28,
 		maxwaterdepth = 0,
 		objectname = "Units/scavbuildings/legministarfall.s3o",
 		script = "Units/scavbuildings/legministarfall.cob",
@@ -98,7 +98,7 @@ return {
 		weapondefs = {
 			ministarfire = {
 				accuracy = 0,
-				areaofeffect = 55,
+				areaofeffect = 155,
 				avoidfeature = false,
 				avoidfriendly = false,
 				avoidground = false,
@@ -117,7 +117,7 @@ return {
 
 				explosiongenerator = "custom:ministarfire-explosion",
 				gravityaffected = "true",
-				impulsefactor = 0.5,
+				impulsefactor = 1.5,
 				name = "Starfire Barrage Launcher",
 				noselfdamage = true,
 				range = 1400,
@@ -130,7 +130,7 @@ return {
 				turret = true,
 				weapontimer = 14,
 				weapontype = "Cannon",
-				weaponvelocity = 500,
+				weaponvelocity = 600,
 				damage = {
 					default = 125,
 					shields = 110,

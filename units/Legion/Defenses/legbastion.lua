@@ -14,7 +14,7 @@ return {
 		collisionvolumetype = "CylY",
 		corpse = "DEAD",
 		damagemodifier = 0.25,
-		energystorage = 1000,
+		energystorage = 20000,
 		explodeas = "largeBuildingexplosiongeneric",
 		footprintx = 5,
 		footprintz = 5,
@@ -22,13 +22,13 @@ return {
 		idletime = 1800,
 		losemitheight = 80,
 		health = 12000,
-		maxslope = 10,
-		maxwaterdepth = 0,
+		maxslope = 28,
+		maxwaterdepth = 10,
 		nochasecategory = "VTOL",
 		objectname = "Units/legbastion.s3o",
 		onoffable = true,
-		radardistance = 1200,
-		radaremitheight = 80,
+		radardistance = 1800,
+		radaremitheight = 90,
 		script = "Units/legbastion.cob",
 		seismicsignature = 0,
 		selfdestructas = "largeBuildingExplosionGenericSelfd",
@@ -109,12 +109,12 @@ return {
 		},
 		weapondefs = {
 			t2heatray = {
-				areaofeffect = 120,
+				areaofeffect = 320,
 				avoidfeature = false,
 				avoidfriendly = true,
 				beamtime = 0.1,
 				camerashake = 0.1,
-				corethickness = 0.3,
+				corethickness = 0.4,
 				craterareaofeffect = 120,
 				craterboost = 0,
 				cratermult = 0,
@@ -127,9 +127,9 @@ return {
 				laserflaresize = 6,
 				name = "Heavy Sustained Sweepfire Heat Ray",
 				noselfdamage = true,
-				predictboost = 0.3,
+				predictboost = 0.66,
 				proximitypriority = 1,
-				range = 1100,
+				range = 1380,
 				reloadtime = 3,
 				rgbcolor = "1 0.5 0",
 				rgbcolor2 = "0.9 1.0 0.5",
@@ -143,8 +143,8 @@ return {
 				weapontype = "BeamLaser",
 				weaponvelocity = 1500,
 				damage = {
-					default = 155,
-					vtol = 15,
+					default = 255,
+					vtol = 115,
 				},
 				
 				customparams = {
@@ -154,7 +154,7 @@ return {
 		},
 		weapons = {
 			[1] = {
-				badtargetcategory = "VTOL GROUNDSCOUT",
+				badtargetcategory = "GROUNDSCOUT", --VTOL GROUNDSCOUT
 				def = "t2heatray",
 				onlytargetcategory = "SURFACE",
 			}

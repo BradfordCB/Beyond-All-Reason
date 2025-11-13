@@ -1,7 +1,7 @@
 return {
 	legaheattank = {
-		maxacc = 0.02,
-		maxdec = 0.04,
+		maxacc = 0.06,
+		maxdec = 0.14,
 		energycost = 19000,
 		metalcost = 1250,
 		buildpic = "LEGAHEATTANK.DDS",
@@ -18,9 +18,9 @@ return {
 		idletime = 1800,
 		leavetracks = true,
 		health = 7700,
-		maxslope = 12,
-		speed = 51.0,
-		maxwaterdepth = 15,
+		maxslope = 25,
+		speed = 71.0,
+		maxwaterdepth = 55,
 		movementclass = "HTANK4",
 		nochasecategory = "VTOL",
 		objectname = "Units/LEGAHEATTANK.s3o",
@@ -112,7 +112,7 @@ return {
 		},
 		weapondefs = {
 			heat_ray = {
-				areaofeffect = 64,
+				areaofeffect = 94,
 				avoidfeature = false,
 				avoidfriendly = true,
 				beamtime = 0.033,
@@ -131,7 +131,7 @@ return {
 				noselfdamage = true,
 				predictboost = 0.3,
 				proximitypriority = 1,
-				range = 450,
+				range = 950,
 				reloadtime = 3,
 				rgbcolor = "1 0.5 0",
 				rgbcolor2 = "0.8 1.0 0.3",

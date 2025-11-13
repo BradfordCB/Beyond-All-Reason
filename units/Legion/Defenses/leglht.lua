@@ -19,15 +19,15 @@ return {
 		idleautoheal = 5,
 		idletime = 1800,
 		mass = 5100,
-		health = 550,--650
-		maxslope = 10,
-		maxwaterdepth = 0,
+		health = 1550,--650
+		maxslope = 25,
+		maxwaterdepth = 10,
 		nochasecategory = "MOBILE",
 		objectname = "Units/LEGLHT.s3o",
 		script = "Units/LEGLHT.cob",
 		seismicsignature = 0,
 		selfdestructas = "mediumBuildingExplosionGenericSelfd",
-		sightdistance = 494,
+		sightdistance = 994,
 		yardmap = "oooo",
 		customparams = {
 			usebuildinggrounddecal = true,
@@ -109,14 +109,14 @@ return {
 		},
 		weapondefs = {
 			heat_ray = {
-				areaofeffect = 8,
+				areaofeffect = 198,
 				avoidfeature = false,
 				beamtime = 0.45,
-				corethickness = 0.4,
+				corethickness = 0.5,
 				craterareaofeffect = 0,
 				craterboost = 0,
 				cratermult = 0,
-				edgeeffectiveness = 0.15,
+				edgeeffectiveness = 0.85,
 				explosiongenerator = "custom:laserhit-small",
 				firestarter = 30,
 				impactonly = 1,
@@ -126,7 +126,7 @@ return {
 				name = "Light g2g Heat Ray",
 				noselfdamage = true,
 				predictboost = 1,
-				range = 430,
+				range = 1010,
 				reloadtime = 1.1,
 				rgbcolor = "1 0.55 0",
 				rgbcolor2 = "0.9 1.0 0.5",
@@ -134,7 +134,7 @@ return {
 				soundhitwet = "sizzle",
 				soundstart = "lasrfir3",
 				soundtrigger = 1,
-				thickness = 2.66,
+				thickness = 2.88,
 				tolerance = 10000,
 				turret = true,
 				weapontype = "BeamLaser",
@@ -142,7 +142,7 @@ return {
 				damage = {
 					commanders = 270,
 					default = 200,
-					vtol = 25,
+					vtol = 425,
 				},
 				customparams = {
 					exclude_preaim = true
@@ -151,7 +151,7 @@ return {
 		},
 		weapons = {
 			[1] = {
-				badtargetcategory = "VTOL",
+				--badtargetcategory = "VTOL",
 				def = "HEAT_RAY",
 				onlytargetcategory = "NOTSUB",
 			},

@@ -110,7 +110,7 @@ return {
 				avoidfriendly = true,
 				cegtag = "arty-huge", -- 
 				collidefriendly = false,
-				craterareaofeffect = 192,
+				craterareaofeffect = 92,
 				craterboost = 0,
 				cratermult = 0,
 				edgeeffectiveness = 0.95,
@@ -118,13 +118,13 @@ return {
 				firetolerance = 5000,
 				hightrajectory = 1,
 				gravityaffected = "true",
-				--mygravity = 10,
+				mygravity = 2.5,
 				heightboostfactor = 1.15,
 				impulsefactor = 1.35,
 				name = "Heavy long-range g2g plasma cannon",
 				noselfdamage = true,
 				predictboost = 0.15,
-				range = 2555,
+				range = 2455,
 				reloadtime = 3,
 				--size = 5
 				soundhit = "xplomed2",
@@ -135,7 +135,7 @@ return {
 				turret = true,
 				--weaponacceleration = 150,
 				weapontype = "Cannon", -- MissileLauncher
-				weaponvelocity = 610,
+				weaponvelocity = 2310,
 				damage = {
 					commanders = 1100,
 					default = 1965,

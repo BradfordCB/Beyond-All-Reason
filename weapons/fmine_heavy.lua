@@ -1,6 +1,6 @@
 return {
 	fmine_heavy = {
-		areaofeffect = 250,
+		areaofeffect = 550,
 		craterboost = 0,
 		cratermult = 0,
 		edgeeffectiveness = 0.50,
@@ -11,10 +11,10 @@ return {
 		reloadtime = 3.5999999046326,
 		soundhit = "xplolrg3",
 		soundstart = "largegun",
-		weaponvelocity = 250,
+		weaponvelocity = 450,
 		damage = {
-			default = 1940,
-			subs = 1220,
+			default = 31940,
+			subs = 31220,
 			mines = 1,
 		},
 	},

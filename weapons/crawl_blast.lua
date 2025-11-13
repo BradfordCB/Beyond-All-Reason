@@ -1,6 +1,6 @@
 return {
 	crawl_blastsml = {
-		areaofeffect = 580,
+		areaofeffect = 500,
 		craterboost = 0.4,
 		cratermult = 0.2,
 		edgeeffectiveness = 0.45,
@@ -20,7 +20,7 @@ return {
 		},
 	},
 	crawl_blast = {
-		areaofeffect = 400,
+		areaofeffect = 590,
 		craterboost = 0,
 		cratermult = 0,
 		edgeeffectiveness = 0.35,
@@ -32,22 +32,22 @@ return {
 		soundhit = "xplonuk3",
 		soundstart = "largegun",
 		turret = 1,
-		weaponvelocity = 250,
+		weaponvelocity = 450,
 		damage = {
 			commanders = 1000,
 			crawlingbombs = 400,
-			default = 2700,
-			hvyboats = 1670,
-			lboats = 1670,
+			default = 22720,
+			hvyboats = 2670,
+			lboats = 2670,
 		},
 	},
 	crawl_blastxl = {
-		areaofeffect = 432,
+		areaofeffect = 632,
 		craterboost = 0,
 		cratermult = 0,
 		edgeeffectiveness = 0.35,
 		explosiongenerator = "custom:genericunitexplosion-gigantic-dirty",
-		impulsefactor = 0.5,
+		impulsefactor = 3.5,
 		name = "CrawlingBomb",
 		range = 450,
 		reloadtime = 3.6,
@@ -58,9 +58,9 @@ return {
 		damage = {
 			commanders = 1000,
 			crawlingbombs = 400,
-			default = 2700,
-			hvyboats = 1670,
-			lboats = 1670,
+			default = 22710,
+			hvyboats = 2670,
+			lboats = 2670,
 		},
 	},
 	crawl_blastsmlscavboss = {
@@ -70,7 +70,7 @@ return {
 		cratermult = 0.2,
 		edgeeffectiveness = 0.25,
 		explosiongenerator = "custom:newnukehuge",
-		impulsefactor = 0,
+		impulsefactor = 3,
 		name = "HugeAssMegaNuke",
 		range = 400,
 		reloadtime = 3.6,
@@ -80,11 +80,11 @@ return {
 		weaponvelocity = 250,
 		damage = {
 			commanders = 560,
-			default = 56000,
+			default = 56100,
 		},
 	},
 	fb_blastsml = {
-		areaofeffect = 200,
+		areaofeffect = 550,
 		craterboost = 0,
 		cratermult = 0,
 		edgeeffectiveness = 0.35,
@@ -100,7 +100,7 @@ return {
 		weaponvelocity = 250,
 		damage = {
 			commanders = 220,
-			default = 440,
+			default = 3440,
 		},
 	},
 }

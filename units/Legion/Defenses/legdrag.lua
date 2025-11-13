@@ -1,7 +1,7 @@
 return {
 	legdrag = {
 		maxacc = 0,
-		autoheal = 4,
+		autoheal = 34,
 		blocking = true,
 		maxdec = 0,
 		energycost = 0,
@@ -21,7 +21,7 @@ return {
 		hidedamage = true,
 		idleautoheal = 0,
 		levelground = false,
-		health = 2800,
+		health = 12800,
 		maxslope = 64,
 		maxwaterdepth = 0,
 		objectname = "Units/legdrag.s3o",
@@ -30,7 +30,7 @@ return {
 		seismicsignature = 0,
 		selfdestructas = "WallExplosionConcrete",
 		selfdestructcountdown = 1,
-		sightdistance = 1,
+		sightdistance = 833,
 		yardmap = "ffff",
 		customparams = {
 			usebuildinggrounddecal = true,

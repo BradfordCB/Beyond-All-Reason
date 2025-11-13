@@ -37,7 +37,7 @@ return {
 		sightdistance = 83.2,
 		stealth = true,
 		customparams = {
-			detonaterange = "64",
+			detonaterange = "154",
 			instantselfd = true,
 			mine = true,
 			model_author = "Beherith",
@@ -77,16 +77,16 @@ return {
 		},
 		weapondefs = {
 			minerange = {
-				areaofeffect = 0,
+				areaofeffect = 390,
 				craterareaofeffect = 0,
 				craterboost = 0,
 				cratermult = 0,
-				edgeeffectiveness = 0.15,
+				edgeeffectiveness = 0.75,
 				explosiongenerator = "",
 				firesubmersed = false,
 				impulsefactor = 0,
 				name = "Crawlingbomb Dummy Weapon",
-				range = 64,
+				range = 154,
 				reloadtime = 1,
 				soundhitwet = "",
 				soundhitwetvolume = 0,

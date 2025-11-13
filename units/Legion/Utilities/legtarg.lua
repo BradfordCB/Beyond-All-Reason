@@ -20,7 +20,7 @@ return {
 		istargetingupgrade = true,
 		maxacc = 0,
 		maxdec = 0,
-		maxslope = 10,
+		maxslope = 28,
 		maxwaterdepth = 0,
 		metalcost = 810,
 		objectname = "Units/LEGTARG.s3o",
@@ -28,7 +28,7 @@ return {
 		script = "Units/LEGTARG.cob",
 		seismicsignature = 0,
 		selfdestructas = "mediumBuildingExplosionGenericSelfd",
-		sightdistance = 273,
+		sightdistance = 1173,
 		yardmap = "ooooooooo",
 		customparams = {
 			buildinggrounddecaldecayspeed = 30,

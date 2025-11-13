@@ -1,7 +1,7 @@
 return {
 	legforti = {
 		maxacc = 0,
-		autoheal = 12,
+		autoheal = 55,
 		blocking = true,
 		maxdec = 0,
 		buildangle = 0,
@@ -23,7 +23,7 @@ return {
 		idleautoheal = 0,
 		levelground = false,
 		health = 8900,
-		maxslope = 24,
+		maxslope = 33,
 		maxwaterdepth = 0,
 		objectname = "units/legforti.s3o",
 		repairable = false,

@@ -18,7 +18,7 @@ return {
 		idleautoheal = 5,
 		idletime = 1800,
 		health = 4450,
-		maxslope = 12,
+		maxslope = 22,
 		maxwaterdepth = 0,
 		objectname = "Units/LEGLRPC.s3o",
 		script = "Units/LEGLRPC.cob",
@@ -106,7 +106,7 @@ return {
 			lrpc = {
 				accuracy = 300,
 				sprayangle = 150,
-				areaofeffect = 135,
+				areaofeffect = 435,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "starfire-small",
@@ -126,7 +126,7 @@ return {
 				model = "legbomb.s3o",
 				name = "Long-Range g2g Heavy Cluster Plasma Cannon",
 				noselfdamage = true,
-				range = 4800,
+				range = 5800,
 				reloadtime = 18,
 				soundhit = "lrpcexplo",
 				soundhitwet = "splshbig",
@@ -138,7 +138,7 @@ return {
 				weaponvelocity = 1100,
 				customparams = {
 					cluster_def = 'cluster_munition',
-					cluster_number = 8,
+					cluster_number = 12,
 				},
 				damage = {
 					default = 500,

@@ -37,7 +37,7 @@ return {
 		sightdistance = 83.2,
 		stealth = true,
 		customparams = {
-			detonaterange = "64",
+			detonaterange = "184",
 			instantselfd = true,
 			mine = true,
 			model_author = "Tharsis",
@@ -77,16 +77,16 @@ return {
 		},
 		weapondefs = {
 			minerange = {
-				areaofeffect = 0,
+				areaofeffect = 544,
 				craterareaofeffect = 0,
 				craterboost = 0,
 				cratermult = 0,
 				edgeeffectiveness = 0.15,
 				explosiongenerator = "",
 				firesubmersed = false,
-				impulsefactor = 0,
+				impulsefactor = 3,
 				name = "BOOM",
-				range = 64,
+				range = 184,
 				reloadtime = 1,
 				soundhitwet = "",
 				soundhitwetvolume = 0,

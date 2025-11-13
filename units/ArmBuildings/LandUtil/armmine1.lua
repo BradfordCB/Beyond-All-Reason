@@ -34,10 +34,10 @@ return {
 		seismicsignature = 0,
 		selfdestructas = "MINE_LIGHT",
 		selfdestructcountdown = 0,
-		sightdistance = 83.2,
+		sightdistance = 483.2,
 		stealth = true,
 		customparams = {
-			detonaterange = "64",
+			detonaterange = "154",
 			instantselfd = true,
 			mine = true,
 			model_author = "Beherith",
@@ -77,7 +77,7 @@ return {
 		},
 		weapondefs = {
 			minerange = {
-				areaofeffect = 0,
+				areaofeffect = 340,
 				craterareaofeffect = 0,
 				craterboost = 0,
 				cratermult = 0,
@@ -86,7 +86,7 @@ return {
 				firesubmersed = false,
 				impulsefactor = 0,
 				name = "Crawlingbomb Dummy Weapon",
-				range = 64,
+				range = 154,
 				reloadtime = 1,
 				soundhitwet = "",
 				soundhitwetvolume = 0,

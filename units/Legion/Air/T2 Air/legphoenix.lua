@@ -1,8 +1,8 @@
 return {
 	legphoenix = {
-		maxacc= 0.05,
+		maxacc= 0.11,
 		blocking = false,
-		maxdec = 0.045,
+		maxdec = 0.095,
 		energycost = 25000,
 		metalcost = 450,
 		buildpic = "LEGPHOENIX.DDS",
@@ -11,13 +11,13 @@ return {
 		canattack = true,
 		canmove = true,
 		collide = false,
-		cruisealtitude = 220,
+		cruisealtitude = 1120,
 		explodeas = "largeexplosiongeneric",
 		footprintx = 4,
 		footprintz = 4,
-		idleautoheal = 5,
-		idletime = 1800,
-		maxacc = 0.0525,
+		idleautoheal = 45,
+		idletime = 100,
+		maxacc = 0.1525,
 		maxaileron = 0.01273,
 		maxbank = 0.8,
 		health = 2000,
@@ -25,7 +25,7 @@ return {
 		maxpitch = 0.625,
 		maxrudder = 0.00498,
 		maxslope = 10,
-		speed = 270,
+		speed = 310,
 		maxwaterdepth = 0,
 		noautofire = true,
 		nochasecategory = "VTOL",
@@ -33,10 +33,10 @@ return {
 		script = "Units/legphoenix.cob",
 		seismicsignature = 0,
 		selfdestructas = "largeExplosionGenericSelfd",
-		sightdistance = 430,
+		sightdistance = 1330,
 		speedtofront = 0.063,
 		turnradius = 64,
-		turnrate = 400,
+		turnrate = 600,
 		usesmoothmesh = true,
 		wingangle = 0.06148,
 		wingdrag = 0.125,
@@ -112,7 +112,7 @@ return {
 		},
 		weapondefs = {
 			skybeam = {
-				areaofeffect = 120,
+				areaofeffect = 220,
 				avoidfeature = false,
 				beamtime = 0.033,
 				beamttl = 0.099,
@@ -127,13 +127,13 @@ return {
 				explosiongenerator = "custom:heatray-huge",
 				firestarter = 90,
 				firetolerance = 300,
-				impulsefactor = 0,
+				impulsefactor = 0.444,
 				laserflaresize = 6,
 				name = "Heavy a2g Phoenix Flame Heat Ray",
 				noselfdamage = true,
 				predictboost = 1,
 				proximitypriority = -1,
-				range = 950,--this is VERTICAL, not lateral
+				range = 1750,--this is VERTICAL, not lateral
 				reloadtime = 8,
 				rgbcolor = "1 0.5 0",
 				rgbcolor2 = "0.9 1.0 0.5",
@@ -149,14 +149,14 @@ return {
 				damage = {
 					commanders = 125,
 					default = 145,
-					vtol = 5,
+					vtol = 125,
 				},
 				customparams = {
 					sweepfire=7, --multiplier for displayed dps during the 'bonus' sweepfire stage, needed for DPS calcs
 				}
 			},
 			legphtarg = {--targetting only
-				areaofeffect = 121,
+				areaofeffect = 221,
 				avoidfeature = false,
 				burst = 5,
 				burstrate = 0.4,
@@ -173,7 +173,7 @@ return {
 				mygravity = 0.4,
 				name = "Targetting System",
 				noselfdamage = true,
-				range = 1280,
+				range = 1780,
 				reloadtime = 7,
 				weapontype = "AircraftBomb",
 				damage = {

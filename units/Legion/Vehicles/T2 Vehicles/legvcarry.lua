@@ -1,7 +1,7 @@
 return {
 	legvcarry	= {
-		maxacc = 0.02,
-		maxdec = 0.04,
+		maxacc = 0.04,
+		maxdec = 0.08,
 		energycost = 9000,
 		metalcost = 400,
 		buildpic = "LEGVCARRY.DDS",
@@ -17,10 +17,10 @@ return {
 		idleautoheal = 5,
 		idletime = 1800,
 		leavetracks = true,
-		health = 1400,
-		maxslope = 10,
-		speed = 45.0,
-		maxwaterdepth = 12,
+		health = 9400,
+		maxslope = 25,
+		speed = 68.0,
+		maxwaterdepth = 44,
 		movementclass = "HTANK4",
 		name = "Mantis",
 		nochasecategory = "VTOL",
@@ -28,7 +28,7 @@ return {
 		script = "Units/LEGVCARRY.cob",
 		seismicsignature = 0,
 		selfdestructas = "smallExplosionGenericSelfd",
-		sightdistance = 400,
+		sightdistance = 900,
 		trackoffset = 6,
 		trackstrength = 6,
 		tracktype = "armstump_tracks",
@@ -36,7 +36,7 @@ return {
 		turninplace = true,
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 1.952,
-		turnrate = 360,
+		turnrate = 460,
 		customparams = {
 			unitgroup = 'weapon',
 			basename = "base",
@@ -116,7 +116,7 @@ return {
 		},
 		weapondefs = {
 			targeting = {
-				areaofeffect = 4,
+				areaofeffect = 94,
 				avoidfeature = false,
 				craterareaofeffect = 0,
 				craterboost = 0,
@@ -130,7 +130,7 @@ return {
 				noselfdamage = true,
 				metalpershot = 15,
 				energypershot = 500,
-				range = 1000,
+				range = 1100,
 				reloadtime = 2.5,
 				size = 0,
 				soundhit = "",
@@ -146,23 +146,23 @@ return {
 				},
 				customparams = {
 					carried_unit = "legdrone",     --Name of the unit spawned by this carrier unit.
-					engagementrange = 1100,
+					engagementrange = 1200,
 					spawns_surface = "LAND",    -- "LAND" or "SEA". The SEA option has not been tested currently.
 					spawnrate = 10, 				--Spawnrate roughly in seconds.
-					maxunits = 6,				--Will spawn units until this amount has been reached.
+					maxunits = 16,				--Will spawn units until this amount has been reached.
 					energycost = 500,			--Custom spawn cost. Remove this or set = nil to inherit the cost from the carried_unit unitDef. Cost inheritance is currently not working.
 					metalcost = 15,				--Custom spawn cost. Remove this or set = nil to inherit the cost from the carried_unit unitDef. Cost inheritance is currently not working.
 					controlradius = 1200,			--The spawned units should stay within this radius. Unfinished behavior may cause exceptions. Planned: radius = 0 to disable radius limit.
 					decayrate = 4,
 					carrierdeaththroe = "release",
 					dockingarmor = 0.2,
-					dockinghealrate = 16,
+					dockinghealrate = 86,
 					docktohealthreshold = 66,
 					enabledocking = true,		--If enabled, docking behavior is used. Currently docking while moving or stopping, and undocking while attacking. Unfinished behavior may cause exceptions.
 					dockingHelperSpeed = 5,
 					dockingpieces = "8 10 12 14 16 18",
 					dockingradius = 80,			--The range at which the units snap to the carrier unit when docking.
-					stockpilelimit = 6,
+					stockpilelimit = 16,
 					stockpilemetal = 15,
 					stockpileenergy = 500,
 					dronesusestockpile = true,
@@ -173,7 +173,7 @@ return {
 		},
 		weapons = {
 			[1] = {
-				badtargetcategory = "VTOL",
+				badtargetcategory = "VTOL", --
 				def = "targeting",
 				onlytargetcategory = "NOTSUB",
 			},
