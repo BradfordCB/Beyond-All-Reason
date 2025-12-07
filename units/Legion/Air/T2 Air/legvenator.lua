@@ -1,7 +1,7 @@
 return {
 	legvenator = {
 		maxacc= 0.6,
-		airsightdistance = 1100,
+		airsightdistance = 1400,
 		blocking = false,
 		maxdec = 0.0675,
 		energycost = 3200,
@@ -11,17 +11,17 @@ return {
 		canfly = true,
 		canmove = true,
 		collide = false,
-		cruisealtitude = 160,
+		cruisealtitude = 1060,
 		explodeas = "smallExplosionGenericAir",
 		footprintx = 2,
 		footprintz = 2,
 		maxaileron = 0.01488,
 		maxbank = 0.7,
-		health = 210,
+		health = 2210,
 		maxelevator = 0.01113,
 		maxpitch = 0.525,
 		maxrudder = 0.00463,
-		maxslope = 10,
+		maxslope = 22,
 		speed = 450,
 		maxwaterdepth = 0,
 		nochasecategory = "NOTAIR",
@@ -29,7 +29,7 @@ return {
 		script = "Units/legvenator.cob",
 		seismicsignature = 0,
 		selfdestructas = "smallExplosionGenericAir",
-		sightdistance = 430,
+		sightdistance = 1330,
 		speedtofront = 0.06475,
 		stealth = true,
 		turnradius = 90,
@@ -80,7 +80,7 @@ return {
 		},
 		weapondefs = {
 			birdshot = {
-				areaofeffect = 100,
+				areaofeffect = 200,
 				avoidfeature = false,
 				burnblow = true,
 				craterboost = 0,
@@ -88,28 +88,28 @@ return {
 				collidefriendly = false,
 				edgeeffectiveness = 0.65,
 				explosiongenerator = "custom:genericshellexplosion-small",
-				impulsefactor = 0.2,
-				intensity = 3,
+				impulsefactor = 1.22,
+				intensity = 1,--3
 				name = "Birdshot Cannon",
 				noselfdamage = true,
 				predictboost = 1,
-				projectiles = 3,
-				range = 700,
+				projectiles = 12,--3
+				range = 1390,
 				reloadtime = 2.5,
 				rgbcolor = "1 0.75 0.25",
-				size = 2,
+				size = 2,--2
 				soundhit = "flakhit",
 				soundhitwet = "splshsml",
 				soundstart = "flakfire",
 				soundstartvolume = 6,
-				sprayangle = 200,
+				sprayangle = 200,--200
 				turret = true,
 				weapontimer = 1,
 				weapontype = "Cannon",
 				weaponvelocity = 1600,
 				damage = {
-					commanders = 8,
-					default = 24,
+					commanders = 28,
+					default = 224,
 					vtol = 480,
 				},
 				customparams = {
@@ -119,13 +119,13 @@ return {
 		},
 		weapons = {
 			[1] = {
-				badtargetcategory = "NOTAIR",
+				--badtargetcategory = "NOTAIR",
 				def = "birdshot",
-				onlytargetcategory = "VTOL",
+				onlytargetcategory = "VTOL SURFACE",
 				maindir = "0 0 1",
-				maxangledif = 25,
+				maxangledif = 45,--25
 				fastautoretargeting = true,
-				weaponAimAdjustPriority = 20,
+				weaponAimAdjustPriority = 40,--20
 			},
 		},
 	},
