@@ -1,7 +1,7 @@
 return {
 	legforti = {
 		maxacc = 0,
-		autoheal = 12,
+		autoheal = 32,
 		blocking = true,
 		maxdec = 0,
 		buildangle = 0,
