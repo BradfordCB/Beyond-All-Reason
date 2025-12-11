@@ -1,8 +1,8 @@
 return {
 	mine_heavy = {
-		areaofeffect = 1000,
+		areaofeffect = 620,
 		craterboost = 1,
-		cratermult = 1000,
+		cratermult = 3,
 		edgeeffectiveness = 0.45,
 		explosiongenerator = "custom:genericunitexplosion-large-dirty",
 		impulsefactor = 4.8,--0.8
