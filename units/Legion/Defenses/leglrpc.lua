@@ -120,7 +120,7 @@ return {
 				explosiongenerator = "custom:genericshellexplosion-small",
 				gravityaffected = "true",
 				heightboostfactor = 8,
-				hightrajectory = 0.7,
+				hightrajectory = 1,
 				impulsefactor = 15.39,
 		        mygravity = 0.15,
 				leadbonus = 0,
