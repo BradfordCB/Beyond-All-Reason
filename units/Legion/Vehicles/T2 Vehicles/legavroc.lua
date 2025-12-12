@@ -120,8 +120,8 @@ return {
 				model = "leglargerocket.s3o",
 				name = "Heavy Long-Range g2g High-Trajectory Starburst Rocket Launcher",
 				noselfdamage = true,
-				projectiles = 3
-				range = 1400,
+				projectiles = 3,
+				range = 1450,
 				reloadtime = 18,
 				soundhit = "xplomed4",
 				soundhitwet = "splslrg",
@@ -132,7 +132,7 @@ return {
 				smokesize = 16.0,
 				smokecolor = 0.7,
 				smokeTrailCastShadow = false,
-				sprayangle = 107
+				sprayangle = 107,
 				castshadow = true, --projectile
 				texture1 = "null",
 				texture2 = "smoketrailbar",
