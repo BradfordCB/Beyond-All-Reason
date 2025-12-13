@@ -20,7 +20,7 @@ return {
 		idleautoheal = 5,
 		idletime = 1800,
 		health = 230,
-		maxslope = 10,
+		maxslope = 25,
 		maxwaterdepth = 0,
 		objectname = "Units/LEGWIN.s3o",
 		script = "Units/LEGWIN.cob",
