@@ -121,13 +121,14 @@ return {
 				cratermult = 0,
 				edgeeffectiveness = 0.55,
 				explosiongenerator = "custom:genericshellexplosion-medium",
-				impulsefactor = 2.97,
+				impulsefactor = 3.97,
 				name = "Pop-up heavy g2g grenade launcher",
 				noselfdamage = true,
 				range = 2100, --750
 				reloadtime = 4,
-				separation = 2.3,
+				separation = 2.3, --1.8
 				nogap = false,
+				projectiles = 3,
 				sizeDecay = 0.06,
 				stages = 14,
 				alphaDecay = 0.08,
