@@ -4,7 +4,7 @@ return {
 		maxdec = 0.05093,
 		energycost = 6600,
 		metalcost = 530,
-		builddistance = 136,
+		builddistance = 436,
 		builder = true,
 		buildpic = "LEGACV.DDS",
 		buildtime = 11900,
@@ -70,6 +70,7 @@ return {
 			"legstarfall",
 			"legvp",
 			"legavp",
+			"legbombard",
 		},
 		customparams = {
 			unitgroup = 'buildert2',

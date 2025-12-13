@@ -1,6 +1,6 @@
 return {
 	leghacv = {
-		builddistance = 110,
+		builddistance = 450,
 		builder = true,
 		buildpic = "legafcv.DDS",
 		buildtime = 16800,
@@ -21,8 +21,8 @@ return {
 		leavetracks = true,
 		maxacc = 0.07029,
 		maxdec = 0.14059,
-		maxslope = 18,
-		maxwaterdepth = 18,
+		maxslope = 25,
+		maxwaterdepth = 55,
 		metalcost = 800,
 		movementclass = "TANK2",
 		objectname = "Units/legafcv.s3o",
@@ -40,7 +40,7 @@ return {
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 1.83678,
 		turnrate = 635,
-		workertime = 400,
+		workertime = 450,
 		buildoptions = {
 			[1] = "legafus",
 			[2] = "leggant",
@@ -74,6 +74,7 @@ return {
 			[32] = "leglab",
 			[33] = "legeheatraymech",
 			[34] = "legelrpcmech",
+			[38] = "legbombard",
 		},
 		customparams = {
 			model_author = "ZephyrSkies",

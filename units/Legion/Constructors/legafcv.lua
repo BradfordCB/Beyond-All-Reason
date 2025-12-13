@@ -1,6 +1,6 @@
 return {
 	legafcv = {
-		builddistance = 110,
+		builddistance = 410,
 		builder = true,
 		buildpic = "legafcv.DDS",
 		buildtime = 4000,
@@ -21,8 +21,8 @@ return {
 		leavetracks = true,
 		maxacc = 0.07029,
 		maxdec = 0.14059,
-		maxslope = 18,
-		maxwaterdepth = 18,
+		maxslope = 28,
+		maxwaterdepth = 55,
 		metalcost = 200,
 		movementclass = "TANK2",
 		objectname = "Units/legafcv.s3o",
