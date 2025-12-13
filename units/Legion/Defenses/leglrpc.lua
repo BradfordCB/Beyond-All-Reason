@@ -105,7 +105,7 @@ return {
 		weapondefs = {
 			lrpc = {
 				accuracy = 1,
-				areaofeffect = 495,
+				areaofeffect = 195,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "starfire-small",
@@ -114,7 +114,7 @@ return {
 				craterboost = 0.1,
 				cratermult = 0.1,
 				burst = 3,
-				burstrate = 0.95,
+				burstrate = 0.4,
 				edgeeffectiveness = 0.75,
 				energypershot = 6000,
 				explosiongenerator = "custom:genericshellexplosion-small",
@@ -127,7 +127,7 @@ return {
 				model = "legbomb.s3o",
 				name = "Long-Range g2g Heavy Cluster Plasma Cannon",
 				noselfdamage = true,
-				predictboost = 1,
+				--predictboost = 1,
 				projectiles = 9,
 				range = 6080,
 				reloadtime = 18,
@@ -136,8 +136,9 @@ return {
 				soundstart = "lrpcshot3",
 				soundhitvolume = 38,
 				soundstartvolume = 24,
-				sprayangle = 120,
+				sprayangle = 190,
 				turret = true,
+				weaponacceleration = 100,
 				weapontype = "Cannon",
 				weaponvelocity = 1100,
 				customparams = {
