@@ -133,7 +133,7 @@ return {
 				impulsefactor = 1.67,
 				name = "Heavy Rotary Plasma Cannon",
 				noselfdamage = true,
-				range = 1260,
+				range = 1440,
 				reloadtime = 2,
 				size = 2,
 				soundhit = "xplosml3",
