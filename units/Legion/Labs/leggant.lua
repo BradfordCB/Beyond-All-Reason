@@ -19,7 +19,7 @@ return {
 		idleautoheal = 5,
 		idletime = 1800,
 		health = 17800,
-		maxslope = 10,
+		maxslope = 25,
 		maxwaterdepth = 0,
 		metalstorage = 800,
 		objectname = "Units/LEGGANT.s3o",
@@ -29,7 +29,7 @@ return {
 		selfdestructas = "hugeBuildingExplosionGenericSelfd",
 		sightdistance = 273,
 		terraformspeed = 3000,
-		workertime = 600,
+		workertime = 3300,
 		yardmap = "oooooooooooo oooooooooooo oooooooooooo ooeeeeeeeeoo ooeeeeeeeeoo ooeeeeeeeeoo ooeeeeeeeeoo ooeeeeeeeeoo ooeeeeeeeeoo ooeeeeeeeeoo ooeeeeeeeeoo yoeeeeeeeeoy",
 		buildoptions = {
 			"legeheatraymech",
@@ -40,6 +40,7 @@ return {
 			"legerailtank",
 			"legeshotgunmech",
 			"legkeres",
+			"leegmech",
 		},
 		customparams = {
 			usebuildinggrounddecal = true,
