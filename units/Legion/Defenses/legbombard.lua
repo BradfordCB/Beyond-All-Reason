@@ -119,14 +119,14 @@ return {
 				craterareaofeffect = 0,
 				craterboost = 0,
 				cratermult = 0,
-				edgeeffectiveness = 0.15,
+				edgeeffectiveness = 0.55,
 				explosiongenerator = "custom:genericshellexplosion-medium",
-				impulsefactor = 2.123,
+				impulsefactor = 2.97,
 				name = "Pop-up heavy g2g grenade launcher",
 				noselfdamage = true,
-				range = 1510, --750
-				reloadtime = 3,
-				separation = 1.8,
+				range = 2100, --750
+				reloadtime = 4,
+				separation = 2.3,
 				nogap = false,
 				sizeDecay = 0.06,
 				stages = 14,
@@ -139,7 +139,7 @@ return {
 				trajectoryHeight = 2,
 				turret = true,
 				weapontype = "Cannon",
-				weaponvelocity = 700, --300
+				weaponvelocity = 790, --300
 				model = "legnade.s3o",
 				
 				
@@ -164,7 +164,7 @@ return {
 				burnblow = false,
 				burst = 9,
 				burstrate = 0.33,
-				sprayangle = 500,
+				sprayangle = 300,
 				accuracy = 1,
 				bounce = 1,
 				bounceslip = 0.60,
@@ -177,7 +177,7 @@ return {
  				collidefriendly = false,
 				collidefirebase = false,
 				collideneutral = false,
-				flighttime = 4.15, --2.05
+				flighttime = 4.95, --2.05
 				proximityPriority = 1,
 				gravityaffected = true,
 				waterbounce = true,
@@ -198,7 +198,7 @@ return {
 				def = "bombardier_weapon",
 				onlytargetcategory = "SURFACE",
 				maindir = "0 0 1",
-				maxangledif = 330, --300
+				maxangledif = 350, --300
 			},
 		},
 	},
