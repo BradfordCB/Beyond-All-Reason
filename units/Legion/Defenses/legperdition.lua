@@ -17,7 +17,7 @@ return {
 		idleautoheal = 5,
 		idletime = 1800,
 		health = 4000,
-		maxslope = 10,
+		maxslope = 25,
 		maxwaterdepth = 0,
 		--noautofire = true,
 		objectname = "Units/legperdition.s3o",
@@ -141,7 +141,7 @@ return {
 				name = "Long-Range Tactical Hellfire Napalm Shell",
 				energypershot = 17000,
 				noselfdamage = true,
-				range = 2300,
+				range = 4300,
 				reloadtime = 2,
 
 				soundhit = "xplolrg4",
@@ -153,11 +153,11 @@ return {
 				smokesize = 14.0,
 				smokecolor = 0.7,
 				stockpile = true,
-				stockpiletime = 70,
+				stockpiletime = 60,
 				turret = true,
 				weapontype = "Cannon",
 				--weapontype = "MissileLauncher",
-				weaponvelocity = 550,
+				weaponvelocity = 750,
 				--mygravity = 1.2,
 
 
