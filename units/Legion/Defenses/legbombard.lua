@@ -124,7 +124,7 @@ return {
 				impulsefactor = 2.123,
 				name = "Pop-up heavy g2g grenade launcher",
 				noselfdamage = true,
-				range = 1400, --750
+				range = 1510, --750
 				reloadtime = 3,
 				separation = 1.8,
 				nogap = false,
