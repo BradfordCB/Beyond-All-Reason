@@ -122,7 +122,7 @@ return {
 				heightboostfactor = 8,
 				hightrajectory = 1,
 				impulsefactor = 15.39,
-		        mygravity = 0.35,
+		        mygravity = 0.28,
 				leadbonus = 0,
 				model = "legbomb.s3o",
 				name = "Long-Range g2g Heavy Cluster Plasma Cannon",
@@ -137,7 +137,7 @@ return {
 				soundstartvolume = 24,
 				sprayangle = 190,
 				turret = true,
-				weaponacceleration = 120,
+				weaponacceleration = 220,
 				weapontype = "Cannon",
 				weaponvelocity = 1100,
 				customparams = {
