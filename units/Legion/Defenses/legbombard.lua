@@ -17,15 +17,15 @@ return {
 		footprintz = 3,
 		idleautoheal = 5,
 		idletime = 1800,
-		health = 2800,
-		maxslope = 10,
+		health = 5800,
+		maxslope = 28,
 		maxwaterdepth = 0,
 		nochasecategory = "MOBILE",
 		objectname = "Units/legbombard.s3o",
 		script = "Units/legbombard.cob",
 		seismicsignature = 0,
 		selfdestructas = "smallBuildingExplosionGenericSelfd",
-		sightdistance = 598,
+		sightdistance = 1198,
 		yardmap = "ooooooooo",
 		customparams = {
 			usebuildinggrounddecal = true,
@@ -121,10 +121,10 @@ return {
 				cratermult = 0,
 				edgeeffectiveness = 0.15,
 				explosiongenerator = "custom:genericshellexplosion-medium",
-				impulsefactor = 0.123,
+				impulsefactor = 2.123,
 				name = "Pop-up heavy g2g grenade launcher",
 				noselfdamage = true,
-				range = 750,
+				range = 1400, --750
 				reloadtime = 3,
 				separation = 1.8,
 				nogap = false,
@@ -134,11 +134,11 @@ return {
 				soundhit = "xplomed2",
 				soundhitwet = "splshbig",
 				soundstart = "cannhvy1",
-				targetmoveerror = 0.2,
+				targetmoveerror = 0.125,
 				tolerance = 8000,
 				turret = true,
 				weapontype = "Cannon",
-				weaponvelocity = 300,
+				weaponvelocity = 700, --300
 				model = "legnade.s3o",
 				
 				
@@ -156,7 +156,7 @@ return {
 				smokeTrailCastShadow = true,				
 				
 				cegtag = "missiletrail-grenadesmoke",
-				areaofeffect = 124,
+				areaofeffect = 324,
 				avoidfeature = false,
 				avoidfriendly = true,
 				avoidground = true,
@@ -176,11 +176,11 @@ return {
  				collidefriendly = false,
 				collidefirebase = false,
 				collideneutral = false,
-				flighttime = 2.05,
+				flighttime = 2.15, --2.05
 				proximityPriority = 1,
 				gravityaffected = true,
 				waterbounce = true,
-				predictboost = 0.8,
+				predictboost = 1, --0.8
 				damage = {
 					default = 375,
 					subs = 300,
@@ -197,7 +197,7 @@ return {
 				def = "bombardier_weapon",
 				onlytargetcategory = "SURFACE",
 				maindir = "0 0 1",
-				maxangledif = 300,
+				maxangledif = 330, --300
 			},
 		},
 	},
