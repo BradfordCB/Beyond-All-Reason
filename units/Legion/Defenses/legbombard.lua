@@ -136,6 +136,7 @@ return {
 				soundstart = "cannhvy1",
 				targetmoveerror = 0.125,
 				tolerance = 8000,
+				trajectoryHeight = 2,
 				turret = true,
 				weapontype = "Cannon",
 				weaponvelocity = 700, --300
@@ -161,8 +162,8 @@ return {
 				avoidfriendly = true,
 				avoidground = true,
 				burnblow = false,
-				burst = 3,
-				burstrate = 0.5,
+				burst = 9,
+				burstrate = 0.33,
 				sprayangle = 500,
 				accuracy = 1,
 				bounce = 1,
@@ -176,7 +177,7 @@ return {
  				collidefriendly = false,
 				collidefirebase = false,
 				collideneutral = false,
-				flighttime = 2.15, --2.05
+				flighttime = 4.15, --2.05
 				proximityPriority = 1,
 				gravityaffected = true,
 				waterbounce = true,
@@ -186,7 +187,7 @@ return {
 					subs = 300,
 				},
 				customparams = {
-					noattackrangearc= 1,
+					--noattackrangearc= 1,
 					exclude_preaim = true
 				}
 			},
