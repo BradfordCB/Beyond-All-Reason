@@ -20,7 +20,7 @@ return {
 		idleautoheal = 5,
 		idletime = 1800,
 		health = 26000,
-		maxslope = 13,
+		maxslope = 25,
 		maxwaterdepth = 0,
 		objectname = "Units/legstarfall.s3o",
 		script = "Units/legstarfall.cob",
@@ -101,7 +101,7 @@ return {
 		weapondefs = {
 			starfire = {
 				accuracy = 0,--0
-				areaofeffect = 556,--256
+				areaofeffect = 256,--256
 				avoidfeature = false,
 				avoidfriendly = false,
 				avoidground = false,
