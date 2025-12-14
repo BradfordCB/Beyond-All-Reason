@@ -71,7 +71,7 @@ return {
 		},
 		weapondefs = {
 			crawl_detonator = {
-				areaofeffect = 5,
+				areaofeffect = 7,
 				avoidfeature = false,
 				craterareaofeffect = 0,
 				craterboost = 0,
@@ -82,7 +82,7 @@ return {
 				gravityaffected = "true",
 				impulsefactor = 0,
 				name = "Self-destruction",
-				range = 80,
+				range = 5,
 				reloadtime = 0.1,
 				soundhitwet = "splshbig",
 				weapontype = "Cannon",
