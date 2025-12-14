@@ -124,11 +124,11 @@ return {
 				impulsefactor = 3.97,
 				name = "Pop-up heavy g2g grenade launcher",
 				noselfdamage = true,
-				range = 2100, --750
-				reloadtime = 4,
+				range = 2300, --750
+				reloadtime = 3, --3
 				separation = 2.3, --1.8
 				nogap = false,
-				projectiles = 3,
+				projectiles = 5,
 				sizeDecay = 0.06,
 				stages = 14,
 				alphaDecay = 0.08,
@@ -140,15 +140,15 @@ return {
 				trajectoryHeight = 2,
 				turret = true,
 				weapontype = "Cannon",
-				weaponvelocity = 790, --300
+				weaponvelocity = 890, --300
 				model = "legnade.s3o",
 				
 				
 				weaponacceleration = -0.3,
 				weapontimer = 0.01,
 				weapontype = "Cannon",
-				weaponvelocity = 700,				
-				startvelocity = 700,
+				weaponvelocity = 800,				
+				startvelocity = 800,
 				
 				smoketrail = true,
 				smokePeriod = 100,
@@ -158,18 +158,18 @@ return {
 				smokeTrailCastShadow = true,				
 				
 				cegtag = "missiletrail-grenadesmoke",
-				areaofeffect = 324,
+				areaofeffect = 424,
 				avoidfeature = false,
 				avoidfriendly = true,
 				avoidground = true,
 				burnblow = false,
-				burst = 9,
-				burstrate = 0.33,
-				sprayangle = 300,
+				burst = 3,
+				burstrate = 0.5,
+				sprayangle = 300, --500
 				accuracy = 1,
 				bounce = 1,
 				bounceslip = 0.60,
-				bouncerebound = 0.40,
+				bouncerebound = 0.98, --0.40
 				numbounce = 5,
 				groundbounce = true,
  				collideenemy = true,
@@ -178,7 +178,7 @@ return {
  				collidefriendly = false,
 				collidefirebase = false,
 				collideneutral = false,
-				flighttime = 4.95, --2.05
+				flighttime = 6.95, --2.05
 				proximityPriority = 1,
 				gravityaffected = true,
 				waterbounce = true,
