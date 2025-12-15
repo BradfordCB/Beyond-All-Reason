@@ -122,6 +122,7 @@ return {
 				model = "cormissile.s3o",
 				name = "Advanced g2a Salvo Missile Launcher",
 				noselfdamage = true,
+				projectiles = 2,
 				range = 2020, --840
 				reloadtime = 0.5,
 				smoketrail = true,
@@ -135,6 +136,7 @@ return {
 				soundhitwet = "splshbig",
 				soundstart = "packolau",
 				soundtrigger = true,
+				sprayangle = 55,
 				startvelocity = 800,
 				texture1 = "null",
 				texture2 = "smoketrailaa3",
@@ -147,7 +149,8 @@ return {
 				weapontype = "MissileLauncher",
 				weaponvelocity = 2500,
 				damage = {
-					vtol = 13,
+					default = 22,
+					vtol = 18, --13
 				},
 			},
 		},
