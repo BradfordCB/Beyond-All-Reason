@@ -97,7 +97,7 @@ local BaseClasses = {
 	LRPCProjectile = {
 		lightType = 'point', -- or cone or beam
 		lightConfig = {
-			posx = 0, posy = 0, posz = 0, radius = 100, --150
+			posx = 0, posy = 0, posz = 0, radius = 150, --150
 			--pos2x = 100, pos2y = 100, pos2z = 100,
 			--dirx = 1, diry = 0, dirz = 1, theta = 0.4,
 			r = 1.2, g = 0.80, b = 0.3, a = 0.2,
