@@ -19,14 +19,14 @@ return {
 		footprintz = 3,
 		idleautoheal = 5,
 		idletime = 1800,
-		health = 1900,
-		maxslope = 10,
+		health = 2900, --1900
+		maxslope = 28,
 		maxwaterdepth = 0,
 		objectname = "Units/LEGRHAPSIS.s3o",
 		script = "Units/LEGRHAPSIS.cob",
 		seismicsignature = 0,
 		selfdestructas = "mediumBuildingExplosionGenericSelfd",
-		sightdistance = 375,
+		sightdistance = 975,
 		yardmap = "ooooooooo",
 		customparams = {
 			usebuildinggrounddecal = true,
@@ -102,7 +102,7 @@ return {
 		},
 		weapondefs = {
 			burst_aa_missile = {
-				areaofeffect = 16,
+				areaofeffect = 316, --16
 				avoidfeature = false,
 				burnblow = true,
 				canattackground = false,
@@ -114,15 +114,15 @@ return {
 				craterareaofeffect = 0,
 				craterboost = 0,
 				cratermult = 0,
-				edgeeffectiveness = 0.15,
+				edgeeffectiveness = 0.75,
 				explosiongenerator = "custom:genericshellexplosion-tiny-aa",
 				firestarter = 72,
-				flighttime = 2.5,
-				impulsefactor = 0.123,
+				flighttime = 6.1, --2.5
+				impulsefactor = 2.723, --0.123
 				model = "cormissile.s3o",
 				name = "Advanced g2a Salvo Missile Launcher",
 				noselfdamage = true,
-				range = 840,
+				range = 2020, --840
 				reloadtime = 0.5,
 				smoketrail = true,
 				smokePeriod = 7,
@@ -143,7 +143,7 @@ return {
 				turnrate = 68000,
 				turret = true,
 				weaponacceleration = 300,
-				weapontimer = 2,
+				weapontimer = 1, --2
 				weapontype = "MissileLauncher",
 				weaponvelocity = 2500,
 				damage = {
@@ -153,9 +153,9 @@ return {
 		},
 		weapons = {
 			[1] = {
-				badtargetcategory = "NOTAIR",
+				--badtargetcategory = "NOTAIR",
 				def = "BURST_AA_MISSILE",
-				onlytargetcategory = "VTOL",
+				onlytargetcategory = "VTOL SURFACE",
 				fastautoretargeting = true,
 			},
 		},
