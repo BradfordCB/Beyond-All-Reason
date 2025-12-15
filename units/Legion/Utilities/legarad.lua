@@ -29,7 +29,7 @@ return {
 		script = "Units/LEGARAD.cob",
 		seismicsignature = 0,
 		selfdestructas = "smallBuildingExplosionGenericSelfd",
-		sightdistance = 820,
+		sightdistance = 2820,
 		sightemitheight = 40,
 		usepiececollisionvolumes = 0,
 		yardmap = "oooo",
