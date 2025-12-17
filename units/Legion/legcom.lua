@@ -6,7 +6,7 @@ return {
 		maxdec = 1.125,
 		energycost = 26000,
 		metalcost = 2700,
-		builddistance = 145,
+		builddistance = 245,
 		builder = true,
 		buildpic = "LEGCOM.DDS",
 		buildtime = 75000,
