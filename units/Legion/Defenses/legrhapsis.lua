@@ -117,12 +117,12 @@ return {
 				edgeeffectiveness = 0.75,
 				explosiongenerator = "custom:genericshellexplosion-tiny-aa",
 				firestarter = 72,
-				flighttime = 6.1, --2.5
-				impulsefactor = 2.723, --0.123
+				flighttime = 5.1, --2.5
+				impulsefactor = 3.723, --0.123
 				model = "cormissile.s3o",
 				name = "Advanced g2a Salvo Missile Launcher",
 				noselfdamage = true,
-				projectiles = 2,
+				projectiles = 3,
 				range = 2020, --840
 				reloadtime = 0.5,
 				smoketrail = true,
@@ -149,7 +149,7 @@ return {
 				weapontype = "MissileLauncher",
 				weaponvelocity = 2500,
 				damage = {
-					default = 20,
+					default = 15,
 					vtol = 15, --13
 				},
 			},
