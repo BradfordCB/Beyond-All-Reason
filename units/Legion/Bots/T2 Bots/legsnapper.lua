@@ -17,7 +17,7 @@ return {
 		idleautoheal = 5,
 		idletime = 1800,
 		mass = 1500,
-		health = 550,
+		health = 12550,
 		maxslope = 32,
 		speed = 81.0,
 		maxwaterdepth = 112,
@@ -28,7 +28,7 @@ return {
 		seismicsignature = 0,
 		selfdestructas = "crawl_blast",
 		selfdestructcountdown = 0,
-		sightdistance = 280,
+		sightdistance = 980,
 		turninplace = true,
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 1.750,
@@ -71,7 +71,7 @@ return {
 		},
 		weapondefs = {
 			crawl_detonator = {
-				areaofeffect = 5,
+				areaofeffect = 7,
 				avoidfeature = false,
 				craterareaofeffect = 0,
 				craterboost = 0,
@@ -88,7 +88,7 @@ return {
 				weapontype = "Cannon",
 				weaponvelocity = 1000,
 				damage = {
-					crawlingbombs = 1000,
+					crawlingbombs = 15000,
 					default = 0,
 				},
 				customparams = {
