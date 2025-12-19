@@ -205,10 +205,12 @@ return {
 				badtargetcategory = "LIGHTAIRSCOUT",
 				def = "railgunt2",
 				onlytargetcategory = "VTOL SURFACE",
+			},
 			[2] = {
 				badtargetcategory = "LIGHTAIRSCOUT", -- NOTAIR 
 				def = "cor_advsam",
 				onlytargetcategory = "VTOL SURFACE",
+				
 			},
 		},
 	},
