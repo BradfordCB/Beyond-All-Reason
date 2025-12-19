@@ -203,12 +203,12 @@ return {
 		weapons = {
 			[1] = {
 				badtargetcategory = "LIGHTAIRSCOUT",
-				def = "railgunt2",
+				def = "RAILGUNT2",
 				onlytargetcategory = "VTOL SURFACE",
 			},
 			[2] = {
 				badtargetcategory = "LIGHTAIRSCOUT", -- NOTAIR 
-				def = "cor_advsam",
+				def = "COR_ADVSAM",
 				onlytargetcategory = "VTOL SURFACE",
 				
 			},
