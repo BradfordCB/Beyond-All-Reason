@@ -11,7 +11,7 @@ return {
 		corpse = "DEAD",
 		energycost = 18800,
 		energymake = 15,
-		energystorage = 100,
+		energystorage = 202,
 		explodeas = "smallexplosiongeneric-builder",
 		footprintx = 3,
 		footprintz = 3,

@@ -22,7 +22,7 @@ return {
 		collisionvolumescales = "38 50 22",
 		collisionvolumetype = "box",
 		energymake = 50,
-		energystorage = 100,
+		energystorage = 202,
 		explodeas = "mediumexplosiongeneric",
 		footprintx = 2,
 		footprintz = 2,

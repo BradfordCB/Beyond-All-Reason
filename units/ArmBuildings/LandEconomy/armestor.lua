@@ -10,7 +10,7 @@ return {
 		collisionvolumetype = "CylY",
 		corpse = "DEAD",
 		energycost = 1700,
-		energystorage = 6000,
+		energystorage = 36000,
 		explodeas = "energystorage",
 		footprintx = 3,
 		footprintz = 3,
