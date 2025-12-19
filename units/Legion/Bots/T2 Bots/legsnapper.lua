@@ -17,7 +17,7 @@ return {
 		idleautoheal = 5,
 		idletime = 1800,
 		mass = 1500,
-		health = 12550,
+		health = 32550,
 		maxslope = 32,
 		speed = 81.0,
 		maxwaterdepth = 112,
@@ -88,7 +88,7 @@ return {
 				weapontype = "Cannon",
 				weaponvelocity = 1000,
 				damage = {
-					crawlingbombs = 15000,
+					crawlingbombs = 35000,
 					default = 0,
 				},
 				customparams = {
