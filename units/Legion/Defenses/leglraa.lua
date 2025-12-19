@@ -162,7 +162,7 @@ return {
 				burnblow = false,
 				canattackground = false,
 				cegtag = "railgun",
-				burst = 2,
+				burst = 3,
 				burstrate = 0.2,
 				craterareaofeffect = 0,
 				craterboost = 0,
@@ -195,7 +195,7 @@ return {
 				weaponvelocity = 3529,
 				damage = {
 					--commanders = 750,
-					default = 120,
+					default = 620,
 					vtol = 700,
 				},
 			},
