@@ -141,7 +141,7 @@ return {
 				name = "Long-Range Tactical Hellfire Napalm Shell",
 				energypershot = 17000,
 				noselfdamage = true,
-				range = 7300,
+				range = 8300,
 				reloadtime = 2,
 
 				soundhit = "xplolrg4",
