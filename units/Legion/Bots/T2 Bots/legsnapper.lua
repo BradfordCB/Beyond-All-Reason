@@ -11,7 +11,7 @@ return {
 		collisionvolumeoffsets = "0 0 0",
 		collisionvolumescales = "25 9 20",
 		collisionvolumetype = "CylY",
-		explodeas = "crawl_blastsml",
+		explodeas = "crawl_blastxl",
 		footprintx = 2,
 		footprintz = 2,
 		idleautoheal = 5,
@@ -26,7 +26,7 @@ return {
 		objectname = "Units/legsnapper.s3o",
 		script = "Units/legsnapper.cob",
 		seismicsignature = 0,
-		selfdestructas = "crawl_blast",
+		selfdestructas = "crawl_blastxl",
 		selfdestructcountdown = 0,
 		sightdistance = 980,
 		turninplace = true,
@@ -71,7 +71,7 @@ return {
 		},
 		weapondefs = {
 			crawl_detonator = {
-				areaofeffect = 7,
+				areaofeffect = 5,
 				avoidfeature = false,
 				craterareaofeffect = 0,
 				craterboost = 0,
