@@ -172,7 +172,7 @@ return {
 				soundhitvolume = 50,
 				tolerance = 10000,
 				turnrate = 600,
-				weaponacceleration = 1000,
+				weaponacceleration = 1200,
 				weapontimer = 0.1,
 				weapontype = "Cannon",
 				weaponvelocity = 1480,
