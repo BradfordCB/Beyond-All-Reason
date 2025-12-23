@@ -1,7 +1,7 @@
 return {
 	legvenator = {
 		maxacc= 0.6,
-		airsightdistance = 1100,
+		airsightdistance = 1400,
 		blocking = false,
 		maxdec = 0.0675,
 		energycost = 3200,
