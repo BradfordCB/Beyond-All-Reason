@@ -16,9 +16,9 @@ return {
 		damage = {
 			commanders = 1000,
 			crawlingbombs = 1,
-			default = 18700,
-			hvyboats = 17670,
-			lboats = 17670,
+			default = 23700,
+			hvyboats = 20670,
+			lboats = 20670,
 		},
 	},
 	crawl_blast = {
@@ -38,9 +38,9 @@ return {
 		damage = {
 			commanders = 1000,
 			crawlingbombs = 1,
-			default = 21700,
-			hvyboats = 21670,
-			lboats = 21670,
+			default = 28700,
+			hvyboats = 25670,
+			lboats = 25670,
 		},
 	},
 	crawl_blastxl = {
@@ -74,7 +74,7 @@ return {
 		explosiongenerator = "custom:newnukehuge",
 		impulsefactor = 0,
 		name = "HugeAssMegaNuke",
-		range = 400,
+		range = 500,
 		reloadtime = 3.6,
 		soundhit = "xplomed4",
 		soundstart = "largegun",
@@ -83,6 +83,7 @@ return {
 		damage = {
 			commanders = 560,
 			default = 56000,
+			crawlingbombs = 1,
 		},
 	},
 	fb_blastsml = {
