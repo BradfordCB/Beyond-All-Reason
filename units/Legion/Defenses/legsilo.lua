@@ -164,7 +164,7 @@ return {
 				edgeeffectiveness = 0,
 				impulsefactor = 0,
 				metalpershot = 0,
-				mygravity = 0.033,
+				mygravity = 0.025,
 				name = "Nuclear Launch",
 				range = 0,
 				reloadtime = 30,
