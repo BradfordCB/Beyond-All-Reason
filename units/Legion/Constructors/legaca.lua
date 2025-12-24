@@ -67,6 +67,7 @@ return {
 			"corplat",
 			"leggant",
 			"legdtl",
+			"legbombard",
 		},
 		customparams = {
 			unitgroup = 'buildert2',

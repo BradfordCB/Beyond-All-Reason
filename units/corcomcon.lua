@@ -57,7 +57,7 @@ return {
 		turninplacespeedlimit = 0.825,
 		turnrate = 1133,
 		upright = true,
-		workertime = 300,
+		workertime = 350,
 		buildoptions = {
 			[1] = "cornecro",
 			[2] = "corca",

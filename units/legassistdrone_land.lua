@@ -38,7 +38,7 @@ return {
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 0.9504,
 		turnrate = 1000,
-		workertime = 100*Spring.GetModOptions().assistdronesbuildpowermultiplier,
+		workertime = 150*Spring.GetModOptions().assistdronesbuildpowermultiplier,
 		buildoptions = {
 			"legsolar",
 			"legwin",

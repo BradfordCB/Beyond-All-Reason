@@ -38,9 +38,10 @@ return {
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 1.0626,
 		turnrate = 1214.40002,
-		workertime = 100,
+		workertime = 500,
 		buildoptions = {
 			[1] = "leginfestor"
+			[2] = "legmine3"
 		},
 		customparams = {
 			unitgroup = 'weapon',
@@ -112,7 +113,7 @@ return {
 		},
 		weapondefs = {
 			festorbeam = {
-				areaofeffect = 42,
+				areaofeffect = 82,
 				avoidfeature = false,
 				beamtime = 0.35,
 				corethickness = 0.2,
@@ -122,11 +123,11 @@ return {
 				edgeeffectiveness = 0.15,
 				explosiongenerator = "custom:laserhit-small",
 				firestarter = 90,
-				impulsefactor = 0,
+				impulsefactor = 0.99,
 				laserflaresize = 3.95,
 				name = "Close-Quarters Light Heat Ray",
 				noselfdamage = true,
-				range = 300,
+				range = 1200,
 				reloadtime = 1,
 				rgbcolor = "1 0.55 0",
 				rgbcolor2 = "0.9 1.0 0.5",
@@ -149,7 +150,7 @@ return {
 		weapons = {
 			[1] = {
 				def = "festorbeam",
-				onlytargetcategory = "SURFACE",
+				onlytargetcategory = "SURFACE VTOL",
 				burstControlWhenOutOfArc = 1,
 			},
 		},
