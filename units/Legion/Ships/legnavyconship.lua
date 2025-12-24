@@ -1,6 +1,6 @@
 return {
 	legnavyconship = {
-		builddistance = 200,
+		builddistance = 300,
 		builder = true,
 		buildpic = "legnavyconship.DDS",
 		buildtime = 3500,
@@ -29,13 +29,13 @@ return {
 		seismicsignature = 0,
 		selfdestructas = "mediumexplosiongenericSelfd-builder",
 		sightdistance = 400,
-		speed = 71,
-		terraformspeed = 1250,
+		speed = 111,
+		terraformspeed = 3250,
 		turninplace = true,
 		turninplaceanglelimit = 90,
 		turnrate = 391.5,
 		waterline = 0,
-		workertime = 115,
+		workertime = 195,
 		buildoptions = {
 			[1] = "legmex",
 			[2] = "legvp",

@@ -36,7 +36,7 @@ return {
 		turninplacespeedlimit = 2,
 		turnrate = 640,
 		upright = false,
-		workertime = 125,
+		workertime = 145,
 		buildoptions = {
 			"legsolar",
 			"legmex",
@@ -57,6 +57,7 @@ return {
 			"legnavyfrigate",
 			"legnavyconship",
 			"legamph",
+			"legbombard",
 		},
 		customparams = {
 			unitgroup = 'buildert2',

@@ -71,6 +71,7 @@ return {
 			"legvp",
 			"legavp",
 			"legdtl",
+			"legbombard",
 		},
 		customparams = {
 			unitgroup = 'buildert2',

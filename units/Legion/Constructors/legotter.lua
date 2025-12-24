@@ -39,7 +39,7 @@ return {
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 0.9504,
 		turnrate = 300,
-		workertime = 75,
+		workertime = 155,
 		buildoptions = {
 			[1] = "legsolar",
 			[2] = "legadvsol",
