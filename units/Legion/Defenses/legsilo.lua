@@ -142,10 +142,10 @@ return {
 				targetable = 1,
 				tolerance = 4000,
 				turnrate = 4280,
-				weaponacceleration = 150,
+				weaponacceleration = 160,
 				weapontimer = 6.4,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 1725,
+				weaponvelocity = 1735,
 				customparams = {
 					place_target_on_ground = "true",
 					stockpilelimit = 20,
@@ -176,7 +176,7 @@ return {
 				weaponacceleration = 1200,
 				weapontimer = 0.1,
 				weapontype = "Cannon",
-				weaponvelocity = 1480,
+				weaponvelocity = 1530,
 				damage = {
 					default = 0,
 				},
