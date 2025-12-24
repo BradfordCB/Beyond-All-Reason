@@ -104,8 +104,7 @@ return {
 		},
 		weapondefs = {
 			lrpc = {
-				accuracy = 20,
-				sprayangle = 150,
+				accuracy = 2,
 				areaofeffect = 550,
 				avoidfeature = false,
 				cegtag = "meteortrail",
@@ -133,6 +132,8 @@ return {
 				weaponacceleration = 120,
 				weapontimer = 10,
 				weaponvelocity = 2000,
+				projectiles = 3,
+				sprayangle = 90,
 				wobble = 0,
 				customparams = {
 					cluster_def = 'cluster_munition',
@@ -145,7 +146,7 @@ return {
 				},
 			},
 			cluster_munition = {
-				areaofeffect = 315,
+				areaofeffect = 395,
 				avoidfeature = false,
 				cegtag = "ministarfire",
 				craterboost = 0,
@@ -153,11 +154,11 @@ return {
 				edgeeffectiveness = 0.3,
 				explosiongenerator = "custom:ministarfire-explosion",
 				gravityaffected = "true",
-				impulsefactor = 1.25,
+				impulsefactor = 7.25,
 				name = "Plasma Burst",
 				noselfdamage = true,
 				maxvelocity = 720,
-				range = 210,
+				range = 310,
 				rgbcolor = "0.7 0.7 1.0",
 				soundhit = "xplomed2",
 				soundhitwet = "splsmed",
