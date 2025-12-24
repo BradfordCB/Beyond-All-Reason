@@ -67,7 +67,7 @@
 		"pylon": []
 	},
 
-	"cluster_range": 1500, //900
+	"cluster_range": 900, //900
 	//size of mex cluster between two points
 
 	"geo": {
@@ -112,13 +112,13 @@
 
 	// Construction order delay in seconds, -1 to disable | used to make ai easier
 	// [[<start_delay>, <start_time>], [<end_delay>, <end_time>]]
-	"build_delay": [[2.0, 0], [1.0, 1800]],
+	"build_delay": [[2.0, 0], [1.0, 2400]],
 
 	// [0] - metal-expenditure multiplier for build condition of new factory or assistant 
 	// [1] - energy-expenditure multiplier for build condition of new factory or assistant
 	// [2] - multiplier for total factory metal-expenditure, used as condition for new factory or assistant
 	// [3] - multiplier for total factory energy-expenditure, used as condition for new factory or assistant
-	"production": [0.8, 0.8, 1.0, 0.8],
+	"production": [0.9, 0.7, 0.8, 0.8],
 
 	//"terra": "armsy",
 	"assist": {
