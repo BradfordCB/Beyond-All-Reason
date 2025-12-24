@@ -2,7 +2,7 @@ return {
 	legnavyrezsub = {
 		activatewhenbuilt = true,
 		autoheal = 2,
-		builddistance = 140,
+		builddistance = 340,
 		builder = true,
 		buildpic = "legnavyrezsub.DDS",
 		buildtime = 5960,
@@ -37,7 +37,7 @@ return {
 		turninplaceanglelimit = 90,
 		turnrate = 525,
 		waterline = 80,
-		workertime = 150,
+		workertime = 250,
 		customparams = {
 			model_author = "ZephyrSkies (model), JjackVII (Concept Art)",
 			normaltex = "unittextures/leg_normal.dds",
