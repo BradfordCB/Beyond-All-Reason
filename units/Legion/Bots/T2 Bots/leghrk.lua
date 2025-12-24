@@ -159,7 +159,7 @@ return {
 				badtargetcategory = "MOBILE",
 				def = "ROCKET_BARRAGE",
 				maindir = "0 0 1",
-				maxangledif = 120,
+				maxangledif = 150,
 				onlytargetcategory = "SURFACE",
 			},
 		},
