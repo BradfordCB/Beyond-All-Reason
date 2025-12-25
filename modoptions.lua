@@ -1309,26 +1309,36 @@ local options = {
     },
 
     {
+        key 	= "enable_quickstart_overrides",
+        name 	= "Enable Quick Start Overrides",
+        desc   	= "Allow overriding quick start range and budget (for debugging/modding).",
+        type 	= "bool",
+        def 	= false,
+        section = "options_extra",
+        hidden 	= true,
+    },
+
+    {
         key 	= "override_quick_start_range",
         name 	= "Override Quick Start Range",
-        desc   	= "Override the quick start build range. Set to 0 to use default behavior.",
+        desc   	= "Override the quick start build range when overrides are enabled (values below 200 are clamped to 200).",
         type 	= "number",
-        def 	= 0,
-        min 	= 300,
-        max 	= 10000,
+        def 	= 600,
+        min 	= 200,
+        max 	= 2000,
         step 	= 1,
         section = "options_extra",
         hidden 	= true,
     },
 
     {
-        key 	= "override_quick_start_resources",
-        name 	= "Override Quick Start Resources",
-        desc   	= "Override the quick start starting resources. Set to 0 to use default behavior.",
+        key 	= "override_quick_start_budget",
+        name 	= "Override Quick Start Budget",
+        desc   	= "Override the quick start starting resources when overrides are enabled.",
         type 	= "number",
-        def 	= 0,
+        def 	= 1200,
         min 	= 100,
-        max 	= 10000,
+        max 	= 1000000,
         step 	= 1,
         section = "options_extra",
         hidden 	= true,
@@ -1495,7 +1505,7 @@ local options = {
         section = "options_experimental",
         def  	= false,
     },
-    
+
     {
         key     = "experimentallegionfaction_link",
         name    = "Development Discussion",
@@ -1531,7 +1541,7 @@ local options = {
         linkheight = 325,
         linkwidth = 350,
     },
-    
+
     {
         key		= "t2_tech_threshold",
         name   	= "Tech 2 Threshold",
@@ -1555,7 +1565,7 @@ local options = {
         max    	= 100000,
         step   	= 1,
     },
-    
+
     {
         key		= "tech_blocking_per_team",
         name   	= "Multiply Threshold by Player Count",
@@ -1770,6 +1780,28 @@ local options = {
         unlock  = {
             "allow_enemy_ai_spawn_placement", --remove when map_startbox_experimental/game_initial_spawn_experimental experiment is over
         },
+    },
+
+    {
+        key     = "experimental_ai_spawns_link",
+        name    = "Feedback thread",
+        desc    = "Report your testing and discuss here.",
+        section = "options_experimental",
+        type    = "link",
+        link    = "https://discord.com/channels/549281623154229250/1451008970536915007/1451008970536915007",
+        width   = 215,
+        column  = 1.65,
+        linkheight = 325,
+        linkwidth = 350,
+    },
+
+    {
+        key 	= "pip",
+        name 	= "Picture-in-picture window",
+        desc 	= "Enables the picture-in-picture window showing a minimap-sized view of a chosen location.",
+        type 	= "bool",
+        section = "options_experimental",
+        def 	= false,
     },
 
     ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
