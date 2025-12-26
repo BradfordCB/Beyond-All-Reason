@@ -143,7 +143,7 @@ return {
 				noselfdamage = true,
 				projectiles = 3,
 				sprayangle = 65,
-				range = 5300,
+				range = 6300,
 				reloadtime = 2,
 
 				soundhit = "xplolrg4",
