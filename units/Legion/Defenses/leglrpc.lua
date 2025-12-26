@@ -120,7 +120,7 @@ return {
 				explosiongenerator = "custom:starfire-explosion",
 				gravityaffected = "true",
 				heightboostfactor = 10,
-				impulsefactor = 11.5,
+				impulsefactor = 9.5,
 				leadbonus = 0,
 				model = "legbomb.s3o",
 				name = "Dual Quad-Barrelled Long-Range Cluster Plasma Cannon",
@@ -143,7 +143,7 @@ return {
 				wobble = 0,
 				customparams = {
 					cluster_def = 'cluster_munition',
-					cluster_number = 12,
+					cluster_number = 9,
 				},
 				damage = {
 					default = 2500,
@@ -160,7 +160,7 @@ return {
 				edgeeffectiveness = 0.3,
 				explosiongenerator = "custom:ministarfire-explosion",
 				gravityaffected = "true",
-				impulsefactor = 7.25,
+				impulsefactor = 5.25,
 				name = "Plasma Burst",
 				noselfdamage = true,
 				maxvelocity = 720,
