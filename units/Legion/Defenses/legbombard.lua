@@ -129,7 +129,7 @@ return {
 				projectiles = 5,
 				sprayangle = 50,
 				range = 2750,
-				reloadtime = 5,
+				reloadtime = 8,
 				separation = 2.8,
 				nogap = false,
 				sizeDecay = 0.06,
@@ -148,7 +148,7 @@ return {
 				model = "legnade.s3o",
 				
 				
-				weaponacceleration = -0.43,
+				weaponacceleration = -0.49,
 				weapontimer = 0.01,
 				weapontype = "Cannon",
 				weaponvelocity = 550,				
@@ -162,7 +162,7 @@ return {
 				smokeTrailCastShadow = true,				
 				
 				cegtag = "missiletrail-grenadesmoke",
-				areaofeffect = 324,
+				areaofeffect = 524,
 				avoidfeature = false,
 				avoidfriendly = true,
 				avoidground = true,
@@ -182,7 +182,7 @@ return {
  				collidefriendly = false,
 				collidefirebase = false,
 				collideneutral = false,
-				flighttime = 9.55,
+				flighttime = 10.55,
 				proximityPriority = 1,
 				gravityaffected = true,
 				waterbounce = true,
