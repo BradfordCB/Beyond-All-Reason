@@ -137,6 +137,8 @@ return {
 				startvelocity = 290,
 				tracks = true,
 				trajectoryheight = 2,
+				projectiles = 3,
+				sprayangle = 90,
 				turnrate = 64000,
 				turret = true,
 				waterweapon = true,
