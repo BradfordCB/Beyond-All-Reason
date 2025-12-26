@@ -120,9 +120,9 @@ return {
 				craterareaofeffect = 0,
 				craterboost = 0,
 				cratermult = 0,
-				edgeeffectiveness = 0.95,
+				edgeeffectiveness = 0.65,
 				explosiongenerator = "custom:genericshellexplosion-medium",
-				impulsefactor = 1.91,
+				impulsefactor = 5.91,
 				name = "Pop-up heavy g2g grenade launcher",
 				noselfdamage = true,
 				predictboost = 1,
@@ -188,8 +188,8 @@ return {
 				waterbounce = true,
 				predictboost = 1,
 				damage = {
-					default = 375,
-					subs = 300,
+					default = 675,
+					subs = 600,
 				},
 				customparams = {
 					noattackrangearc= 1,
