@@ -17,7 +17,7 @@ return {
 		firestate = 2,
 		footprintx = 1,
 		footprintz = 1,
-		health = 12211,
+		health = 22211,
 		idleautoheal = 90,
 		idletime = 100,
 		initcloaked = true,
