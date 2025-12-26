@@ -26,7 +26,7 @@ return {
 		radardistance = 1500,
 		seismicsignature = 0,
 		selfdestructas = "smallBuildingExplosionGenericSelfd",
-		sightdistance = 598,
+		sightdistance = 798,
 		yardmap = "ooooooooo",
 		customparams = {
 			usebuildinggrounddecal = true,
