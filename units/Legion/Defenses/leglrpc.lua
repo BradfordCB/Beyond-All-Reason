@@ -138,7 +138,7 @@ return {
 				turret = true,
 				weapontype = "Cannon",
 				weaponvelocity = 2000,
-				projectiles = 4,
+				projectiles = 3,
 				sprayangle = 90,
 				wobble = 0,
 				customparams = {
