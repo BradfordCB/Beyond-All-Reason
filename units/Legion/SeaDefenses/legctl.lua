@@ -111,7 +111,7 @@ return {
 				avoidfeature = false,
 				avoidfriendly = false,
 				avoidground = false,
-				bouncerebound = 0.8,
+				bouncerebound = 0.79,
 				bounceslip = 0.6,
 				burnblow = true,
 				collidefriendly = false,
@@ -138,7 +138,7 @@ return {
 				soundhitwet = "splsmed",
 				soundhitwetvolume = 12,
 				soundstart = "torpedo1",
-				startvelocity = 320,
+				startvelocity = 220,
 				tracks = true,
 				trajectoryheight = 2,
 				projectiles = 5,
@@ -146,7 +146,7 @@ return {
 				turnrate = 64000,
 				turret = true,
 				waterweapon = true,
-				weaponacceleration = 105,
+				weaponacceleration = 125,
 				weapontype = "Cannon",
 				weaponvelocity = 600,
 				damage = {
@@ -156,7 +156,7 @@ return {
 		},
 		weapons = {
 			[1] = {
-				--badtargetcategory = "NOTSUB",
+				badtargetcategory = "VTOL",
 				def = "torplauncher",
 				onlytargetcategory = "NOTHOVER SURFACE",
 			},
