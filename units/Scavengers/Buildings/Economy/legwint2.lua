@@ -12,7 +12,8 @@ return {
 		collisionvolumescales = "68 178 68",
 		collisionvolumetype = "CylY",
 		corpse = "DEAD",
-		energystorage = 5,
+		energystorage = 115,
+		energyupkeep = -116,
 		explodeas = "windboom",
 		footprintx = 6,
 		footprintz = 6,
@@ -26,7 +27,7 @@ return {
 		seismicsignature = 0,
 		selfdestructas = "windboom",
 		sightdistance = 273,
-		windgenerator = 500,
+		windgenerator = 707,
 		yardmap = "oooooo oooooo oooooo oooooo oooooo oooooo",
 		customparams = {
 			usebuildinggrounddecal = true,

@@ -15,7 +15,7 @@ return {
 		collisionvolumetype = "CylY",
 		corpse = "DEAD",
 		-- negative energyupkeep means it's conditional so when unit is off won't produce
-		energyupkeep = -7,
+		energyupkeep = -10,
 		explodeas = "smallBuildingexplosiongeneric",
 		extractsmetal = 0.0008,
 		footprintx = 4,
@@ -24,7 +24,7 @@ return {
 		idletime = 1800,
 		health = 275,
 		maxslope = 30,
-		metalstorage = 50,
+		metalstorage = 150,
 		objectname = "Units/LEGMEX.s3o",
 		onoffable = true,
 		script = "Units/LEGMEX.cob",

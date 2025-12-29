@@ -13,6 +13,7 @@ return {
 		energycost = 4000,
 		energymake = 75,
 		energystorage = 202,
+		energyupkeep = -28,
 		explodeas = "mediumBuildingexplosiongeneric",
 		footprintx = 4,
 		footprintz = 4,
