@@ -150,6 +150,7 @@ return {
 				damage = {
 					default = 75,
 					subs = 50,
+				},
 				
 				
 				weaponacceleration = -0.49,
