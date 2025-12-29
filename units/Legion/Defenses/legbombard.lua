@@ -115,13 +115,13 @@ return {
 		},
 		weapondefs = {
 			bombardier_weapon = {
-				areaofeffect = 44,
+				--areaofeffect = 44,
 				avoidfeature = false,
 				burnblow = true,
 				craterareaofeffect = 0,
 				craterboost = 0,
 				cratermult = 0,
-				edgeeffectiveness = 0.65,
+				edgeeffectiveness = 0.85,
 				explosiongenerator = "custom:genericshellexplosion-medium",
 				impulsefactor = 5.91,
 				name = "Pop-up heavy g2g grenade launcher",
@@ -129,7 +129,7 @@ return {
 				predictboost = 1,
 				projectiles = 5,
 				sprayangle = 50,
-				range = 2750,
+				range = 3750,
 				reloadtime = 8,
 				separation = 2.8,
 				nogap = false,
@@ -147,17 +147,17 @@ return {
 				weapontype = "Cannon",
 				weaponvelocity = 267,
 				model = "legnade.s3o",
-				damage = {
-					default = 75,
-					subs = 50,
-				},
+				--damage = {
+				--	default = 75,
+				--	subs = 50,
+				--},
 				
 				
 				weaponacceleration = -0.49,
 				weapontimer = 0.01,
 				weapontype = "Cannon",
-				weaponvelocity = 550,				
-				startvelocity = 550,
+				weaponvelocity = 600,				
+				startvelocity = 600,
 				
 				smoketrail = true,
 				smokePeriod = 100,
@@ -167,7 +167,7 @@ return {
 				smokeTrailCastShadow = true,				
 				
 				cegtag = "missiletrail-grenadesmoke",
-				areaofeffect = 524,
+				areaofeffect = 824,
 				avoidfeature = false,
 				avoidfriendly = true,
 				avoidground = true,
@@ -187,7 +187,7 @@ return {
  				collidefriendly = false,
 				collidefirebase = false,
 				collideneutral = false,
-				flighttime = 10.55,
+				flighttime = 12.55,
 				proximityPriority = 1,
 				gravityaffected = true,
 				waterbounce = true,
