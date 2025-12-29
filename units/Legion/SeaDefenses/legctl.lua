@@ -124,7 +124,7 @@ return {
 				gravityaffected = "true",
 				groundbounce = true,
 				--hightrajectory = 1,
-				impulsefactor = 3.123,
+				impulsefactor = 4.14,
 				model = "legbasictorpedo.s3o",
 				mygravity = 0.11,
 				name = "Homing Torpedo Launcher",
