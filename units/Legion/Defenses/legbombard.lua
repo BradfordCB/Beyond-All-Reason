@@ -115,6 +115,7 @@ return {
 		},
 		weapondefs = {
 			bombardier_weapon = {
+				areaofeffect = 44,
 				avoidfeature = false,
 				burnblow = true,
 				craterareaofeffect = 0,
@@ -142,10 +143,13 @@ return {
 				tolerance = 8000,
 				turret = true,
 				trajectoryheight = 2,
-				weaponacceleration = 15,
+				weaponacceleration = 30,
 				weapontype = "Cannon",
 				weaponvelocity = 267,
 				model = "legnade.s3o",
+				damage = {
+					default = 75,
+					subs = 50,
 				
 				
 				weaponacceleration = -0.49,
@@ -168,13 +172,13 @@ return {
 				avoidground = true,
 				burnblow = false,
 				burst = 3,
-				burstrate = 1,
+				burstrate = 2.1,
 				sprayangle = 100,
 				accuracy = 1,
 				bounce = 1,
 				bounceslip = 0.60,
-				bouncerebound = 0.98,
-				numbounce = 5,
+				bouncerebound = 0.65,
+				numbounce = 2,
 				groundbounce = true,
  				collideenemy = true,
 				collidefeature = false,
