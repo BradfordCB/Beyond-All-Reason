@@ -141,9 +141,9 @@ return {
 				name = "Long-Range Tactical Hellfire Napalm Shell",
 				energypershot = 13000,
 				noselfdamage = true,
-				projectiles = 3,
-				sprayangle = 65,
-				range = 24300,
+				projectiles = 5,
+				sprayangle = 75,
+				range = 34300,
 				reloadtime = 2,
 
 				soundhit = "xplolrg4",
@@ -179,13 +179,13 @@ return {
 					area_onhit_damageCeg = "burnflamexl-gen",
 					area_onhit_resistance = "fire",
 					area_onhit_damage = 2120,
-					area_onhit_range = 450,
-					area_onhit_time = 35,
+					area_onhit_range = 550,
+					area_onhit_time = 40,
 					stockpilelimit = 30,
 				},
 				damage = {
 					commanders = 700,
-					default = 6200,--plus 120*15 within 150 area
+					default = 4200,--plus 120*15 within 150 area
 				},
 			},
 
