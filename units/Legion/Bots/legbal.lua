@@ -113,7 +113,7 @@ return {
 				impulsefactor = 0.123,
 				intensity = 1.5,
 				metalpershot = 0,
-				model = "leglargerocket.s3o",
+				model = "leglargerocket.s3o", --#######
 				name = "Rockets",
 				noselfdamage = true,
 				range = 460,
