@@ -130,6 +130,7 @@ return {
 				edgeeffectiveness = 0.75,
 				explosiongenerator = "custom:fire-explosion-large",
 				gravityaffected = true,
+				mygravity = 0.276, --#######
 				hightrajectory = 1,
 				impulsefactor = 2,
 
@@ -157,10 +158,11 @@ return {
 				stockpile = true,
 				stockpiletime = 50,
 				turret = true,
-				weaponacceleration = 120,
+				startvelocity = 240,
+				weaponacceleration = 240,
 				weapontype = "Cannon",
 				--weapontype = "MissileLauncher",
-				weaponvelocity = 700,
+				weaponvelocity = 800,
 				--mygravity = 1.2,
 
 
@@ -186,7 +188,7 @@ return {
 				},
 				damage = {
 					commanders = 700,
-					default = 4200,--plus 120*15 within 150 area
+					default = 2200,--plus 120*15 within 150 area
 				},
 			},
 
