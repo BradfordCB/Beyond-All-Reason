@@ -97,8 +97,8 @@ return {
 				projectiles = 18,
 				range = 1600,
 				reloadtime = 2.5,
-				rgbcolor = "0.87 0.25 0.75",
-				size = 1.55,
+				rgbcolor = "0.87 0.15 0.99",
+				size = 2,
 				soundhit = "flakhit",
 				soundhitwet = "splshsml",
 				soundstart = "flakfire",
@@ -110,7 +110,7 @@ return {
 				weaponvelocity = 1600,
 				damage = {
 					commanders = 8,
-					default = 54,
+					default = 44,
 					vtol = 80,
 				},
 				customparams = {
