@@ -143,7 +143,7 @@ return {
 				noselfdamage = true,
 				projectiles = 5,
 				sprayangle = 75,
-				range = 34300,
+				range = 29999,
 				reloadtime = 2,
 
 				soundhit = "xplolrg4",
@@ -157,9 +157,10 @@ return {
 				stockpile = true,
 				stockpiletime = 50,
 				turret = true,
+				weaponacceleration = 120,
 				weapontype = "Cannon",
 				--weapontype = "MissileLauncher",
-				weaponvelocity = 650,
+				weaponvelocity = 700,
 				--mygravity = 1.2,
 
 
