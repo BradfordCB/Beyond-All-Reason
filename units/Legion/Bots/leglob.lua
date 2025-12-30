@@ -143,7 +143,7 @@ return {
 				gravityaffected = "true",
 				hightrajectory = 1,
 				impulsefactor = 0.123,
-				mygravity = 0.276,
+				mygravity = 0.276, --#######
 				name = "Vertical Plasma Cannon",
 				noselfdamage = true,
 				range = 400,
