@@ -112,7 +112,7 @@ return {
 				avoidfriendly = false,
 				avoidground = false,
 				bouncerebound = 0.6,
-				bounceslip = 0.6,
+				bounceslip = 0.4,
 				burnblow = true,
 				collidefriendly = false,
 				craterareaofeffect = 0,
@@ -120,7 +120,7 @@ return {
 				cratermult = 0,
 				edgeeffectiveness = 0.85,
 				explosiongenerator = "custom:genericshellexplosion-huge",
-				flighttime = 11.95,
+				flighttime = 14.14,
 				gravityaffected = "true",
 				groundbounce = true,
 				hightrajectory = 1, --#######
