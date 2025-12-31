@@ -120,7 +120,7 @@ return {
 				cratermult = 0,
 				edgeeffectiveness = 0.85,
 				explosiongenerator = "custom:genericshellexplosion-huge",
-				flighttime = 14.14,
+				flighttime = 15.54,
 				gravityaffected = "true",
 				groundbounce = true,
 				hightrajectory = 1, --#######
