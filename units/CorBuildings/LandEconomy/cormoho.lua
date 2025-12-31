@@ -23,7 +23,7 @@ return {
 		maxslope = 30,
 		maxwaterdepth = 20,
 		metalcost = 640,
-		metalstorage = 600,
+		metalstorage = 1100,
 		objectname = "Units/CORMOHO.s3o",
 		onoffable = true,
 		script = "Units/CORMOHO.cob",

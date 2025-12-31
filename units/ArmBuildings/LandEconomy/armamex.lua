@@ -24,7 +24,7 @@ return {
 		maxslope = 30,
 		maxwaterdepth = 20,
 		metalcost = 200,
-		metalstorage = 75,
+		metalstorage = 373,
 		mincloakdistance = 66,
 		objectname = "Units/ARMAMEX.s3o",
 		onoffable = true,

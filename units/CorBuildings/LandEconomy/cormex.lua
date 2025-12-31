@@ -23,7 +23,7 @@ return {
 		maxdec = 0,
 		maxslope = 30,
 		metalcost = 50,
-		metalstorage = 50,
+		metalstorage = 252,
 		objectname = "Units/CORMEX.s3o",
 		onoffable = true,
 		script = "Units/CORMEX.cob",

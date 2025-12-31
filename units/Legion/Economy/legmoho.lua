@@ -23,7 +23,7 @@ return {
 		health = 3900,
 		maxslope = 30,
 		maxwaterdepth = 20,
-		metalstorage = 600,
+		metalstorage = 1100,
 		objectname = "Units/legmoho.s3o",
 		onoffable = true,
 		script = "Units/legmoho.cob",

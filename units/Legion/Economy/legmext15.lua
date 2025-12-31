@@ -23,7 +23,7 @@ return {
 		idletime = 1800,
 		health = 1110,
 		maxslope = 30,
-		metalstorage = 150,
+		metalstorage = 452,
 		objectname = "Units/LEGMEXT15.s3o",
 		onoffable = true,
 		script = "Units/LEGMEXT15.cob",
