@@ -130,7 +130,7 @@ return {
 				edgeeffectiveness = 0.75,
 				explosiongenerator = "custom:fire-explosion-large",
 				gravityaffected = true,
-				mygravity = 0.276, --#######
+				mygravity = 0.137, --#######
 				hightrajectory = 1,
 				impulsefactor = 2,
 
@@ -158,8 +158,8 @@ return {
 				stockpile = true,
 				stockpiletime = 50,
 				turret = true,
-				startvelocity = 240,
-				weaponacceleration = 240,
+				startvelocity = 540,
+				weaponacceleration = 320,
 				weapontype = "Cannon",
 				--weapontype = "MissileLauncher",
 				weaponvelocity = 800,
