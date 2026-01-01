@@ -134,7 +134,7 @@ return {
 				ownerExpAccWeight = 4.0,
 				projectiles = 5,
 				proximitypriority = 1,
-				range = 2261,
+				range = 1661,
 				reloadtime = 0.8,
 				rgbcolor = "1 0.95 0.4",
 				soundhit = "bimpact3",
