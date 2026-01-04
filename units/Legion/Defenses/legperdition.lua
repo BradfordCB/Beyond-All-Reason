@@ -17,7 +17,7 @@ return {
 		idleautoheal = 5,
 		idletime = 1800,
 		health = 4000,
-		maxslope = 10,
+		maxslope = 25,
 		maxwaterdepth = 0,
 		--noautofire = true,
 		objectname = "Units/legperdition.s3o",
