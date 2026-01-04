@@ -27,7 +27,7 @@ return {
 		seismicsignature = 0,
 		selfdestructas = "smallBuildingExplosionGenericSelfd",
 		sightdistance = 917,
-		sonardistance = 1600,
+		sonardistance = 2600,
 		yardmap = "ooooooooo",
 		customparams = {
 			-- buildinggrounddecaldecayspeed = 30,
@@ -131,7 +131,7 @@ return {
 				noselfdamage = true,
 				numbounce = 1,
 				predictboost = 1,
-				range = 3800,
+				range = 4100,
 				reloadtime = 5.5,
 				soundhit = "xplodep2",
 				soundhitvolume = 3,
