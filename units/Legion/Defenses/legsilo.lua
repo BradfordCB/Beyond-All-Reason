@@ -17,7 +17,7 @@ return {
 		idleautoheal = 5,
 		idletime = 1800,
 		health = 6200,
-		maxslope = 10,
+		maxslope = 22,
 		maxwaterdepth = 0,
 		objectname = "Units/LEGSILO.s3o",
 		radardistance = 50,
