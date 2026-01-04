@@ -101,8 +101,8 @@ return {
 				soundhit = "xplosml2",
 				soundhitwet = "splshbig",
 				soundstart = "rocklit1",
-				projectiles = 3 --
-				sprayangle = 55 --
+				projectiles = 3, --
+				sprayangle = 55, --
 				startvelocity = 300,
 				stockpile = true,
 				stockpiletime = 2,
