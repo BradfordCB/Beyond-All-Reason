@@ -142,7 +142,7 @@ return {
 				targetable = 1,
 				tolerance = 4000,
 				turnrate = 4280,
-				weaponacceleration = 180,
+				weaponacceleration = 195,
 				weapontimer = 6.4,
 				weapontype = "StarburstLauncher",
 				weaponvelocity = 1635,
@@ -176,7 +176,7 @@ return {
 				weaponacceleration = 1200,
 				weapontimer = 0.1,
 				weapontype = "Cannon",
-				weaponvelocity = 1530,
+				weaponvelocity = 1531,
 				damage = {
 					default = 0,
 				},
