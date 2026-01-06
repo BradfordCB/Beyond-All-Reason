@@ -1,6 +1,6 @@
 return {
 	legmos = {
-		airsightdistance = 2150,
+		airsightdistance = 1950,
 		maxacc = 0.6,
 		blocking = false,
 		maxdec = 1.45,
@@ -89,7 +89,7 @@ return {
 				model = "legsmallrocket.s3o",
 				name = "Rockets",
 				noselfdamage = true,
-				range = 1380,
+				range = 1580,
 				reloadtime = 0.8,
 				smoketrail = true,
 				smokePeriod = 7,
@@ -101,7 +101,7 @@ return {
 				soundhit = "xplosml2",
 				soundhitwet = "splshbig",
 				soundstart = "rocklit1",
-				projectiles = 3, --
+				projectiles = 5, --
 				sprayangle = 55, --
 				startvelocity = 300,
 				stockpile = true,
