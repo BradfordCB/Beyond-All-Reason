@@ -120,13 +120,13 @@ return {
 				cratermult = 0,
 				edgeeffectiveness = 0.85,
 				explosiongenerator = "custom:genericshellexplosion-huge",
-				flighttime = 7.54,
+				flighttime = 8.54,
 				gravityaffected = "true",
 				groundbounce = true,
 				hightrajectory = 1, --#######
 				impulsefactor = 6.14,
 				model = "legbasictorpedo.s3o",
-				mygravity = 0.21,
+				mygravity = 0.18,
 				name = "Homing Torpedo Launcher",
 				noselfdamage = true,
 				numbounce = 1,
@@ -150,6 +150,7 @@ return {
 				weapontype = "Cannon",
 				weaponvelocity = 550,
 				damage = {
+					commanders = 5,
 					default = 425,
 					vtol = 880,
 				},
