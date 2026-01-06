@@ -1,7 +1,7 @@
 return {
 	legmg = {
 		maxacc = 0,
-		airsightdistance = 650,
+		airsightdistance = 1450,
 		maxdec = 0,
 		buildangle = 32768,
 		energycost = 5500,
@@ -21,7 +21,7 @@ return {
 		idletime = 1800,
 		mass = 7500,
 		health = 2350,
-		maxslope = 10,
+		maxslope = 25,
 		maxwaterdepth = 0,
 		objectname = "Units/LEGMG.s3o",
 		script = "Units/LEGMG.cob",
@@ -106,11 +106,13 @@ return {
 		},
 		weapondefs = {
 			armmg_weapon = {
-				accuracy = 7,
-				areaofeffect = 16,
+				accuracy = 2,
+				areaofeffect = 36,
 				avoidfeature = false,
+				projectiles = 3, --
+				sprayangle = 50, --
 				burst = 6,
-				burstrate = 0.066,
+				burstrate = 0.66,
 				burnblow = false,
 				craterareaofeffect = 0,
 				craterboost = 0,
@@ -120,15 +122,15 @@ return {
 				explosiongenerator = "custom:plasmahit-sparkonly",
 				fallOffRate = 0.2,
 				firestarter = 0,
-				impulsefactor = 1.5,
+				impulsefactor = 2.95,
 				intensity = 0.8,
 				name = "Heavy Rapid-fire Machine Gun",
 				noselfdamage = true,
 				ownerExpAccWeight = 4.0,
 				proximitypriority = 1,
-				range = 575,
-				reloadtime = 0.4,
-				rgbcolor = "1 0.95 0.4",
+				range = 1775,
+				reloadtime = 4.0,
+				rgbcolor = "0.35 0.94 0.84",
 				soundhit = "bimpact3",
 				soundhitwet = "splshbig",
 				soundstart = "mgun6heavy",
@@ -141,8 +143,9 @@ return {
 				tolerance = 6000,
 				turret = true,
 				weapontype = "LaserCannon",
-				weaponvelocity = 958,
+				weaponvelocity = 1058,
 				damage = {
+					commanders = 5,
 					default = 18,
 					vtol = 18,
 				},
@@ -150,7 +153,7 @@ return {
 		},
 		weapons = {
 			[1] = {
-				badtargetcategory = "VTOL",
+				--badtargetcategory = "VTOL",
 				def = "armmg_WEAPON",
 				onlytargetcategory = "NOTSUB",
 				burstControlWhenOutOfArc = 2,
