@@ -122,10 +122,10 @@ return {
 				weapontimer = 6,
 				weapontype = "MissileLauncher",
 				weaponvelocity = 1200,
-				--wobble = 3000,
+				wobble = 900,
 				--customparams = {
 					--stockpilelimit = 40,
-				},
+				--},
 				damage = {
 					default = 200,
 				},
