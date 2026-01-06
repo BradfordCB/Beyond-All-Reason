@@ -110,9 +110,9 @@ return {
 				areaofeffect = 36,
 				avoidfeature = false,
 				projectiles = 3, --
-				sprayangle = 50, --
+				sprayangle = 70, --
 				burst = 6,
-				burstrate = 0.66,
+				burstrate = 0.33,
 				burnblow = false,
 				craterareaofeffect = 0,
 				craterboost = 0,
@@ -130,13 +130,13 @@ return {
 				proximitypriority = 1,
 				range = 1775,
 				reloadtime = 4.0,
-				rgbcolor = "0.35 0.94 0.84",
+				rgbcolor = "0.15 0.92 0.99",
 				soundhit = "bimpact3",
 				soundhitwet = "splshbig",
 				soundstart = "mgun6heavy",
 				soundstartvolume = 3.0,
 				soundtrigger = true,
-				sprayangle = 968,
+				--sprayangle = 968,
 				texture1 = "shot",
 				texture2 = "empty",
 				thickness = 3.0,
