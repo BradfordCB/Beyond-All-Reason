@@ -107,7 +107,7 @@ return {
 		},
 		weapondefs = {
 			torplauncher = {
-				areaofeffect = 920,
+				areaofeffect = 1020,
 				avoidfeature = false,
 				avoidfriendly = false,
 				avoidground = false,
@@ -124,7 +124,7 @@ return {
 				gravityaffected = "true",
 				groundbounce = true,
 				hightrajectory = 1, --#######
-				impulsefactor = 6.14,
+				impulsefactor = 7.14,
 				model = "legbasictorpedo.s3o",
 				mygravity = 0.18,
 				name = "Homing Torpedo Launcher",
@@ -132,7 +132,7 @@ return {
 				numbounce = 1,
 				predictboost = 1,
 				range = 4100,
-				reloadtime = 5.5,
+				reloadtime = 8,
 				soundhit = "xplodep2",
 				soundhitvolume = 3,
 				soundhitwet = "splsmed",
