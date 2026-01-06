@@ -141,11 +141,11 @@ return {
 				texture3 = "null",
 				targetable = 1,
 				tolerance = 4000,
-				turnrate = 4280,
-				weaponacceleration = 190,
+				turnrate = 4200,
+				weaponacceleration = 189,
 				weapontimer = 6.7,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 1600,
+				weaponvelocity = 1598,
 				customparams = {
 					place_target_on_ground = "true",
 					stockpilelimit = 20,
@@ -176,7 +176,7 @@ return {
 				weaponacceleration = 1200,
 				weapontimer = 0.1,
 				weapontype = "Cannon",
-				weaponvelocity = 1545,
+				weaponvelocity = 1542,
 				damage = {
 					default = 0,
 				},
