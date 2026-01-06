@@ -106,8 +106,8 @@ return {
 				soundhit = "rockhit",
 				soundhitwet = "splsmed",
 				soundstart = "rapidrocket3",
-				projectiles = 3, --
-				sprayangle = 55, --
+				projectiles = 5, --
+				sprayangle = 85, --
 				startvelocity = 300,
 				--stockpile = true,
 				--stockpiletime = 5,
@@ -118,7 +118,7 @@ return {
 				tracks = true,
 				turnrate = 45000,
 				--turret = true,
-				weaponacceleration = 300,
+				weaponacceleration = 230,
 				weapontimer = 6,
 				weapontype = "MissileLauncher",
 				weaponvelocity = 1200,
@@ -127,7 +127,9 @@ return {
 					--stockpilelimit = 40,
 				--},
 				damage = {
-					default = 200,
+					commanders = 5,
+					default = 425,
+					vtol = 580,
 				},
 			},
 		},
