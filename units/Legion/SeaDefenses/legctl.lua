@@ -158,9 +158,9 @@ return {
 		},
 		weapons = {
 			[1] = {
-				badtargetcategory = "VTOL",
+				badtargetcategory = "VTOL GROUNDSCOUT",
 				def = "torplauncher",
-				onlytargetcategory = "NOTHOVER SURFACE",
+				onlytargetcategory = "NOTHOVER SURFACE NOTAIR",
 			},
 		},
 	},
