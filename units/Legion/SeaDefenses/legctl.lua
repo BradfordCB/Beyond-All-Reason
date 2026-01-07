@@ -146,9 +146,9 @@ return {
 				turnrate = 5000,
 				turret = true,
 				waterweapon = true,
-				weaponacceleration = 320,
+				weaponacceleration = 150,
 				weapontype = "Cannon",
-				weaponvelocity = 850,
+				weaponvelocity = 350,
 				damage = {
 					commanders = 5,
 					default = 425,
