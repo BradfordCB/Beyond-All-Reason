@@ -112,7 +112,7 @@ return {
 				avoidfriendly = false,
 				avoidground = false,
 				bouncerebound = 0.999,
-				bounceslip = 0.25,
+				bounceslip = 0.22,
 				burnblow = true,
 				collidefriendly = false,
 				craterareaofeffect = 0,
