@@ -15,7 +15,7 @@ return {
 		idletime = 1800,
 		maxacc = 0,
 		maxdec = 0,
-		maxslope = 10,
+		maxslope = 25,
 		maxwaterdepth = 0,
 		metalcost = 660,
 		objectname = "Units/legjuno.s3o",
@@ -114,8 +114,9 @@ return {
 				edgeeffectiveness = 1,
 				energypershot = 12000,
 				explosiongenerator = "custom:juno-explo",
-				flighttime = 400,
-				impulsefactor = 0,
+				flighttime = 500,
+				hightrajectory = 1, --#######
+				impulsefactor = 0.11,
 				metalpershot = 200,
 				model = "epulse.s3o",
 				name = "Anti-Radar/Jammer/Mine Electromagnetic Payload",
@@ -136,12 +137,12 @@ return {
 				texture3 = "null",
 				tolerance = 4000,
 				turnrate = 5500,
-				weaponacceleration = 75,
+				weaponacceleration = 145,
 				weapontimer = 4,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 500,
+				weaponvelocity = 550,
 				customparams = {
-					stockpilelimit = 20,
+					stockpilelimit = 30,
 					nofire = true,
 					water_splash = 0, -- juno can explode on water
 					junotype = "base",
@@ -149,6 +150,7 @@ return {
 				damage = {
 					default = 1,
 					mines = 1,
+					vtol = 1,
 				},
 			},
 			juno_pulse_ghost = {
@@ -156,6 +158,7 @@ return {
 				damage = {
 					default = 1,
 					mines = 1,
+					vtol = 1,
 				},
 			},
 		},
