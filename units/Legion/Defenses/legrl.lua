@@ -16,11 +16,11 @@ return {
 		explodeas = "mediumBuildingExplosionGeneric",
 		footprintx = 3,
 		footprintz = 3,
-		idleautoheal = 5,
-		idletime = 1800,
+		idleautoheal = 115,
+		idletime = 300,
 		mass = 5100,
 		health = 335,
-		maxslope = 20,
+		maxslope = 29,
 		maxwaterdepth = 0,
 		nochasecategory = "ALL",
 		objectname = "Units/LEGRL.s3o",
@@ -101,7 +101,7 @@ return {
 		},
 		weapondefs = {
 			legrl_missile = {
-				areaofeffect = 48,
+				areaofeffect = 248,
 				avoidfeature = false,
 				burnblow = true,
 				canattackground = false,
@@ -112,13 +112,15 @@ return {
 				edgeeffectiveness = 0.15,
 				explosiongenerator = "custom:genericshellexplosion-tiny-aa",
 				firestarter = 70,
-				flighttime = 1.9,
-				impulsefactor = 0.123,
+				flighttime = 14.9,
+				impulsefactor = 3.123,
 				metalpershot = 0,
 				model = "cormissile.s3o",
 				name = "Light g2a Missile Launcher",
 				noselfdamage = true,
-				range = 765,
+				projectiles = 5, --
+				sprayangle = 105, --
+				range = 4865,
 				reloadtime = 1.7,
 				smoketrail = true,
 				smokePeriod = 6,
@@ -132,7 +134,7 @@ return {
 				soundstart = "rockhvy2",
 				startvelocity = 400,
 				texture1 = "null",
-				texture2 = "smoketrailaa",
+				texture2 = "smoketrailbar",
 				tolerance = 10000,
 				tracks = true,
 				turnrate = 63000,
@@ -140,7 +142,7 @@ return {
 				weaponacceleration = 150,
 				weapontimer = 5,
 				weapontype = "MissileLauncher",
-				weaponvelocity = 750,
+				weaponvelocity = 850,
 				damage = {
 					vtol = 115,
 				},
@@ -148,9 +150,9 @@ return {
 		},
 		weapons = {
 			[1] = {
-				badtargetcategory = "NOWEAPON LIGHTAIRSCOUT",
+				badtargetcategory = "LIGHTAIRSCOUT", --NOWEAPON 
 				def = "LEGRL_MISSILE",
-				onlytargetcategory = "VTOL",
+				onlytargetcategory = "VTOL SURFACE",
 				fastautoretargeting = true,
 			},
 		},
