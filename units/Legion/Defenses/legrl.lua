@@ -105,22 +105,22 @@ return {
 				avoidfeature = false,
 				burnblow = true,
 				canattackground = false,
-				cegtag = "missiletrailaa",
+				cegtag = "missiletrailmedium-starburst", --"missiletrailaa"
 				craterareaofeffect = 0,
 				craterboost = 0,
 				cratermult = 0,
-				edgeeffectiveness = 0.15,
-				explosiongenerator = "custom:genericshellexplosion-tiny-aa",
+				edgeeffectiveness = 0.45,
+				explosiongenerator = "custom:plasmahit-medium", --"custom:genericshellexplosion-tiny-aa"
 				firestarter = 70,
-				flighttime = 14.9,
-				impulsefactor = 5.123,
+				flighttime = 12.9,
+				impulsefactor = 9.123,
 				metalpershot = 0,
 				model = "cormissile.s3o",
 				name = "Light g2a Missile Launcher",
 				noselfdamage = true,
 				projectiles = 5, --
-				sprayangle = 105, --
-				range = 4865,
+				sprayangle = 125, --
+				range = 3865,
 				reloadtime = 1.7,
 				smoketrail = true,
 				smokePeriod = 6,
@@ -144,8 +144,8 @@ return {
 				weapontype = "MissileLauncher",
 				weaponvelocity = 950,
 				damage = {
-					default = 95,
-					vtol = 115,
+					default = 15,
+					vtol = 25,
 				},
 			},
 		},
