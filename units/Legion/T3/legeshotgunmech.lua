@@ -6,7 +6,7 @@ return {
 		energycost = 120000,
 		metalcost = 7000,
 		buildpic = "legeshotgunmech.DDS",
-		buildtime = 120000,
+		buildtime = 159000,
 		canmove = true,
 		collisionvolumeoffsets = "0 0 0",
 		collisionvolumescales = "63 105 52",
@@ -128,6 +128,9 @@ return {
 				turret = true,
 				weapontype = "Cannon",
 				weaponvelocity = 360,
+				customparams = {
+					preaim_range = 650,
+				},
 				damage = {
 					default = 0,
 				},
@@ -198,7 +201,6 @@ return {
 					cluster_def = 'cluster_munition',
 					cluster_number = 6,
 					exclude_preaim = true,
-					smart_priority = true,
 				},
 				damage = {
 					default = 300,
