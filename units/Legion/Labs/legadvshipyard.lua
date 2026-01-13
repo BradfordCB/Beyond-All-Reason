@@ -44,6 +44,7 @@ return {
 			"leganavymissileship",
 			"leganavyflagship",
 			"leganavyantiswarm",
+			"corprince",
 		},
 		customparams = {
 			model_author = "Tharsis",
