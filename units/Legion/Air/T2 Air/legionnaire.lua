@@ -106,7 +106,7 @@ return {
 				noselfdamage = true,
 				ownerExpAccWeight = 8.0,
 				predictboost = 1,
-				projectiles = 3 -- addedd
+				projectiles = 3, -- addedd
 				proximitypriority = 1,
 				range = 1600, --600
 				reloadtime = 1,
