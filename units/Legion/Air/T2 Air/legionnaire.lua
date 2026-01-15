@@ -82,7 +82,7 @@ return {
 		weapondefs = {
 			leggun = {
 				accuracy = 5,
-				areaofeffect = 18, -- 2
+				areaofeffect = 22, -- 2
 				avoidfeature = true,
 				avoidfriendly = false,
 				burst = 10,
@@ -110,7 +110,7 @@ return {
 				proximitypriority = 1,
 				range = 1600, --600
 				reloadtime = 1,
-				rgbcolor = "0.88 0.99 0.41", -- "1 0.4 0.95",
+				rgbcolor = "0.88 0.77 0.41", -- "1 0.4 0.95",
 				soundhit = "bimpact3",
 				soundhitwet = "splshbig",
 				soundstart = "minigun3",
@@ -134,6 +134,14 @@ return {
 		},
 		weapons = {
 			[1] = {
+				-- badtargetcategory = "NOTAIR",
+				def = "leggun",
+				maindir = "0 0 1",
+				maxangledif = 28,
+				onlytargetcategory = "VTOL SURFACE",
+				weaponAimAdjustPriority = 30,
+				fastAutoRetargeting = true,
+			[2] = {
 				-- badtargetcategory = "NOTAIR",
 				def = "leggun",
 				maindir = "0 0 1",
