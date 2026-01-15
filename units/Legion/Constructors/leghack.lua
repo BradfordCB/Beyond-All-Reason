@@ -14,7 +14,7 @@ return {
 		collisionvolumetype = "CylY",
 		corpse = "DEAD",
 		energymake = 15,
-		energystorage = 202,
+		energystorage = 100,
 		explodeas = "smallbuilder",
 		footprintx = 2,
 		footprintz = 2,
@@ -70,7 +70,6 @@ return {
 			[32] = "leglab",
 			[33] = "legeheatraymech",
 			[34] = "legelrpcmech",
-			[39] = "legbombard",
 		},
 		customparams = {
 			unitgroup = 'buildert2',

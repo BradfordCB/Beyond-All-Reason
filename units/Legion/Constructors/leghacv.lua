@@ -74,7 +74,6 @@ return {
 			[32] = "leglab",
 			[33] = "legeheatraymech",
 			[34] = "legelrpcmech",
-			[39] = "legbombard",
 		},
 		customparams = {
 			model_author = "ZephyrSkies",

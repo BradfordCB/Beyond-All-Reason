@@ -17,7 +17,7 @@ return {
 		idleautoheal = 5,
 		idletime = 1800,
 		health = 4000,
-		maxslope = 25,
+		maxslope = 10,
 		maxwaterdepth = 0,
 		--noautofire = true,
 		objectname = "Units/legperdition.s3o",
@@ -114,7 +114,7 @@ return {
 		},
 		weapondefs = {
 			napalmmissile = {
-				areaofeffect = 925,
+				areaofeffect = 425,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "burnflamexl",
@@ -130,21 +130,18 @@ return {
 				edgeeffectiveness = 0.75,
 				explosiongenerator = "custom:fire-explosion-large",
 				gravityaffected = true,
-				mygravity = 0.137, --#######
 				hightrajectory = 1,
 				impulsefactor = 2,
 
-				flamegfxtime = 2,
+				flamegfxtime = 1,
 				interceptedByShieldType = 0,
-				impulsefactor = 0.923,
+				impulsefactor = 0.123,
 				metalpershot = 350,
 				model = "legbomb.s3o",
 				name = "Long-Range Tactical Hellfire Napalm Shell",
 				energypershot = 13000,
 				noselfdamage = true,
-				projectiles = 5,
-				sprayangle = 75,
-				range = 29999,
+				range = 2300,
 				reloadtime = 2,
 
 				soundhit = "xplolrg4",
@@ -158,11 +155,9 @@ return {
 				stockpile = true,
 				stockpiletime = 50,
 				turret = true,
-				startvelocity = 540,
-				weaponacceleration = 320,
 				weapontype = "Cannon",
 				--weapontype = "MissileLauncher",
-				weaponvelocity = 800,
+				weaponvelocity = 550,
 				--mygravity = 1.2,
 
 
@@ -173,7 +168,7 @@ return {
 				--turret = true,
 				turnrate = 5000,
 				--trajectoryheight = 1.35,
-				weaponacceleration = 320,
+				weaponacceleration = 220,
 				weapontimer = 5,
 				weapontype = "Cannon",
 				--weaponvelocity = 650,
@@ -181,14 +176,14 @@ return {
 					area_onhit_ceg = "fire-area-150-repeat",
 					area_onhit_damageCeg = "burnflamexl-gen",
 					area_onhit_resistance = "fire",
-					area_onhit_damage = 2120,
-					area_onhit_range = 550,
-					area_onhit_time = 40,
-					stockpilelimit = 30,
+					area_onhit_damage = 120,
+					area_onhit_range = 150,
+					area_onhit_time = 15,
+					stockpilelimit = 10,
 				},
 				damage = {
 					commanders = 700,
-					default = 2200,--plus 120*15 within 150 area
+					default = 1200,--plus 120*15 within 150 area
 				},
 			},
 

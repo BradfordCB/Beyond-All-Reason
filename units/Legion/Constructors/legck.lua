@@ -68,7 +68,6 @@ return {
 			"legjuno",
 			"legsy",
 			"leghive",
-			"legbombard",
 		},
 		customparams = {
 			unitgroup = 'builder',

@@ -34,7 +34,7 @@ return {
 		terraformspeed = 300,
 		turninplaceanglelimit = 360,
 		turnrate = 240,
-		workertime = 115,
+		workertime = 75,
 		buildoptions = {
 			[1] = "corsolar",
 			[2] = "coradvsol",

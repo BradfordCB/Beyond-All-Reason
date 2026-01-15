@@ -48,7 +48,6 @@ return {
 			"legrad",
 			"legmex",
 			"leglht"
-			"legbombard",
 		},
 		customparams = {
 			model_author = "ZephyrSkies",

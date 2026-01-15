@@ -24,7 +24,7 @@ return {
 		maxslope = 30,
 		maxwaterdepth = 20,
 		metalcost = 240,
-		metalstorage = 373,
+		metalstorage = 75,
 		nochasecategory = "MOBILE",
 		objectname = "Units/COREXP.s3o",
 		onoffable = false,

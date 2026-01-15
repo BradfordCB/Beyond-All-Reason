@@ -86,7 +86,7 @@ local BaseClasses = {
 	CannonProjectile = {
 		lightType = 'point', -- or cone or beam
 		lightConfig = {
-			posx = 0, posy = 10, posz = 0, radius = 125, --125
+			posx = 0, posy = 10, posz = 0, radius = 125,
 			r = 1, g = 0.8, b = 0.45, a = 0.11,
 			--color2r = 0.5, color2g = 0.4, color2b = 0.23, colortime = 1.5, -- point lights only, colortime in seconds for unit-attached
 			modelfactor = 0.5, specular = 0.6, scattering = 0.5, lensflare = 0,
@@ -97,7 +97,7 @@ local BaseClasses = {
 	LRPCProjectile = {
 		lightType = 'point', -- or cone or beam
 		lightConfig = {
-			posx = 0, posy = 0, posz = 0, radius = 150, --150
+			posx = 0, posy = 0, posz = 0, radius = 150,
 			--pos2x = 100, pos2y = 100, pos2z = 100,
 			--dirx = 1, diry = 0, dirz = 1, theta = 0.4,
 			r = 1.2, g = 0.80, b = 0.3, a = 0.2,

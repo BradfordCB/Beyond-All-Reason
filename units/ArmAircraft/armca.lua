@@ -33,7 +33,7 @@ return {
 		terraformspeed = 225,
 		turninplaceanglelimit = 360,
 		turnrate = 240,
-		workertime = 120,
+		workertime = 60,
 		buildoptions = {
 			[1] = "armsolar",
 			[2] = "armadvsol",

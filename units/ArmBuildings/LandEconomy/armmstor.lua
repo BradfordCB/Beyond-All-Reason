@@ -21,7 +21,7 @@ return {
 		maxslope = 10,
 		maxwaterdepth = 0,
 		metalcost = 330,
-		metalstorage = 30000,
+		metalstorage = 3000,
 		objectname = "Units/ARMMSTOR.s3o",
 		script = "Units/ARMMSTOR.cob",
 		seismicsignature = 0,

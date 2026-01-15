@@ -143,10 +143,10 @@ return {
 				gravityaffected = "true",
 				hightrajectory = 1,
 				impulsefactor = 0.123,
-				mygravity = 0.22, --#######
+				mygravity = 0.276,
 				name = "Vertical Plasma Cannon",
 				noselfdamage = true,
-				range = 1200,
+				range = 400,
 				reloadtime = 5,
 				soundhit = "tawf113a",
 				soundhitwet = "splsmed",

@@ -32,7 +32,7 @@ return {
 		terraformspeed = 1000,
 		turnrate = 1,
 		upright = true,
-		workertime = 900,
+		workertime = 400,
 		customparams = {
 			unitgroup = 'builder',
 			model_author = "Tharsis",

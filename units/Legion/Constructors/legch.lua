@@ -84,7 +84,6 @@ return {
 			[44] = "legadvshipyard",
 			[45] = "leghive",
 			[46] = "legfhive",
-			[47] = "legbombard",
 		},
 		customparams = {
 			unitgroup = 'builder',

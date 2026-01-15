@@ -631,37 +631,28 @@ local unitDeaths = {
 
 
 	decoycommander = {
-		name = "Matter/AntimatterExplosion",
-		AreaOfEffect = 600,
-		cameraShake = 410,
-		explosionSpeed = 725,
+		AreaOfEffect = 48,
+		cameraShake = 48,
 		impulsefactor = impulsefactor,
-		soundhitwet = "newboomuw",
-		soundhit = "newboom",
+		soundhit = "xplomed2",
 		soundstart = "largegun",
-		soundstartvolume = 25,
-		soundhitvolume = 25,
-		soundhitwetvolume = 34,
-		explosiongenerator = "custom:shockwaveceg",
-		craterboost = 1.8,
-		cratermult = 1.21,
-		edgeeffectiveness = 0.44,
+		explosiongenerator = "custom:decoycommander",
 		damage = {
-			default = 5000,
+			default = 20,
 		},
 		customparams = {
 			unitexplosion = 1,
 		}
 	},
 	decoycommanderSelfd = {
-		AreaOfEffect = 596,
+		AreaOfEffect = 96,
 		cameraShake = 96,
 		impulsefactor = impulsefactor,
 		soundhit = "xplomed2",
 		soundstart = "largegun",
 		explosiongenerator = "custom:decoycommander-selfd",
 		damage = {
-			default = 12310,
+			default = 310,
 		},
 		customparams = {
 			unitexplosion = 1,

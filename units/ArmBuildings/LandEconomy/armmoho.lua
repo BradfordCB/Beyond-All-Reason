@@ -23,7 +23,7 @@ return {
 		maxslope = 30,
 		maxwaterdepth = 20,
 		metalcost = 620,
-		metalstorage = 1100,
+		metalstorage = 600,
 		objectname = "Units/ARMMOHO.s3o",
 		onoffable = true,
 		script = "Units/ARMMOHO.cob",

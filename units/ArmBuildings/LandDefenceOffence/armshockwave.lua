@@ -25,7 +25,7 @@ return {
 		maxslope = 30,
 		maxwaterdepth = 20,
 		metalcost = 1200,
-		metalstorage = 1100,
+		metalstorage = 600,
 		mincloakdistance = 50,
 		nochasecategory = "MOBILE",
 		objectname = "Units/armshockwave.s3o",

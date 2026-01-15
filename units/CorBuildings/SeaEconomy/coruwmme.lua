@@ -20,7 +20,7 @@ return {
 		maxdec = 0,
 		maxslope = 30,
 		metalcost = 640,
-		metalstorage = 1100,
+		metalstorage = 600,
 		minwaterdepth = 15,
 		objectname = "Units/CORUWMME.s3o",
 		onoffable = true,

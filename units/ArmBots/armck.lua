@@ -36,7 +36,7 @@ return {
 		turninplacespeedlimit = 0.792,
 		turnrate = 1265,
 		upright = true,
-		workertime = 110,
+		workertime = 80,
 		buildoptions = {
 			[1] = "armsolar",
 			[2] = "armadvsol",

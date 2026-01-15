@@ -14,7 +14,7 @@ return {
 		collisionvolumetype = "CylY",
 		corpse = "DEAD",
 		energymake = 15,
-		energystorage = 202,
+		energystorage = 100,
 		explodeas = "smallbuilder",
 		footprintx = 2,
 		footprintz = 2,
@@ -36,7 +36,7 @@ return {
 		turninplacespeedlimit = 2,
 		turnrate = 640,
 		upright = false,
-		workertime = 145,
+		workertime = 125,
 		buildoptions = {
 			"legsolar",
 			"legmex",
@@ -57,7 +57,6 @@ return {
 			"legnavyfrigate",
 			"legnavyconship",
 			"legamph",
-			"legbombard",
 		},
 		customparams = {
 			unitgroup = 'buildert2',

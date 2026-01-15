@@ -54,7 +54,7 @@ return {
 		turninplacespeedlimit = 0.825,
 		turnrate = 1133,
 		upright = true,
-		workertime = 380,
+		workertime = 300,
 		buildoptions = {
 			[1] = "legmine1",
 			[2] = "legmine2",
