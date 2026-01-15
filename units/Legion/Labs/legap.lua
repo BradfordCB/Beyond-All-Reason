@@ -42,6 +42,7 @@ return {
 			[5] = "legmos",
 			[6] = "leglts",
 			[7] = "legatrans",
+			[8] = "legionnaire",
 		},
 		customparams = {
 			usebuildinggrounddecal = true,
