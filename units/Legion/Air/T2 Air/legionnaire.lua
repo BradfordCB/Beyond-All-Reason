@@ -138,7 +138,7 @@ return {
 				def = "leggun",
 				maindir = "0 0 1",
 				maxangledif = 28,
-				onlytargetcategory = "VTOL",
+				onlytargetcategory = "VTOL SURFACE",
 				weaponAimAdjustPriority = 30,
 				fastAutoRetargeting = true,
 			},
