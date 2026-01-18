@@ -21,14 +21,14 @@ return {
 		idletime = 1800,
 		mass = 700,
 		health = 1200,
-		maxslope = 10,
+		maxslope = 25,
 		maxwaterdepth = 0,
 		nochasecategory = "MOBILE",
 		objectname = "Units/leghive.s3o",
 		script = "Units/leghive.cob",
 		seismicsignature = 0,
 		selfdestructas = "mediumBuildingExplosionGenericSelfd",
-		sightdistance = 455,
+		sightdistance = 955,
 		turnrate = 1,
 		upright = true,
 		customparams = {
@@ -125,14 +125,14 @@ return {
 				noselfdamage = true,
 				metalpershot = 15,
 				energypershot = 500,
-				range = 1100,
+				range = 1200,
 				reloadtime = 2.5,
 				size = 0,
 				soundhit = "",
 				soundhitwet = "",
 				soundstart = "",
 				stockpile = true,
-				stockpiletime = 10,
+				stockpiletime = 9, --10
 				turret = true,
 				weapontype = "Cannon",
 				weaponvelocity = 1000,
@@ -141,25 +141,25 @@ return {
 				},
 				customparams = {
 					carried_unit = "legdrone",     --Name of the unit spawned by this carrier unit.
-					engagementrange = 1100,
+					engagementrange = 1200,
 					spawns_surface = "LAND",    -- "LAND" or "SEA". The SEA option has not been tested currently.
 					spawnrate = 8, 				--Spawnrate roughly in seconds.
-					maxunits = 6,				--Will spawn units until this amount has been reached.
+					maxunits = 9,				--Will spawn units until this amount has been reached.
 					energycost = 500,			--Custom spawn cost. Remove this or set = nil to inherit the cost from the carried_unit unitDef. Cost inheritance is currently not working.
 					metalcost = 15,				--Custom spawn cost. Remove this or set = nil to inherit the cost from the carried_unit unitDef. Cost inheritance is currently not working.
-					controlradius = 1200,			--The spawned units should stay within this radius. Unfinished behavior may cause exceptions. Planned: radius = 0 to disable radius limit.
-					decayrate = 4,
+					controlradius = 1400,			--The spawned units should stay within this radius. Unfinished behavior may cause exceptions. Planned: radius = 0 to disable radius limit.
+					decayrate = 1,
 					carrierdeaththroe = "release",
 					dockingarmor = 0.2,
-					dockinghealrate = 16,
+					dockinghealrate = 96,
 					docktohealthreshold = 66,
 					enabledocking = true,		--If enabled, docking behavior is used. Currently docking while moving or stopping, and undocking while attacking. Unfinished behavior may cause exceptions.
 					dockingHelperSpeed = 5,
 					dockingpieces = "4 5 6 7 8 9",
 					dockingradius = 80,			--The range at which the units snap to the carrier unit when docking.
-					stockpilelimit = 6,
+					stockpilelimit = 9,
 					stockpilemetal = 15,
-					stockpileenergy = 500,
+					stockpileenergy = 100, --500
 					dronesusestockpile = true,
 					cobdockparam = 1,
 					cobundockparam = 1,
@@ -168,7 +168,7 @@ return {
 		},
 		weapons = {
 			[1] = {
-				badtargetcategory = "VTOL",
+				--badtargetcategory = "VTOL",
 				def = "PLASMA",
 				onlytargetcategory = "NOTSUB",
 			},
