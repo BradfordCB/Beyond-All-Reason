@@ -1,8 +1,8 @@
 return {
 	legdrone = {
-		maxacc = 0.25,
+		maxacc = 0.55,
 		blocking = false,
-		maxdec = 0.55,
+		maxdec = 1.15,
 		energycost = 500,
 		metalcost = 15,
 		buildpic = "legdrone.DDS",
@@ -11,16 +11,16 @@ return {
 		canmove = true,
 		cantbetransported = false,
 		collide = true,
-		cruisealtitude = 78,
+		cruisealtitude = 478, --78
 		explodeas = "tinyExplosionGeneric",
 		footprintx = 1,
 		footprintz = 1,
 		hoverattack = true,
 		idleautoheal = 0,
 		idletime = 1800,
-		health = 415,
-		maxslope = 10,
-		speed = 280.5,
+		health = 915,
+		maxslope = 25,
+		speed = 380.5,
 		maxwaterdepth = 0,
 		nochasecategory = "COMMANDER VTOL",
 		objectname = "Units/LEGDRONE.s3o",
@@ -28,7 +28,7 @@ return {
 		script = "Units/LEGDRONE.cob",
 		seismicsignature = 0,
 		selfdestructas = "tinyExplosionGenericSelfd",
-		sightdistance = 600,
+		sightdistance = 900, --600
 		turninplaceanglelimit = 360,
 		turnrate = 1100,
 		upright = true,
@@ -72,10 +72,11 @@ return {
 		weapondefs = {
 			semiauto = {
 				accuracy = 7,
-				areaofeffect = 16,
+				areaofeffect = 46, --16
 				avoidfeature = false,
 				burst = 3,
 				burstrate = 0.066,
+				sprayangle = 94,
 				burnblow = false,
 				craterareaofeffect = 0,
 				craterboost = 0,
@@ -83,13 +84,14 @@ return {
 				duration = 0.05,
 				edgeeffectiveness = 0.5,
 				explosiongenerator = "custom:plasmahit-sparkonly",
-				impulsefactor = 0.123,
+				impulsefactor = 0.43,
 				intensity = 0.8,
 				name = "Burst-fire Machine Gun",
 				noselfdamage = true,
 				ownerExpAccWeight = 4.0,
+				projectiles = 3, -- added
 				proximitypriority = 1,
-				range = 300,
+				range = 900, --300
 				reloadtime = 1.8,
 				rgbcolor = "1 0.95 0.4",
 				soundhit = "bimpact3",
@@ -103,10 +105,10 @@ return {
 				tolerance = 6000,
 				turret = true,
 				weapontype = "LaserCannon",
-				weaponvelocity = 692,
+				weaponvelocity = 1692, --692
 				damage = {
 					default = 12,
-					vtol = 6,
+					vtol = 26, --6
 				},
 			},
 		},
