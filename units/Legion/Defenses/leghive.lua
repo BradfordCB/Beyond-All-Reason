@@ -23,7 +23,7 @@ return {
 		health = 1200,
 		maxslope = 25,
 		maxwaterdepth = 0,
-		nochasecategory = "MOBILE",
+		nochasecategory = "COMMANDER",
 		objectname = "Units/leghive.s3o",
 		script = "Units/leghive.cob",
 		seismicsignature = 0,
@@ -124,8 +124,8 @@ return {
 				name = "HeavyCannon",
 				noselfdamage = true,
 				metalpershot = 15,
-				energypershot = 500,
-				range = 1200,
+				energypershot = 100,
+				range = 1300,
 				reloadtime = 2.5,
 				size = 0,
 				soundhit = "",
@@ -141,11 +141,11 @@ return {
 				},
 				customparams = {
 					carried_unit = "legdrone",     --Name of the unit spawned by this carrier unit.
-					engagementrange = 1200,
+					engagementrange = 1300,
 					spawns_surface = "LAND",    -- "LAND" or "SEA". The SEA option has not been tested currently.
 					spawnrate = 8, 				--Spawnrate roughly in seconds.
 					maxunits = 9,				--Will spawn units until this amount has been reached.
-					energycost = 500,			--Custom spawn cost. Remove this or set = nil to inherit the cost from the carried_unit unitDef. Cost inheritance is currently not working.
+					energycost = 100,			--Custom spawn cost. Remove this or set = nil to inherit the cost from the carried_unit unitDef. Cost inheritance is currently not working.
 					metalcost = 15,				--Custom spawn cost. Remove this or set = nil to inherit the cost from the carried_unit unitDef. Cost inheritance is currently not working.
 					controlradius = 1400,			--The spawned units should stay within this radius. Unfinished behavior may cause exceptions. Planned: radius = 0 to disable radius limit.
 					decayrate = 1,
