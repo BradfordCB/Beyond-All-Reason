@@ -22,7 +22,7 @@ return {
 		maxslope = 25,
 		speed = 380.5,
 		maxwaterdepth = 0,
-		nochasecategory = "COMMANDER VTOL",
+		nochasecategory = "COMMANDER",
 		objectname = "Units/LEGDRONE.s3o",
 		repairable = false,
 		script = "Units/LEGDRONE.cob",
@@ -76,7 +76,7 @@ return {
 				avoidfeature = false,
 				burst = 3,
 				burstrate = 0.066,
-				sprayangle = 94,
+				--sprayangle = 94,
 				burnblow = false,
 				craterareaofeffect = 0,
 				craterboost = 0,
@@ -89,7 +89,7 @@ return {
 				name = "Burst-fire Machine Gun",
 				noselfdamage = true,
 				ownerExpAccWeight = 4.0,
-				projectiles = 3, -- added
+				--projectiles = 3, -- added
 				proximitypriority = 1,
 				range = 900, --300
 				reloadtime = 1.8,
@@ -114,11 +114,11 @@ return {
 		},
 		weapons = {
 			[1] = {
-				badtargetcategory = "VTOL",
+				--badtargetcategory = "VTOL",
 				def = "SEMIAUTO",
 				maindir = "0 0 1",
 				maxangledif = 90,
-				onlytargetcategory = "NOTSUB",
+				onlytargetcategory = "NOTSUB SURFACE",
 			},
 		},
 	},
