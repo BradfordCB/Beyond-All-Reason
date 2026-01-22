@@ -21,7 +21,7 @@ return {
 		idleautoheal = 5,
 		idletime = 1800,
 		health = 800,
-		maxslope = 10,
+		maxslope = 25,
 		maxwaterdepth = 0,
 		objectname = "Units/LEGADVSOL.s3o",
 		script = "Units/LEGADVSOL.cob",
