@@ -1,4 +1,4 @@
-# Beyond-All-Reason
+# BCB-Mod-Testing-Beyond-All-Reason
 
 ![Discord](https://img.shields.io/discord/225695362004811776)
 
