@@ -19,7 +19,7 @@ return {
 		maxslope = 20,
 		maxwaterdepth = 9999,
 		metalcost = 750,
-		metalstorage = 10000,
+		metalstorage = 330002,
 		objectname = "Units/ARMUWADVMS.s3o",
 		script = "Units/ARMUWADVMS.cob",
 		seismicsignature = 0,
