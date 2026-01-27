@@ -104,7 +104,8 @@ return {
 		},
 		weapondefs = {
 			lrpc = {
-				accuracy = 300,
+				accuracy = 50,
+				projectiles = 5,
 				sprayangle = 150,
 				areaofeffect = 135,
 				avoidfeature = false,
@@ -126,16 +127,17 @@ return {
 				model = "legbomb.s3o",
 				name = "Long-Range g2g Heavy Cluster Plasma Cannon",
 				noselfdamage = true,
-				range = 4800,
+				range = 7800, --4800
 				reloadtime = 18,
 				soundhit = "lrpcexplo",
 				soundhitwet = "splshbig",
 				soundstart = "lrpcshot3",
 				soundhitvolume = 38,
 				soundstartvolume = 24,
+				trajectoryheight = 1.25,
 				turret = true,
 				weapontype = "Cannon",
-				weaponvelocity = 1100,
+				weaponvelocity = 1600,
 				customparams = {
 					cluster_def = 'cluster_munition',
 					cluster_number = 8,
