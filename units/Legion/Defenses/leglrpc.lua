@@ -144,6 +144,7 @@ return {
 					default = 500,
 					shields = 250,
 					subs = 100,
+					vtol = 225,
 				},
 			},
 			cluster_munition = {
@@ -169,7 +170,7 @@ return {
 					default = 50,
 					lboats = 100,
 					subs = 25,
-					vtol = 25,
+					vtol = 225,
 				},
 			},
 		},
