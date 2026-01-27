@@ -116,7 +116,8 @@ return {
 				explosiongenerator = "custom:newnukecor",
 				firestarter = 100,
 				flighttime = 400,
-				impulsefactor = 0.5,
+				impulseboost = 3.5,
+				impulsefactor = 14.5,
 				metalpershot = 1500,
 				model = "legicbm.s3o",
 				name = "Intercontinental Thermonuclear Ballistic Missile",
@@ -151,7 +152,7 @@ return {
 				},
 				damage = {
 					commanders = 2500,
-					default = 11500,
+					default = 81500,
 				},
 			},
 			nuclear_launch = {
