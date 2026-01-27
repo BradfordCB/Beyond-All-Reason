@@ -138,8 +138,8 @@ return {
 			armadvbomb = {
 				areaofeffect = 568,
 				avoidfeature = false,
-				projectiles = 3,
-				sprayangle = 145,
+				projectiles = 5,
+				sprayangle = 245,
 				burst = 5,
 				burstrate = 0.2,
 				collidefriendly = false,
