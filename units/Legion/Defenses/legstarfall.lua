@@ -143,7 +143,7 @@ return {
 				turret = true,
 				weapontimer = 14,
 				weapontype = "Cannon",
-				weaponvelocity = 900,
+				weaponvelocity = 1200,
 				windup = 5,
 				--customparams = {
 				--	stockpilelimit = 1,
