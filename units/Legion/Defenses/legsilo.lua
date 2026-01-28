@@ -142,8 +142,8 @@ return {
 				targetable = 1,
 				tolerance = 4000,
 				turnrate = 3900,
-				weaponacceleration = 110,
-				weapontimer = 7.5, --5.5
+				weaponacceleration = 150,
+				weapontimer = 7.1, --5.5
 				weapontype = "StarburstLauncher",
 				weaponvelocity = 1600,
 				customparams = {
@@ -171,8 +171,8 @@ return {
 				soundhit = "nukelaunchalarm",
 				soundhitvolume = 50,
 				tolerance = 10000,
-				turnrate = 400,
-				weaponacceleration = 1000,
+				turnrate = 500,
+				weaponacceleration = 1200,
 				weapontimer = 0.1,
 				weapontype = "Cannon",
 				weaponvelocity = 1200,
