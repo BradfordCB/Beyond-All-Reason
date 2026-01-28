@@ -1272,7 +1272,7 @@ local options = {
     },
 
     {
-        key 	= "quick_start",
+        key 	= "quick_start", -- #######
         name 	= "Quick Start",
         desc   	= "Each player gets pre-game resources to spend on structures to be instantly spawned at the beginning of the game.",
         type 	= "list",
@@ -1313,7 +1313,7 @@ local options = {
             { key = "default", 	name = "Default", desc = "Uses the default amount based on game mode" },
             { key = "small", 	name = "Small", desc = "800 Base Budget" },
             { key = "normal", 	name = "Normal", desc = "1200 Base Budget" },
-            { key = "large", 	name = "Large", desc = "2400 Base Budget" },
+            { key = "large", 	name = "Large", desc = "9400 Base Budget" },
         }
     },
 
@@ -1332,9 +1332,9 @@ local options = {
         name 	= "Override Quick Start Range",
         desc   	= "Override the quick start build range when overrides are enabled (values below 200 are clamped to 200).",
         type 	= "number",
-        def 	= 600,
+        def 	= 900,
         min 	= 200,
-        max 	= 2000,
+        max 	= 2900,
         step 	= 1,
         section = "options_extra",
         hidden 	= true,
@@ -1345,7 +1345,7 @@ local options = {
         name 	= "Override Quick Start Budget",
         desc   	= "Override the quick start starting resources when overrides are enabled.",
         type 	= "number",
-        def 	= 1200,
+        def 	= 3200,
         min 	= 100,
         max 	= 1000000,
         step 	= 1,
