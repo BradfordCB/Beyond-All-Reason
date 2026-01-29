@@ -134,7 +134,7 @@ return {
 				soundstart = "lrpcshot3",
 				soundhitvolume = 38,
 				soundstartvolume = 24,
-				trajectoryheight = 2,
+				trajectoryheight = 4,
 				turret = true,
 				weapontype = "Cannon",
 				weaponvelocity = 1900,
