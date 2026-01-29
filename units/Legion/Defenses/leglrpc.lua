@@ -135,7 +135,7 @@ return {
 				soundstart = "lrpcshot3",
 				soundhitvolume = 38,
 				soundstartvolume = 24,
-				tolerance = 200, -- addedd
+				tolerance = 120, -- addedd
 				turnrate = 6000, -- addedd
 				turret = true,
 				weaponacceleration = 300, -- addedd
