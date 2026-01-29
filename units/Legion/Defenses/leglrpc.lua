@@ -104,9 +104,9 @@ return {
 		},
 		weapondefs = {
 			lrpc = {
-				accuracy = 250,
+				accuracy = 100,
 				projectiles = 5,
-				sprayangle = 250,
+				sprayangle = 300,
 				areaofeffect = 335,
 				avoidfeature = false,
 				avoidfriendly = false,
@@ -116,7 +116,7 @@ return {
 				craterboost = 0.1,
 				cratermult = 0.1,
 				burst = 3,
-				burstrate = 0.2,
+				burstrate = 1.5,
 				edgeeffectiveness = 0.98,
 				energypershot = 6000,
 				explosiongenerator = "custom:starfire-explosion",
@@ -134,10 +134,11 @@ return {
 				soundstart = "lrpcshot3",
 				soundhitvolume = 38,
 				soundstartvolume = 24,
-				trajectoryheight = 4,
+				trajectoryheight = 4, -- addedd
 				turret = true,
+				weaponacceleration = 200,
 				weapontype = "Cannon",
-				weaponvelocity = 1900,
+				weaponvelocity = 900,
 				customparams = {
 					cluster_def = 'cluster_munition',
 					cluster_number = 8,
