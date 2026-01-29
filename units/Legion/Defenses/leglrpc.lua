@@ -135,9 +135,12 @@ return {
 				soundhitvolume = 38,
 				soundstartvolume = 24,
 				trajectoryheight = 4, -- addedd
+				tolerance = 7000,
+				turnrate = 10000,
 				turret = true,
 				weaponacceleration = 200,
-				weapontype = "Cannon",
+				weapontimer = 2,
+				weapontype = "StarburstLauncher",
 				weaponvelocity = 900,
 				customparams = {
 					cluster_def = 'cluster_munition',
