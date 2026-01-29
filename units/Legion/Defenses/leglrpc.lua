@@ -104,10 +104,8 @@ return {
 		},
 		weapondefs = {
 			lrpc = {
-				accuracy = 100,
-				projectiles = 5,
-				sprayangle = 300,
-				areaofeffect = 335,
+				accuracy = 300,
+				areaofeffect = 435,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "starfire-small",
@@ -116,17 +114,20 @@ return {
 				craterboost = 0.1,
 				cratermult = 0.1,
 				burst = 3,
-				burstrate = 1.5,
+				burstrate = 0.5,
 				edgeeffectiveness = 0.98,
 				energypershot = 6000,
 				explosiongenerator = "custom:starfire-explosion",
 				gravityaffected = "true",
-				heightboostfactor = 8,
+				hightrajectory = 1, -- addedd
+				--heightboostfactor = 8,
 				impulsefactor = 4.5,
 				leadbonus = 0,
 				model = "legbomb.s3o",
 				name = "Long-Range g2g Heavy Cluster Plasma Cannon",
 				noselfdamage = true,
+				projectiles = 5,
+				sprayangle = 300,
 				range = 6800, --4800
 				reloadtime = 18,
 				soundhit = "lrpcexplo",
@@ -134,12 +135,11 @@ return {
 				soundstart = "lrpcshot3",
 				soundhitvolume = 38,
 				soundstartvolume = 24,
-				trajectoryheight = 4, -- addedd
-				tolerance = 7000,
-				turnrate = 10000,
+				tolerance = 200, -- addedd
+				turnrate = 6000, -- addedd
 				turret = true,
-				weaponacceleration = 200,
-				weapontimer = 2,
+				weaponacceleration = 300, -- addedd
+				weapontimer = 2.5,
 				weapontype = "StarburstLauncher",
 				weaponvelocity = 900,
 				customparams = {
@@ -150,7 +150,7 @@ return {
 					default = 500,
 					shields = 250,
 					subs = 100,
-					vtol = 225,
+					vtol = 725,
 				},
 			},
 			cluster_munition = {
