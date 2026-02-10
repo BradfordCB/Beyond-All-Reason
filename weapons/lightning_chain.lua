@@ -1,6 +1,6 @@
 return {
 	lightning_chain = {
-		areaofeffect = 8,
+		areaofeffect = 48,
 				avoidfeature = false,
 				beamttl = 1,
 				craterareaofeffect = 0,
@@ -24,7 +24,7 @@ return {
 				coreThickness = 0.5,
 				turret = true,
 				weapontype = "LightningCannon",
-				weaponvelocity = 400,
+				weaponvelocity = 700,
 				damage = {
 					default = 1,
 				},
