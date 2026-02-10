@@ -104,8 +104,8 @@ return {
 		},
 		weapondefs = {
 			lrpc = {
-				accuracy = 300,
-				areaofeffect = 435,
+				accuracy = 330,
+				areaofeffect = 535,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "starfire-small",
@@ -115,19 +115,21 @@ return {
 				cratermult = 0.1,
 				burst = 3,
 				burstrate = 0.5,
+				sprayangle = 200,
 				edgeeffectiveness = 0.98,
 				energypershot = 6000,
 				explosiongenerator = "custom:starfire-explosion",
+				flighttime = 100,
 				gravityaffected = "true",
-				hightrajectory = 1, -- addedd
-				--heightboostfactor = 8,
-				impulsefactor = 4.5,
+				heightmod = 0.5,
+				-- hightrajectory = 1, -- addedd
+				-- heightboostfactor = 8,
+				impulsefactor = 6.33,
 				leadbonus = 0,
 				model = "legbomb.s3o",
 				name = "Long-Range g2g Heavy Cluster Plasma Cannon",
 				noselfdamage = true,
 				projectiles = 5,
-				sprayangle = 300,
 				range = 6800, --4800
 				reloadtime = 18,
 				soundhit = "lrpcexplo",
@@ -135,16 +137,18 @@ return {
 				soundstart = "lrpcshot3",
 				soundhitvolume = 38,
 				soundstartvolume = 24,
-				tolerance = 120, -- addedd
-				turnrate = 6000, -- addedd
+				startvelocity = 330,
+				sprayangle = 250,
+				-- tolerance = 120, -- addedd
+				-- turnrate = 5700, -- addedd
 				turret = true,
-				weaponacceleration = 300, -- addedd
-				weapontimer = 2.5,
-				weapontype = "StarburstLauncher",
+				weaponacceleration = 250, -- addedd
+				-- weapontimer = 2.8,
+				weapontype = "Cannon",
 				weaponvelocity = 900,
 				customparams = {
 					cluster_def = 'cluster_munition',
-					cluster_number = 8,
+					cluster_number = 9,
 				},
 				damage = {
 					default = 500,
@@ -154,7 +158,7 @@ return {
 				},
 			},
 			cluster_munition = {
-				areaofeffect = 115,
+				areaofeffect = 145,
 				avoidfeature = false,
 				cegtag = "ministarfire",
 				craterboost = 0,
@@ -162,11 +166,11 @@ return {
 				edgeeffectiveness = 0.3,
 				explosiongenerator = "custom:ministarfire-explosion",
 				gravityaffected = "true",
-				impulsefactor = 0.95,
+				impulsefactor = 2.24,
 				name = "Plasma Burst",
 				noselfdamage = true,
-				maxvelocity = 720,
-				range = 110,
+				maxvelocity = 900,
+				range = 120,
 				rgbcolor = "0.7 0.7 1.0",
 				soundhit = "xplomed2",
 				soundhitwet = "splsmed",
