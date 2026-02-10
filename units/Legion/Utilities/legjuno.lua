@@ -115,7 +115,7 @@ return {
 				energypershot = 12000,
 				explosiongenerator = "custom:juno-explo",
 				flighttime = 400,
-				impulsefactor = 0,
+				impulsefactor = 0.82,
 				metalpershot = 200,
 				model = "epulse.s3o",
 				name = "Anti-Radar/Jammer/Mine Electromagnetic Payload",
@@ -136,19 +136,20 @@ return {
 				texture3 = "null",
 				tolerance = 4000,
 				turnrate = 5500,
-				weaponacceleration = 75,
+				weaponacceleration = 158,
 				weapontimer = 4,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 500,
+				weaponvelocity = 700,
 				customparams = {
-					stockpilelimit = 20,
+					stockpilelimit = 40,
 					nofire = true,
 					water_splash = 0, -- juno can explode on water
 					junotype = "base",
 				},
 				damage = {
-					default = 1,
+					default = 20,
 					mines = 1,
+					vtol = 77,
 				},
 			},
 			juno_pulse_ghost = {
@@ -161,7 +162,7 @@ return {
 		},
 		weapons = {
 			[1] = {
-				badtargetcategory = "MOBILE",
+				-- lbadtargetcategory = "MOBILE",
 				def = "JUNO_PULSE",
 				onlytargetcategory = "NOTSUB",
 			},
