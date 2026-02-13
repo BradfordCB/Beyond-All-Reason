@@ -121,10 +121,11 @@ return {
 				explosiongenerator = "custom:starfire-explosion",
 				flighttime = 100,
 				gravityaffected = "true",
-				heightmod = 0.5,
-				-- hightrajectory = 1, -- addedd
+				heightmod = 0.15, -- addedd
+				hightrajectory = 1.5, -- addedd
 				-- heightboostfactor = 8,
 				impulsefactor = 6.33,
+				impulseboost = 2.1,
 				leadbonus = 0,
 				model = "legbomb.s3o",
 				name = "Long-Range g2g Heavy Cluster Plasma Cannon",
@@ -145,7 +146,7 @@ return {
 				weaponacceleration = 250, -- addedd
 				-- weapontimer = 2.8,
 				weapontype = "Cannon",
-				weaponvelocity = 900,
+				weaponvelocity = 1000,
 				customparams = {
 					cluster_def = 'cluster_munition',
 					cluster_number = 9,
@@ -158,19 +159,21 @@ return {
 				},
 			},
 			cluster_munition = {
-				areaofeffect = 145,
+				areaofeffect = 245,
 				avoidfeature = false,
+				burnblow = true,
 				cegtag = "ministarfire",
 				craterboost = 0,
 				cratermult = 0,
 				edgeeffectiveness = 0.3,
 				explosiongenerator = "custom:ministarfire-explosion",
-				gravityaffected = "true",
+				flighttime = 2,
+				gravityaffected = "false",
 				impulsefactor = 2.24,
 				name = "Plasma Burst",
 				noselfdamage = true,
 				maxvelocity = 900,
-				range = 120,
+				range = 220,
 				rgbcolor = "0.7 0.7 1.0",
 				soundhit = "xplomed2",
 				soundhitwet = "splsmed",
