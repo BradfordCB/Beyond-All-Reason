@@ -11,7 +11,7 @@ return {
 		reloadtime = 3.6,
 		soundhit = "xplolrg3",
 		soundstart = "largegun",
-		weaponvelocity = 350,
+		weaponvelocity = 950,
 		damage = {
 			default = 38004,
 			mines = 1,
