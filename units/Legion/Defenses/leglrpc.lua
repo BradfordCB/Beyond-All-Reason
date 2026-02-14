@@ -124,8 +124,8 @@ return {
 				heightmod = 0.15, -- addedd
 				-- hightrajectory = 1, -- addedd
 				-- heightboostfactor = 8,
+				impulseboost = 2.1, -- addedd
 				impulsefactor = 6.33,
-				impulseboost = 2.1,
 				leadbonus = 0,
 				model = "legbomb.s3o",
 				name = "Long-Range g2g Heavy Cluster Plasma Cannon",
@@ -169,8 +169,9 @@ return {
 				edgeeffectiveness = 0.3,
 				explosiongenerator = "custom:ministarfire-explosion",
 				flighttime = 1.3,
-				gravityaffected = "false",addedd
+				gravityaffected = "false", -- 
 				hightrajectory = 1, -- addedd
+				impulseboost = 2.1, -- addedd
 				impulsefactor = 2.24,
 				name = "Plasma Burst",
 				noselfdamage = true,
