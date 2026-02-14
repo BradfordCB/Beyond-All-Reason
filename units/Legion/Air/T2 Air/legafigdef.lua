@@ -140,7 +140,7 @@ return {
 				areaofeffect = 768,
 				avoidfeature = false,
 				projectiles = 5,
-				sprayangle = 445,
+				sprayangle = 845,
 				burst = 7,
 				burstrate = 0.2,
 				collidefriendly = false,
@@ -159,7 +159,7 @@ return {
 				noselfdamage = true,
 				range = 1780,
 				reloadtime = 11,
-				sprayangle = 1245,
+				sprayangle = 2245,
 				soundhit = "bombsmed2",
 				soundhitwet = "splslrg",
 				soundstart = "bombrelxl",
@@ -167,13 +167,14 @@ return {
 				damage = {
 					default = 466,
 					subs = 285,
+					vtol = 380,
 				},
 			}, 
 		},
 		
 		weapons = {
 			[1] = {
-				--badtargetcategory = "NOTAIR",
+				badtargetcategory = "NOTAIR",
 				def = "leggun",
 				maindir = "0 0 1",
 				maxangledif = 28,
@@ -182,7 +183,7 @@ return {
 				fastAutoRetargeting = true,
 			    },
 			[2] = {
-				badtargetcategory = "MOBILE",
+				-- badtargetcategory = "MOBILE",
 				def = "ARMADVBOMB",
 				onlytargetcategory = "NOTSUB SURFACE",
 			    }, 
