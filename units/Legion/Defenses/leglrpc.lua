@@ -104,7 +104,7 @@ return {
 		},
 		weapondefs = {
 			lrpc = {
-				accuracy = 330,
+				accuracy = 130,
 				areaofeffect = 535,
 				avoidfeature = false,
 				avoidfriendly = false,
@@ -122,7 +122,7 @@ return {
 				flighttime = 100,
 				gravityaffected = "true",
 				heightmod = 0.15, -- addedd
-				hightrajectory = 1.5, -- addedd
+				-- hightrajectory = 1, -- addedd
 				-- heightboostfactor = 8,
 				impulsefactor = 6.33,
 				impulseboost = 2.1,
@@ -140,6 +140,7 @@ return {
 				soundstartvolume = 24,
 				startvelocity = 330,
 				sprayangle = 250,
+				trajectoryhight = 1.4, -- addedd
 				-- tolerance = 120, -- addedd
 				-- turnrate = 5700, -- addedd
 				turret = true,
@@ -167,8 +168,9 @@ return {
 				cratermult = 0,
 				edgeeffectiveness = 0.3,
 				explosiongenerator = "custom:ministarfire-explosion",
-				flighttime = 2,
-				gravityaffected = "false",
+				flighttime = 1.3,
+				gravityaffected = "false",addedd
+				hightrajectory = 1, -- addedd
 				impulsefactor = 2.24,
 				name = "Plasma Burst",
 				noselfdamage = true,
