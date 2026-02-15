@@ -103,9 +103,8 @@ return {
 			},
 		},
 		weapondefs = {
-		
 			lrpc = {
-				accuracy = 130,
+				accuracy = 330,
 				areaofeffect = 535,
 				avoidfeature = false,
 				avoidfriendly = false,
@@ -114,13 +113,19 @@ return {
 				craterareaofeffect = 96,
 				craterboost = 0.1,
 				cratermult = 0.1,
+				burst = 3,
+				burstrate = 0.5,
+				sprayangle = 200,
 				edgeeffectiveness = 0.98,
-				energypershot = 0,
+				energypershot = 6000,
 				explosiongenerator = "custom:starfire-explosion",
 				flighttime = 100,
 				gravityaffected = "true",
-				impulseboost = 2.1, -- addedd
+				heightmod = 0.15,
+				hightrajectory = 1.3, -- addedd
+				-- heightboostfactor = 8,
 				impulsefactor = 6.33,
+				impulseboost = 2.1,
 				leadbonus = 0,
 				model = "legbomb.s3o",
 				name = "Long-Range g2g Heavy Cluster Plasma Cannon",
@@ -133,12 +138,14 @@ return {
 				soundstart = "lrpcshot3",
 				soundhitvolume = 38,
 				soundstartvolume = 24,
-				startvelocity = 300,
-				tolerance = 120, -- addedd
-				turnrate = 5700, -- addedd
-				weaponacceleration = 200, -- addedd
-				weapontimer = 2.3,
-				weapontype = "StarburstLauncher",
+				startvelocity = 330,
+				sprayangle = 250,
+				-- tolerance = 120, -- addedd
+				-- turnrate = 5700, -- addedd
+				turret = true,
+				weaponacceleration = 250, -- addedd
+				-- weapontimer = 2.8,
+				weapontype = "Cannon",
 				weaponvelocity = 1000,
 				customparams = {
 					cluster_def = 'cluster_munition',
@@ -151,53 +158,6 @@ return {
 					vtol = 725,
 				},
 			},
-		
-			lrpc_launch = {
-				-- accuracy = 130,
-				areaofeffect = 0,
-				avoidfeature = false,
-				avoidfriendly = false,
-				cegtag = "starfire-small",
-				collidefriendly = false,
-				craterareaofeffect = 0,
-				craterboost = 0,
-				cratermult = 0,
-				burst = 3,
-				burstrate = 0.5,
-				sprayangle = 200,
-				edgeeffectiveness = 0.98,
-				energypershot = 6000,
-				explosiongenerator = "custom:starfire-explosion",
-				gravityaffected = "true",
-				-- heightmod = 0.15, -- addedd
-				hightrajectory = 1, -- addedd
-				-- heightboostfactor = 8,
-				-- impulseboost = 2.1, -- addedd
-				impulsefactor = 0,
-				leadbonus = 0,
-				model = "legbomb.s3o",
-				name = "Long-Range g2g Heavy Cluster Plasma Cannon",
-				noselfdamage = true,
-				projectiles = 5,
-				range = 0, --4800
-				reloadtime = 18,
-				soundhit = "lrpcexplo",
-				soundhitwet = "splshbig",
-				soundstart = "lrpcshot3",
-				soundhitvolume = 38,
-				soundstartvolume = 24,
-				startvelocity = 130,
-				sprayangle = 250,
-				trajectoryhight = 1.4, -- addedd
-				tolerance = 120, -- addedd
-				turnrate = 50, -- addedd
-				turret = true,
-				weaponacceleration = 150, -- addedd
-				weapontimer = 0.1,
-				weapontype = "Cannon",
-				weaponvelocity = 300,
-				
-			},
 			cluster_munition = {
 				areaofeffect = 245,
 				avoidfeature = false,
@@ -207,10 +167,8 @@ return {
 				cratermult = 0,
 				edgeeffectiveness = 0.3,
 				explosiongenerator = "custom:ministarfire-explosion",
-				flighttime = 1.3,
-				gravityaffected = "false", -- 
-				hightrajectory = 1, -- addedd
-				impulseboost = 2.1, -- addedd
+				flighttime = 2,
+				gravityaffected = "false",
 				impulsefactor = 2.24,
 				name = "Plasma Burst",
 				noselfdamage = true,
@@ -233,11 +191,6 @@ return {
 			[1] = {
 				badtargetcategory = "MOBILE",
 				def = "LRPC",
-				onlytargetcategory = "SURFACE",
-			},
-			[2] = {
-				badtargetcategory = "MOBILE",
-				def = "LRPC_LAUNCH",
 				onlytargetcategory = "SURFACE",
 			},
 		},
