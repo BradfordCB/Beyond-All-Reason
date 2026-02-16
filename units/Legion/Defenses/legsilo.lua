@@ -175,7 +175,7 @@ return {
 				weaponacceleration = 1200,
 				weapontimer = 0.1,
 				weapontype = "Cannon",
-				weaponvelocity = 1200,
+				weaponvelocity = 1220,
 				damage = {
 					default = 0,
 				},
