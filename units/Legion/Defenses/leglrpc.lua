@@ -1,3 +1,4 @@
+@ -1,201 +1,202 @@
 return {
 	leglrpc = {
 		maxacc = 0,
@@ -103,10 +104,9 @@ return {
 			},
 		},
 		weapondefs = {
-		
 			lrpc = {
-				accuracy = 330,
-				areaofeffect = 335,
+				accuracy = 130,
+				areaofeffect = 535,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "starfire-small",
@@ -116,38 +116,38 @@ return {
 				cratermult = 0.1,
 				burst = 3,
 				burstrate = 0.5,
-				sprayangle = 200,
+				sprayangle = 150,
 				edgeeffectiveness = 0.98,
 				energypershot = 6000,
 				explosiongenerator = "custom:starfire-explosion",
 				flighttime = 100,
 				gravityaffected = "true",
-				heightmod = 0.15,
-				hightrajectory = 1.3, -- addedd
+				-- hightrajectory = 1, -- addedd
 				-- heightboostfactor = 8,
+				impulseboost = 2.1, -- addedd
 				impulsefactor = 6.33,
-				impulseboost = 2.1,
 				leadbonus = 0,
 				model = "legbomb.s3o",
 				name = "Long-Range g2g Heavy Cluster Plasma Cannon",
 				noselfdamage = true,
 				projectiles = 5,
-				range = 6800, --4800
+				range = 6100, --4800
 				reloadtime = 18,
 				soundhit = "lrpcexplo",
 				soundhitwet = "splshbig",
 				soundstart = "lrpcshot3",
 				soundhitvolume = 38,
 				soundstartvolume = 24,
-				startvelocity = 220,
+				startvelocity = 330,
 				sprayangle = 250,
+				trajectoryhight = 5, -- addedd
 				-- tolerance = 120, -- addedd
 				-- turnrate = 5700, -- addedd
 				turret = true,
 				weaponacceleration = 250, -- addedd
 				-- weapontimer = 2.8,
 				weapontype = "Cannon",
-				weaponvelocity = 900,
+				weaponvelocity = 1000,
 				customparams = {
 					cluster_def = 'cluster_munition',
 					cluster_number = 9,
@@ -159,60 +159,8 @@ return {
 					vtol = 725,
 				},
 			},
-		
-			lrpc_star = {
-				accuracy = 130,
-				areaofeffect = 535,
-				avoidfeature = false,
-				avoidfriendly = false,
-				-- cegtag = "starfire-small",
-				collidefriendly = false,
-				craterareaofeffect = 96,
-				craterboost = 0.1,
-				cratermult = 0.1,
-				edgeeffectiveness = 0.98,
-				energypershot = 0,
-				explosiongenerator = "custom:genericshellexplosion-large-bomb",
-				flighttime = 100,
-				gravityaffected = "true",
-				-- heightmod = 0.15, -- addedd
-				-- hightrajectory = 1, -- addedd
-				-- heightboostfactor = 8,
-				impulseboost = 2.1, -- addedd
-				impulsefactor = 6.33,
-				leadbonus = 0,
-				model = "airbombt2.s3o",
-				name = "Long-Range g2g Heavy Cluster Plasma Cannon",
-				noselfdamage = true,
-				-- projectiles = 5,
-				range = 6800, --4800
-				reloadtime = 27,
-				soundhit = "lrpcexplo",
-				soundhitwet = "splshbig",
-				soundstart = "lrpcshot3",
-				soundhitvolume = 38,
-				soundstartvolume = 24,
-				-- sprayangle = 250,
-				-- trajectoryhight = 1.4, -- addedd
-				turret = true,
-				-- weapontype = "Cannon",
-				-- startvelocity = 200,
-				tolerance = 10000, -- addedd
-				turnrate = 6700, -- addedd
-				weaponacceleration = 400, -- addedd
-				weapontimer = 3.4, 
-				weapontype = "StarburstLauncher",
-				weaponvelocity = 1000
-				damage = {
-					default = 500,
-					shields = 250,
-					subs = 100,
-					vtol = 725,
-				},
-			},
-
 			cluster_munition = {
-				areaofeffect = 245,
+				areaofeffect = 345,
 				avoidfeature = false,
 				burnblow = true,
 				cegtag = "ministarfire",
@@ -221,14 +169,15 @@ return {
 				edgeeffectiveness = 0.3,
 				explosiongenerator = "custom:ministarfire-explosion",
 				flighttime = 0.4,
-				gravityaffected = "false", -- 
+				gravityaffected = "true", -- 
+				mygravity = 0.01,
 				hightrajectory = 1, -- addedd
 				impulseboost = 2.1, -- addedd
 				impulsefactor = 2.24,
 				name = "Plasma Burst",
 				noselfdamage = true,
-				maxvelocity = 900,
-				range = 120,
+				maxvelocity = 200,
+				range = 220,
 				rgbcolor = "0.7 0.7 1.0",
 				soundhit = "xplomed2",
 				soundhitwet = "splsmed",
@@ -242,20 +191,14 @@ return {
 				},
 			},
 		},
-		
 		weapons = {
 			[1] = {
 				badtargetcategory = "MOBILE",
 				def = "LRPC",
 				onlytargetcategory = "SURFACE",
-			},
+				
 			[2] = {
 				badtargetcategory = "MOBILE",
-				def = "LRPC_STAR",
-				onlytargetcategory = "SURFACE",
-				slaveTo = 1, 
-			},
-			[3] = {
 				def = "CLUSTER_MUNITION",
 				onlytargetcategory = "SURFACE",
 			},
