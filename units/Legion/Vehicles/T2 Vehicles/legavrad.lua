@@ -109,5 +109,57 @@ return {
 				[1] = "avradsel",
 			},
 		},
+		
+		weapondefs = {
+			repulsor = {
+				avoidfeature = false,
+				craterareaofeffect = 0,
+				craterboost = 0,
+				cratermult = 0,
+				edgeeffectiveness = 0.15,
+				name = "PlasmaRepulsor",
+				range = 710,
+				soundhitwet = "sizzle",
+				weapontype = "Shield",
+				damage = {
+					default = 100,
+				},
+				shield = {
+					alpha = 0.17,
+					armortype = "shields",
+					exterior = true,
+					energyupkeep = 0,
+					force = 2.5,
+					intercepttype = 1015,
+					power = 49400,
+					powerregen = 520,
+					powerregenenergy = 2250,
+					radius = 710,
+					repulser = false,
+					smart = true,
+					startingpower = 15438,
+					visiblerepulse = true,
+					badcolor = {
+						[1] = 1,
+						[2] = 0.2,
+						[3] = 0.2,
+						[4] = 0.2,
+					},
+					goodcolor = {
+						[1] = 0.2,
+						[2] = 1,
+						[3] = 0.2,
+						[4] = 0.17,
+					},
+				},
+			},
+		},
+		
+		weapons = {
+			[1] = {
+				def = "REPULSOR",
+				onlytargetcategory = "NOTSUB",
+			},
+		},
 	},
 }
