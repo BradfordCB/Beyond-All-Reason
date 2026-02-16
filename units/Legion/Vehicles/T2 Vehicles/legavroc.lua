@@ -17,7 +17,7 @@ return {
 		idleautoheal = 5,
 		idletime = 1800,
 		leavetracks = true,
-		health = 1220,
+		health = 5220,
 		maxslope = 16,
 		speed = 33.0,
 		maxwaterdepth = 12,
@@ -106,7 +106,7 @@ return {
 		},
 		weapondefs = {
 			armtruck_rocket = {
-				areaofeffect = 150,
+				areaofeffect = 350,
 				avoidfeature = false,
 				cegtag = "missiletrailmedium-starburst",
 				craterboost = 0,
@@ -120,7 +120,9 @@ return {
 				model = "leglargerocket.s3o",
 				name = "Heavy Long-Range g2g High-Trajectory Starburst Rocket Launcher",
 				noselfdamage = true,
-				range = 1300,
+				projectiles = 2, -- added
+				sprayangle = 250, -- added
+				range = 1700,
 				reloadtime = 18,
 				soundhit = "xplomed4",
 				soundhitwet = "splslrg",
@@ -137,10 +139,10 @@ return {
 				texture3 = "null",
 				tolerance = 4000,
 				turnrate = 15000,
-				weaponacceleration = 100,
+				weaponacceleration = 140,
 				weapontimer = 3,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 380,
+				weaponvelocity = 390,
 				damage = {
 					commanders = 625,
 					default = 1900,
@@ -148,7 +150,7 @@ return {
 				},
 				customparams = {
 					projectile_destruction_method = "descend",
-					overrange_distance = 1495,
+					overrange_distance = 1895,
 				},
 			},
 		},
