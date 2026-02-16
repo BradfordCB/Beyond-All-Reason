@@ -1,5 +1,6 @@
 return {
 	leggat	= {
+		airsightdistance = 1500,
 		maxacc = 0.06,
 		maxdec = 0.12,
 		energycost = 3000,
