@@ -138,7 +138,7 @@ return {
 				soundhitwet = "sizzle",
 				soundstart = "cannhvy2",
 				sprayangle = 750,
-				trajectoryhight = 2.3, -- addedd
+				trajectoryhight = 12.3, -- addedd
 				turret = true,
 				weapontype = "Cannon",
 				weaponacceleration = 90, -- addedd
