@@ -119,13 +119,14 @@ return {
 				explosiongenerator = "custom:starfire-explosion",
 				gravityaffected = "true",
 				heightboostfactor = 8,
+				hightrajectory = 1, -- addedd
 				impulseboost = 2.1, -- addedd
 				impulsefactor = 5.5,
 				leadbonus = 0,
 				model = "legbomb.s3o",
 				name = "Long-Range g2g Heavy Cluster Plasma Cannon",
 				noselfdamage = true,
-				projectiles = 5,
+				projectiles = 1,
 				range = 6100, --4800
 				reloadtime = 18,
 				soundhit = "lrpcexplo",
@@ -133,19 +134,21 @@ return {
 				soundstart = "lrpcshot3",
 				soundhitvolume = 38,
 				soundstartvolume = 24,
-				startvelocity = 330,
+				stockpile = true,
+				stockpiletime = 5,
 				sprayangle = 250,
-				trajectoryhight = 5, -- addedd
-				-- tolerance = 120, -- addedd
-				-- turnrate = 5700, -- addedd
+				trajectoryhight = 2, -- addedd
+				tolerance = 11220, -- addedd
+				turnrate = 6700, -- addedd
 				turret = true,
 				weaponacceleration = 250, -- addedd
-				-- weapontimer = 2.8,
-				weapontype = "Cannon",
-				weaponvelocity = 1100,
+				weapontimer = 3.3,
+				weapontype = "StarburstLauncher",
+				weaponvelocity = 700,
 				customparams = {
 					cluster_def = 'cluster_munition',
-					cluster_number = 6,
+					cluster_number = 9,
+					stockpilelimit = 3,
 				},
 				damage = {
 					default = 600,
@@ -154,6 +157,7 @@ return {
 					vtol = 725,
 				},
 			},
+			
 			cluster_munition = {
 				areaofeffect = 315,
 				avoidfeature = false,
@@ -171,9 +175,9 @@ return {
 				impulsefactor = 2.24,
 				name = "Plasma Burst",
 				noselfdamage = true,
-				maxvelocity = 220,
-				range = 110,
-				rgbcolor = "0.7 0.7 1.0",
+				maxvelocity = 70,
+				range = 240,
+				rgbcolor = "0.8 0.8 1.0",
 				soundhit = "xplomed2",
 				soundhitwet = "splsmed",
 				soundstart = "cannhvy5",
@@ -182,7 +186,7 @@ return {
 					default = 100,
 					lboats = 100,
 					subs = 25,
-					vtol = 225,
+					vtol = 325,
 				},
 			},
 		},
@@ -190,6 +194,12 @@ return {
 			[1] = {
 				badtargetcategory = "MOBILE",
 				def = "LRPC",
+				onlytargetcategory = "SURFACE",
+			},
+			
+			[2] = {
+				badtargetcategory = "MOBILE",
+				def = "CLUSTER_MUNITION",
 				onlytargetcategory = "SURFACE",
 			},
 		},
