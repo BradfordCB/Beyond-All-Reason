@@ -12,7 +12,7 @@ return {
 		cantbetransported = false,
 		collide = true,
 		cruisealtitude = 778, --78
-		explodeas = "tinyExplosionGeneric",
+		explodeas = "mediumExplosionGenericSelfd",
 		footprintx = 1,
 		footprintz = 1,
 		hoverattack = true,
@@ -28,7 +28,7 @@ return {
 		repairable = false,
 		script = "Units/LEGDRONE.cob",
 		seismicsignature = 0,
-		selfdestructas = "tinyExplosionGenericSelfd",
+		selfdestructas = "mediumExplosionGenericSelfd",
 		sightdistance = 900, --600
 		turninplaceanglelimit = 360,
 		turnrate = 1200,
@@ -73,7 +73,7 @@ return {
 		weapondefs = {
 			semiauto = {
 				accuracy = 3,
-				areaofeffect = 46, --16
+				areaofeffect = 56, --16
 				avoidfeature = false,
 				burst = 5,
 				burstrate = 0.066,
@@ -109,7 +109,7 @@ return {
 				weaponvelocity = 2692, --692
 				damage = {
 					default = 12,
-					vtol = 26, --6
+					vtol = 26, -- 6
 				},
 			},
 		},
