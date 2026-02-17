@@ -1,11 +1,11 @@
 return {
 	legspcarrier = {
-		maxacc = 0.09,
+		maxacc = 0.18,
 		activatewhenbuilt = true,
 		airStrafe = false,
 		blocking = true,
 		bankingallowed = false,
-		maxdec = 0.09,
+		maxdec = 0.18,
 		energycost = 5000,
 		metalcost = 250,
 		buildpic = "legspcarrier.DDS",
@@ -16,25 +16,25 @@ return {
 		collisionvolumeoffsets = "0 0 0",
 		collisionvolumescales = "48 14 60",
 		collisionvolumetype = "Box",
-		cruisealtitude = 100,
+		cruisealtitude = 800,
 		explodeas = "largeexplosiongeneric",
 		floater = true,
 		footprintx = 4,
 		footprintz = 4,
 		hoverattack = true,
 		idleautoheal = 15,
-		idletime = 1200,
-		health = 1500,
-		maxslope = 10,
-		speed = 93.0,
+		idletime = 120,
+		health = 7500,
+		maxslope = 25,
+		speed = 143.0,
 		maxwaterdepth = 0,
 		nochasecategory = "VTOL",
 		objectname = "Units/legspcarrier.s3o",
-		radardistance = 1000,
+		radardistance = 1450,
 		script = "Units/legspcarrier.cob",
 		seismicsignature = 0,
 		selfdestructas = "largeExplosionGenericSelfd",
-		sightdistance = 600,
+		sightdistance = 1100,
 		turninplaceanglelimit = 360,
 		turnrate = 540,
 		upright = true,
@@ -89,12 +89,12 @@ return {
 		},
 		weapondefs = {
 			light_antiair_missile = {
-				areaofeffect = 16,
+				areaofeffect = 76,
 				avoidfeature = false,
 				burnblow = true,
 				canattackground = false,
                 avoidfriendly = false,
-				burst = 3,
+				burst = 9,
 				burstrate = 0.005,
                 collidefriendly = false,
 				--sprayangle = 20000,
@@ -111,7 +111,7 @@ return {
 				model = "legsmallrocket.s3o",
 				name = "Advanced g2a Salvo Missile Launcher",
 				noselfdamage = true,
-				range = 760,
+				range = 1460,
 				reloadtime = 2.0,
 				smoketrail = true,
 				smokecolor = 0.95,
@@ -138,6 +138,7 @@ return {
 				weaponvelocity = 2500,
 				damage = {
 					vtol = 37,
+					default = 5,
 				},
 			},
 			leg_drone_controller = {
@@ -155,7 +156,7 @@ return {
 				noselfdamage = true,
 				metalpershot = 15,
 				energypershot = 500,
-				range = 1000,
+				range = 1200,
 				reloadtime = 2.5,
 				size = 0,
 				soundhit = "",
@@ -171,13 +172,13 @@ return {
 				},
 				customparams = {
 					carried_unit = "legdrone",     --Name of the unit spawned by this carrier unit.
-					engagementrange = 1100,
+					engagementrange = 1300,
 					-- spawns_surface = "SEA",    -- "LAND" or "SEA". The SEA option has not been tested currently.
-					spawnrate = 15, 				--Spawnrate roughly in seconds.
-					maxunits = 2,				--Will spawn units until this amount has been reached.
+					spawnrate = 5, 				--Spawnrate roughly in seconds.
+					maxunits = 7,				--Will spawn units until this amount has been reached.
 					energycost = 500,			--Custom spawn cost. Remove this or set = nil to inherit the cost from the carried_unit unitDef. Cost inheritance is currently not working.
 					metalcost = 15,				--Custom spawn cost. Remove this or set = nil to inherit the cost from the carried_unit unitDef. Cost inheritance is currently not working.
-					controlradius = 1200,			--The spawned units should stay within this radius. Unfinished behavior may cause exceptions. Planned: radius = 0 to disable radius limit.
+					controlradius = 1400,			--The spawned units should stay within this radius. Unfinished behavior may cause exceptions. Planned: radius = 0 to disable radius limit.
 					decayrate = 4,
 					carrierdeaththroe = "release",
 					dockingarmor = 0.2,
@@ -187,7 +188,7 @@ return {
 					dockingHelperSpeed = 5,
 					dockingpieces = "11 13",
 					dockingradius = 80,			--The range at which the units snap to the carrier unit when docking.
-					stockpilelimit = 2,
+					stockpilelimit = 7,
 					stockpilemetal = 15,
 					stockpileenergy = 500,
 					dronesusestockpile = true,
@@ -198,7 +199,7 @@ return {
 		},
 		weapons = {
 			[1] = {
-				badtargetcategory = "VTOL",
+				-- badtargetcategory = "VTOL",
 				def = "leg_drone_controller",
 				onlytargetcategory = "NOTSUB",
 			},
