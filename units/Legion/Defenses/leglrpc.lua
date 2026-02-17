@@ -102,7 +102,7 @@ return {
 		},
 		weapondefs = {
 			lrpc = {
-				accuracy = 130,
+				accuracy = 100,
 				sprayangle = 130,
 				areaofeffect = 535,
 				avoidfeature = false,
@@ -137,14 +137,15 @@ return {
 				stockpile = true,
 				stockpiletime = 5,
 				sprayangle = 250,
-				trajectoryhight = 2, -- addedd
+				startvelocity = 350, -- addedd
+				-- trajectoryhight = 2, -- addedd
 				tolerance = 11220, -- addedd
 				turnrate = 6700, -- addedd
 				turret = true,
 				weaponacceleration = 250, -- addedd
-				weapontimer = 3.3,
+				weapontimer = 3.1,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 700,
+				weaponvelocity = 900,
 				customparams = {
 					cluster_def = 'cluster_munition',
 					cluster_number = 9,
@@ -171,13 +172,13 @@ return {
 				gravityaffected = "true", -- 
 				mygravity = 0.01,
 				hightrajectory = 1, -- addedd
-				impulseboost = 2.1, -- addedd
+				impulseboost = 3.1, -- addedd
 				impulsefactor = 2.24,
 				name = "Plasma Burst",
 				noselfdamage = true,
-				maxvelocity = 70,
-				range = 240,
-				rgbcolor = "0.8 0.8 1.0",
+				maxvelocity = 100,
+				range = 70,
+				rgbcolor = "0.7 0.7 1.0",
 				soundhit = "xplomed2",
 				soundhitwet = "splsmed",
 				soundstart = "cannhvy5",
