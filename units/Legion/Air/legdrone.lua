@@ -1,5 +1,6 @@
 return {
 	legdrone = {
+		airsightdistance = 1350,
 		maxacc = 0.75,
 		blocking = false,
 		maxdec = 1.45,
@@ -11,20 +12,20 @@ return {
 		canmove = true,
 		cantbetransported = false,
 		collide = true,
-		cruisealtitude = 778, --78
+		cruisealtitude = 878, --78
 		explodeas = "mediumExplosionGenericSelfd",
 		footprintx = 1,
 		footprintz = 1,
 		hoverattack = true,
-		idleautoheal = 0,
-		idletime = 1800,
-		health = 1515,
+		idleautoheal = 44,
+		idletime = 800,
+		health = 2515,
 		maxslope = 25,
 		speed = 380.5,
 		maxwaterdepth = 0,
 		nochasecategory = "COMMANDER",
 		objectname = "Units/LEGDRONE.s3o",
-		radardistance = 1100,
+		radardistance = 1190,
 		repairable = false,
 		script = "Units/LEGDRONE.cob",
 		seismicsignature = 0,
@@ -92,7 +93,7 @@ return {
 				noselfdamage = true,
 				ownerExpAccWeight = 4.0,
 				proximitypriority = 1,
-				range = 1050, --300
+				range = 1150, --300
 				reloadtime = 1.8,
 				rgbcolor = "1 0.93 0.43",
 				soundhit = "bimpact3",
