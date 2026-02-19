@@ -1,5 +1,6 @@
 return {
 	legspcarrier = {
+		airsightdistance = 1350,
 		maxacc = 0.18,
 		activatewhenbuilt = true,
 		airStrafe = false,
@@ -34,7 +35,7 @@ return {
 		script = "Units/legspcarrier.cob",
 		seismicsignature = 0,
 		selfdestructas = "largeExplosionGenericSelfd",
-		sightdistance = 1100,
+		sightdistance = 1200,
 		turninplaceanglelimit = 360,
 		turnrate = 540,
 		upright = true,
@@ -115,9 +116,9 @@ return {
 				name = "Long-Range Tactical Hellfire Napalm Shell",
 				noselfdamage = true,
 				projectiles = 9,
-				sprayangle = 128,
+				sprayangle = 328,
 				range = 2500,
-				reloadtime = 18,
+				reloadtime = 12,
 				smokecolor = 0.7,
 				smokeperiod = 9,
 				smokesize = 14.0,
@@ -139,7 +140,7 @@ return {
 				weaponvelocity = 550,
 				customparams = {
 					area_onhit_ceg = "fire-area-150-repeat",
-					area_onhit_damage = 250,
+					area_onhit_damage = 150,
 					area_onhit_damageceg = "burnflamexl-gen",
 					area_onhit_range = 150,
 					area_onhit_resistance = "fire",
@@ -197,7 +198,7 @@ return {
 					enabledocking = true,		--If enabled, docking behavior is used. Currently docking while moving or stopping, and undocking while attacking. Unfinished behavior may cause exceptions.
 					dockingHelperSpeed = 5,
 					dockingpieces = "11 13",
-					dockingradius = 80,			--The range at which the units snap to the carrier unit when docking.
+					dockingradius = 100,			--The range at which the units snap to the carrier unit when docking.
 					stockpilelimit = 7,
 					stockpilemetal = 15,
 					stockpileenergy = 500,
