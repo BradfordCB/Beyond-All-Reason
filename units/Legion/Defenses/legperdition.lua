@@ -140,7 +140,7 @@ return {
 				name = "Long-Range Tactical Hellfire Napalm Shell",
 				noselfdamage = true,
 				projectiles = 9,
-				sprayangle = 108,
+				sprayangle = 58,
 				range = 18700,
 				reloadtime = 2,
 				smokecolor = 0.7,
