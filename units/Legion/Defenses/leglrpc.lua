@@ -145,7 +145,7 @@ return {
 				weaponacceleration = 250, -- addedd
 				weapontimer = 3.1,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 900,
+				weaponvelocity = 1100,
 				customparams = {
 					cluster_def = 'cluster_munition',
 					cluster_number = 9,
@@ -155,12 +155,12 @@ return {
 					default = 600,
 					shields = 300,
 					subs = 120,
-					vtol = 725,
+					vtol = 925,
 				},
 			},
 			
 			cluster_munition = {
-				areaofeffect = 315,
+				areaofeffect = 515,
 				avoidfeature = false,
 				burnblow = true,
 				cegtag = "ministarfire",
@@ -168,7 +168,7 @@ return {
 				cratermult = 0,
 				edgeeffectiveness = 0.3,
 				explosiongenerator = "custom:ministarfire-explosion",
-				flighttime = 0.4,
+				flighttime = 0.5,
 				gravityaffected = "true", -- 
 				mygravity = 0.01,
 				hightrajectory = 1, -- addedd
@@ -176,8 +176,8 @@ return {
 				impulsefactor = 2.24,
 				name = "Plasma Burst",
 				noselfdamage = true,
-				maxvelocity = 100,
-				range = 70,
+				maxvelocity = 200,
+				range = 160,
 				rgbcolor = "0.7 0.7 1.0",
 				soundhit = "xplomed2",
 				soundhitwet = "splsmed",
@@ -187,7 +187,7 @@ return {
 					default = 100,
 					lboats = 100,
 					subs = 25,
-					vtol = 325,
+					vtol = 625,
 				},
 			},
 		},
