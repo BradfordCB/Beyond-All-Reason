@@ -128,7 +128,7 @@ return {
 				soundhitwet = "splslrg",
 				soundstart = "cannhvy6",
 				stockpile = true,
-				stockpiletime = 50,
+				stockpiletime = 20,
 				texture1 = "null",
 				texture2 = "railguntrail",
 				tolerance = 9000,
@@ -145,7 +145,7 @@ return {
 					area_onhit_range = 150,
 					area_onhit_resistance = "fire",
 					area_onhit_time = 55,
-					stockpilelimit = 40,
+					stockpilelimit = 20,
 				},
 				damage = {
 					commanders = 700,
