@@ -114,7 +114,7 @@ return {
 		},
 		weapondefs = {
 			napalmmissile = {
-				areaofeffect = 425,
+				areaofeffect = 455,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "burnflame-xs",
@@ -140,7 +140,7 @@ return {
 				name = "Long-Range Tactical Hellfire Napalm Shell",
 				noselfdamage = true,
 				projectiles = 9,
-				sprayangle = 11,
+				sprayangle = 222,
 				range = 18700,
 				reloadtime = 2,
 				smokecolor = 0.7,
@@ -151,7 +151,7 @@ return {
 				soundhit = "xplolrg4",
 				soundhitwet = "splslrg",
 				soundstart = "cannhvy6",
-				startvelocity = 800,
+				startvelocity = 50,
 				stockpile = true,
 				stockpiletime = 50,
 				texture1 = "null",
@@ -159,7 +159,7 @@ return {
 				tolerance = 9000,
 				turnrate = 5000,
 				turret = true,
-				weaponacceleration = 100,
+				weaponacceleration = 20,
 				weapontimer = 5,
 				weapontype = "Cannon",
 				weaponvelocity = 1600,
@@ -169,12 +169,12 @@ return {
 					area_onhit_damageceg = "burnflamexl-gen",
 					area_onhit_range = 150,
 					area_onhit_resistance = "fire",
-					area_onhit_time = 55,
+					area_onhit_time = 65,
 					stockpilelimit = 40,
 				},
 				damage = {
 					commanders = 700,
-					default = 2200, -- with area damage, 3000, minus some self-interference, so about 2750
+					default = 2500, -- with area damage, 3000, minus some self-interference, so about 2750
 				},
 			},
 		},
