@@ -142,14 +142,14 @@ return {
 					area_onhit_ceg = "fire-area-150-repeat",
 					area_onhit_damage = 150,
 					area_onhit_damageceg = "burnflamexl-gen",
-					area_onhit_range = 150,
+					area_onhit_range = 250,
 					area_onhit_resistance = "fire",
-					area_onhit_time = 55,
+					area_onhit_time = 25,
 					stockpilelimit = 20,
 				},
 				damage = {
 					commanders = 700,
-					default = 1200, -- with area damage, 3000, minus some self-interference, so about 2750
+					default = 2200, -- with area damage, 3000, minus some self-interference, so about 2750
 				},
 			},
 			leg_drone_controller = {
