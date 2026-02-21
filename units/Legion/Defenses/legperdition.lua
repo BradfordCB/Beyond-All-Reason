@@ -159,10 +159,10 @@ return {
 				tolerance = 9000,
 				turnrate = 5000,
 				turret = true,
-				weaponacceleration = 20,
+				weaponacceleration = 5,
 				weapontimer = 5,
 				weapontype = "Cannon",
-				weaponvelocity = 1600,
+				weaponvelocity = 1000,
 				customparams = {
 					area_onhit_ceg = "fire-area-150-repeat",
 					area_onhit_damage = 220,
