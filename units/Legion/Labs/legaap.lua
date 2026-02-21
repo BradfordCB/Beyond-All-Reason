@@ -43,7 +43,8 @@ return {
 			[7] = "legfort",
 			[8] = "legphoenix",
 			[9] = "legvenator",
-			[10] = "legionnaire", -- added
+			[10] = "legionnaire", -- 
+			[11] = "legnap",
 		},
 		customparams = {
 			usebuildinggrounddecal = true,
