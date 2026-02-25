@@ -122,7 +122,7 @@ return {
 				-- fallOffRate = 0.2,
 				firestarter = 0,
 				impulseboost = 4.1, -- addedd
-				impulsefactor = 9.5,
+				impulsefactor = 15.5,
 				-- intensity = 0.8,
 				leadbonus = 0,
 				name = "Heavy Rapid-fire Machine Gun",
