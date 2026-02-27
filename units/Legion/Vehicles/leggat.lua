@@ -134,6 +134,7 @@ return {
 				name = "Rapid-fire Machine Gun",
 				noselfdamage = true,
 				ownerExpAccWeight = 4.0,
+				predictboost = 1,
 				proximitypriority = 1,
 				range = 1261,
 				reloadtime = 0.4,
