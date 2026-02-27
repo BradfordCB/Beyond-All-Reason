@@ -145,6 +145,7 @@ return {
 				leadlimit = 0,
 				name = "Light g2g Heat Ray",
 				noselfdamage = true,
+				predictboost = 1,
 				projectiles = 5,
 				sprayangle = 128,
 				range = 1530,
