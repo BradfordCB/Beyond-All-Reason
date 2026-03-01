@@ -9,8 +9,7 @@ return {
 		collisionvolumetype = "CylY",
 		corpse = "DEAD",
 		energycost = 175,
-		energystorage = 3.5,
-		energyupkeep = -7,
+		energystorage = 0.5,
 		explodeas = "windboom",
 		footprintx = 3,
 		footprintz = 3,
@@ -25,7 +24,7 @@ return {
 		seismicsignature = 0,
 		selfdestructas = "windboom",
 		sightdistance = 273,
-		windgenerator = 52,
+		windgenerator = 25,
 		yardmap = "ooo ooo ooo",
 		customparams = {
 			buildinggrounddecaldecayspeed = 30,

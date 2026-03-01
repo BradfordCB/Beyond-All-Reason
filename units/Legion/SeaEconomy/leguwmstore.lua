@@ -17,7 +17,7 @@ return {
 		maxdec = 0,
 		maxslope = 20,
 		metalcost = 340,
-		metalstorage = 33001,
+		metalstorage = 3000,
 		minwaterdepth = 40,
 		objectname = "Units/leguwmstore.s3o",
 		script = "Units/leguwmstore.cob",

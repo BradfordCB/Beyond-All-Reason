@@ -18,7 +18,7 @@ return {
 		footprintx = 9,
 		footprintz = 9,
 		health = 26000,
-		maxslope = 25,
+		maxslope = 13,
 		maxwaterdepth = 0,
 		objectname = "Units/legstarfall.s3o",
 		script = "Units/legstarfall.cob",
@@ -108,14 +108,14 @@ return {
 		},
 		weapondefs = {
 			starfire = {
-				accuracy = 7,
-				areaofeffect = 326,
+				accuracy = 0,
+				areaofeffect = 256,
 				avoidfeature = false,
 				avoidfriendly = false,
 				avoidground = false,
 				burst = 63,
 				burstrate = 0.03,
-				sprayangle = 400, --500
+				sprayangle = 500,
 				highTrajectory = 1,
 				cegtag = "starfire",
 				collidefriendly = false,
@@ -127,10 +127,10 @@ return {
 				tolerance = 364,
 				explosiongenerator = "custom:starfire-explosion",
 				gravityaffected = "true",
-				impulsefactor = 8.5, -- 0.5
+				impulsefactor = 0.5,
 				name = "Very Long-Range High-Trajectory 63-Salvo Plasma Launcher",
 				noselfdamage = true,
-				range = 9100,
+				range = 6100,
 				reloadtime = 14,
 				rgbcolor = "0.7 0.7 1.0",
 				soundhit = "rflrpcexplo",
@@ -140,7 +140,7 @@ return {
 				turret = true,
 				weapontimer = 14,
 				weapontype = "Cannon",
-				weaponvelocity = 1200,
+				weaponvelocity = 900,
 				windup = 5,
 				--customparams = {
 				--	stockpilelimit = 1,
@@ -149,7 +149,6 @@ return {
 					default = 600,
 					shields = 240,
 					subs = 50,
-					vtol = 900, --600
 				},
 			},
 			energycharger = {

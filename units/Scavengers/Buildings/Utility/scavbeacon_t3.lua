@@ -18,7 +18,7 @@ return {
 		collisionvolumescales = "64 64 64",
 		collisionvolumetype = "CylY",
 		energystorage = 100000,
-		metalstorage = 330002,
+		metalstorage = 10000,
 		energymake = 800,
 		metalmake = 8,
 		explodeas = "commanderExplosion",

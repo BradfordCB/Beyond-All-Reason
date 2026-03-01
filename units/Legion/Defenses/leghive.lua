@@ -3,10 +3,10 @@ return {
 		maxacc = 0,
 		maxdec = 4.5,
 		buildangle = 4096,
-		energycost = 7500,
-		metalcost = 300,
+		energycost = 9000,
+		metalcost = 350,
 		buildpic = "leghive.DDS",
-		buildtime = 6000,
+		buildtime = 6600,
 		canrepeat = false,
 		canmove = true,
 		collisionvolumeoffsets = "0 -7 0",
@@ -17,18 +17,16 @@ return {
 		explodeas = "mediumBuildingExplosionGeneric",
 		footprintx = 3,
 		footprintz = 3,
-		idleautoheal = 5,
-		idletime = 1800,
 		mass = 700,
 		health = 1200,
-		maxslope = 25,
+		maxslope = 10,
 		maxwaterdepth = 0,
-		nochasecategory = "COMMANDER",
+		nochasecategory = "MOBILE",
 		objectname = "Units/leghive.s3o",
 		script = "Units/leghive.cob",
 		seismicsignature = 0,
 		selfdestructas = "mediumBuildingExplosionGenericSelfd",
-		sightdistance = 955,
+		sightdistance = 455,
 		turnrate = 1,
 		upright = true,
 		customparams = {
@@ -124,15 +122,15 @@ return {
 				name = "HeavyCannon",
 				noselfdamage = true,
 				metalpershot = 15,
-				energypershot = 100,
-				range = 1500,
+				energypershot = 500,
+				range = 1100,
 				reloadtime = 2.5,
 				size = 0,
 				soundhit = "",
 				soundhitwet = "",
 				soundstart = "",
 				stockpile = true,
-				stockpiletime = 9, --10
+				stockpiletime = 10,
 				turret = true,
 				weapontype = "Cannon",
 				weaponvelocity = 1000,
@@ -141,34 +139,38 @@ return {
 				},
 				customparams = {
 					carried_unit = "legdrone",     --Name of the unit spawned by this carrier unit.
-					engagementrange = 1500,
+					engagementrange = 1100,
 					spawns_surface = "LAND",    -- "LAND" or "SEA". The SEA option has not been tested currently.
-					spawnrate = 8, 				--Spawnrate roughly in seconds.
-					maxunits = 9,				--Will spawn units until this amount has been reached.
-					energycost = 100,			--Custom spawn cost. Remove this or set = nil to inherit the cost from the carried_unit unitDef. Cost inheritance is currently not working.
+					spawnrate = 10, 				--Spawnrate roughly in seconds.
+					maxunits = 6,				--Will spawn units until this amount has been reached.
+					startingdronecount = 3,
+					energycost = 500,			--Custom spawn cost. Remove this or set = nil to inherit the cost from the carried_unit unitDef. Cost inheritance is currently not working.
 					metalcost = 15,				--Custom spawn cost. Remove this or set = nil to inherit the cost from the carried_unit unitDef. Cost inheritance is currently not working.
-					controlradius = 1600,			--The spawned units should stay within this radius. Unfinished behavior may cause exceptions. Planned: radius = 0 to disable radius limit.
-					decayrate = 1,
+					controlradius = 1000,			--The spawned units should stay within this radius. Unfinished behavior may cause exceptions. Planned: radius = 0 to disable radius limit.
+					deathdecayrate = 20,
 					carrierdeaththroe = "release",
 					dockingarmor = 0.2,
-					dockinghealrate = 96,
-					docktohealthreshold = 66,
+					dockinghealrate = 20,
+					docktohealthreshold = 75,
 					enabledocking = true,		--If enabled, docking behavior is used. Currently docking while moving or stopping, and undocking while attacking. Unfinished behavior may cause exceptions.
 					dockingHelperSpeed = 5,
 					dockingpieces = "4 5 6 7 8 9",
 					dockingradius = 80,			--The range at which the units snap to the carrier unit when docking.
-					stockpilelimit = 9,
+					stockpilelimit = 6,
 					stockpilemetal = 15,
-					stockpileenergy = 100, --500
+					stockpileenergy = 500,
 					dronesusestockpile = true,
 					cobdockparam = 1,
 					cobundockparam = 1,
+					dronedocktime = 3,
+					droneairtime = 60,
+					droneammo = 12,
 				}
 			},
 		},
 		weapons = {
 			[1] = {
-				--badtargetcategory = "VTOL",
+				badtargetcategory = "VTOL",
 				def = "PLASMA",
 				onlytargetcategory = "NOTSUB",
 			},

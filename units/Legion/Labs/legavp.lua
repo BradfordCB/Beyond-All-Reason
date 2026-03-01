@@ -65,8 +65,7 @@ return {
 			"legavantinuke",
 			"legavjam",
 			"legavrad",
-			"legafcv", -- legavp.lua, Missing coma on line 70
-			"legionnaire", -- added
+			"legafcv"
 		},
 		customparams = {
 			usebuildinggrounddecal = false,

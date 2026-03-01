@@ -114,8 +114,7 @@ return {
 				explosiongenerator = "custom:newnukecor",
 				firestarter = 100,
 				flighttime = 400,
-				impulseboost = 3.5,
-				impulsefactor = 14.5,
+				impulsefactor = 0.5,
 				metalpershot = 1500,
 				model = "legicbm.s3o",
 				name = "Intercontinental Thermonuclear Ballistic Missile",
@@ -139,9 +138,9 @@ return {
 				texture3 = "null",
 				targetable = 1,
 				tolerance = 4000,
-				turnrate = 3900,
-				weaponacceleration = 162,
-				weapontimer = 6.8, --5.5
+				turnrate = 5500,
+				weaponacceleration = 100,
+				weapontimer = 5.5,
 				weapontype = "StarburstLauncher",
 				weaponvelocity = 1600,
 				customparams = {
@@ -151,7 +150,7 @@ return {
 				},
 				damage = {
 					commanders = 2500,
-					default = 81500,
+					default = 11500,
 				},
 			},
 			nuclear_launch = {
@@ -170,11 +169,11 @@ return {
 				soundhit = "nukelaunchalarm",
 				soundhitvolume = 50,
 				tolerance = 10000,
-				turnrate = 1500,
-				weaponacceleration = 1200,
+				turnrate = 10000,
+				weaponacceleration = 101,
 				weapontimer = 0.1,
 				weapontype = "Cannon",
-				weaponvelocity = 1235,
+				weaponvelocity = 100,
 				damage = {
 					default = 0,
 				},

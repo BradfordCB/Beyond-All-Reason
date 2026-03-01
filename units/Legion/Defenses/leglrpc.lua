@@ -16,7 +16,7 @@ return {
 		footprintx = 5,
 		footprintz = 5,
 		health = 4450,
-		maxslope = 25,
+		maxslope = 12,
 		maxwaterdepth = 0,
 		objectname = "Units/LEGLRPC.s3o",
 		script = "Units/LEGLRPC.cob",
@@ -102,9 +102,9 @@ return {
 		},
 		weapondefs = {
 			lrpc = {
-				accuracy = 100,
-				sprayangle = 130,
-				areaofeffect = 535,
+				accuracy = 300,
+				sprayangle = 150,
+				areaofeffect = 135,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "starfire-small",
@@ -119,65 +119,45 @@ return {
 				explosiongenerator = "custom:starfire-explosion",
 				gravityaffected = "true",
 				heightboostfactor = 8,
-				hightrajectory = 1, -- addedd
-				impulseboost = 2.1, -- addedd
-				impulsefactor = 5.5,
+				impulsefactor = 0.5,
 				leadbonus = 0,
 				model = "legbomb.s3o",
 				name = "Long-Range g2g Heavy Cluster Plasma Cannon",
 				noselfdamage = true,
-				projectiles = 1,
-				range = 6100, --4800
+				range = 4800,
 				reloadtime = 18,
 				soundhit = "lrpcexplo",
 				soundhitwet = "splshbig",
 				soundstart = "lrpcshot3",
 				soundhitvolume = 38,
 				soundstartvolume = 24,
-				stockpile = true,
-				stockpiletime = 5,
-				sprayangle = 250,
-				startvelocity = 350, -- addedd
-				-- trajectoryhight = 2, -- addedd
-				tolerance = 11220, -- addedd
-				turnrate = 6700, -- addedd
 				turret = true,
-				weaponacceleration = 250, -- addedd
-				weapontimer = 3.1,
-				weapontype = "StarburstLauncher",
+				weapontype = "Cannon",
 				weaponvelocity = 1100,
 				customparams = {
 					cluster_def = 'cluster_munition',
-					cluster_number = 9,
-					stockpilelimit = 3,
+					cluster_number = 6,
 				},
 				damage = {
 					default = 600,
 					shields = 300,
 					subs = 120,
-					vtol = 925,
 				},
 			},
-			
 			cluster_munition = {
-				areaofeffect = 515,
+				areaofeffect = 115,
 				avoidfeature = false,
-				burnblow = true,
 				cegtag = "ministarfire",
 				craterboost = 0,
 				cratermult = 0,
 				edgeeffectiveness = 0.3,
 				explosiongenerator = "custom:ministarfire-explosion",
-				flighttime = 0.5,
-				gravityaffected = "true", -- 
-				mygravity = 0.01,
-				hightrajectory = 1, -- addedd
-				impulseboost = 3.1, -- addedd
-				impulsefactor = 2.24,
+				gravityaffected = "true",
+				impulsefactor = 0.5,
 				name = "Plasma Burst",
 				noselfdamage = true,
-				maxvelocity = 200,
-				range = 160,
+				maxvelocity = 720,
+				range = 110,
 				rgbcolor = "0.7 0.7 1.0",
 				soundhit = "xplomed2",
 				soundhitwet = "splsmed",
@@ -185,9 +165,8 @@ return {
 				weapontype = "Cannon",
 				damage = {
 					default = 100,
-					lboats = 100,
 					subs = 25,
-					vtol = 625,
+					vtol = 25,
 				},
 			},
 		},
@@ -195,12 +174,6 @@ return {
 			[1] = {
 				badtargetcategory = "MOBILE",
 				def = "LRPC",
-				onlytargetcategory = "SURFACE",
-			},
-			
-			[2] = {
-				badtargetcategory = "MOBILE",
-				def = "CLUSTER_MUNITION",
 				onlytargetcategory = "SURFACE",
 			},
 		},

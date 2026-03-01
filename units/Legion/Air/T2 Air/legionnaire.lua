@@ -1,7 +1,7 @@
 return {
 	legionnaire = {
-		--maxacc= 0.35,
-		airsightdistance = 1600, --1100
+		maxacc= 0.35,
+		airsightdistance = 1100,
 		blocking = false,
 		maxdec = 0.0875,
 		energycost = 6200,
@@ -11,26 +11,26 @@ return {
 		canfly = true,
 		canmove = true,
 		collide = false,
-		cruisealtitude = 660,
+		cruisealtitude = 160,
 		explodeas = "smallExplosionGenericAir",
 		footprintx = 2,
 		footprintz = 2,
 		maxacc= 0.4,
 		maxaileron = 0.016,
 		maxbank = 0.72,
-		health = 3680, --480
+		health = 480,
 		maxelevator = 0.013,
 		maxpitch = 0.745,
 		maxrudder = 0.015,
 		maxslope = 15,
-		speed = 390, --270
+		speed = 270,
 		maxwaterdepth = 0,
-		nochasecategory = "UNDERWATER", --"NOTAIR",
+		nochasecategory = "NOTAIR",
 		objectname = "Units/legionnaire.s3o",
 		script = "Units/legionnaire.cob",
 		seismicsignature = 0,
 		selfdestructas = "smallExplosionGenericAir",
-		sightdistance = 1230,
+		sightdistance = 430,
 		speedtofront = 0.06475,
 		stealth = false,
 		turnradius = 32,
@@ -44,7 +44,7 @@ return {
 			normaltex = "unittextures/cor_normal.dds",
 			subfolder = "CorAircraft/T2",
 			techlevel = 2,
-			attacksafetydistance = 700, --300
+			attacksafetydistance = 300,
 			fighter = 1,
 		},
 		sfxtypes = {
@@ -82,7 +82,7 @@ return {
 		weapondefs = {
 			leggun = {
 				accuracy = 5,
-				areaofeffect = 22, -- 2
+				areaofeffect = 2,
 				avoidfeature = true,
 				avoidfriendly = false,
 				burst = 10,
@@ -94,37 +94,34 @@ return {
 				cratermult = 0,
 				duration = 0.02,
 				edgeeffectiveness = 0.85,
-				explosiongenerator =  "custom:plasmahit-sparkonly", 
-				-- "custom:plasmahit-sparkonly" or "custom:genericshellexplosion-small" or  
-				-- "custom:laserhit-small" or "custom:genericshellexplosion-tiny-aa"
+				explosiongenerator = "custom:plasmahit-sparkonly",
 				fallOffRate = 0.0,
 				firestarter = 0,
-				impulsefactor = 3.33, -- 1.5
+				impulsefactor = 1.5,
 				intensity = 0.8,
 				minIntensity = 0.8,
 				name = "Rapid-fire dual A2A machine guns",
 				noselfdamage = true,
 				ownerExpAccWeight = 8.0,
 				predictboost = 1,
-				projectiles = 3, -- addedd
 				proximitypriority = 1,
-				range = 1600, --600
+				range = 600,
 				reloadtime = 1,
-				rgbcolor = "0.88 0.77 0.41", -- "1 0.4 0.95",
+				rgbcolor = "1 0.4 0.95",
 				soundhit = "bimpact3",
 				soundhitwet = "splshbig",
 				soundstart = "minigun3",
 				soundstartvolume = 2,
-				sprayangle = 135, -- 125
-				thickness = 0.4, -- 0.6
+				sprayangle = 125,
+				thickness = 0.6,
 				tolerance = 2400,
 				turret = true,
 				weapontype = "LaserCannon",
 				weaponvelocity = 2500,
 				damage = {
-					commanders = 2, --1
-					default = 12, --2
-					vtol = 80, --80
+					commanders = 1,
+					default = 2,
+					vtol = 80,
 				},
 				customparams = {
 					noattackrangearc= 1,
@@ -134,20 +131,12 @@ return {
 		},
 		weapons = {
 			[1] = {
-				-- badtargetcategory = "NOTAIR",
+				badtargetcategory = "NOTAIR",
 				def = "leggun",
 				maindir = "0 0 1",
-				maxangledif = 28,
-				onlytargetcategory = "VTOL SURFACE",
-				weaponAimAdjustPriority = 30,
-				fastAutoRetargeting = true,
-			[2] = {
-				-- badtargetcategory = "NOTAIR",
-				def = "leggun",
-				maindir = "0 0 1",
-				maxangledif = 28,
-				onlytargetcategory = "VTOL SURFACE",
-				weaponAimAdjustPriority = 30,
+				maxangledif = 18,
+				onlytargetcategory = "VTOL",
+				weaponAimAdjustPriority = 20,
 				fastAutoRetargeting = true,
 			},
 		},

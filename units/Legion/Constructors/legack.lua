@@ -65,7 +65,6 @@ return {
 			"legstarfall",
 			"leglab",
 			"legalab",
-			"cormwall",
 		},
 		customparams = {
 			unitgroup = 'buildert2',
