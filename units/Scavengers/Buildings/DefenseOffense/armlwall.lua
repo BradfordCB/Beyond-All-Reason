@@ -19,15 +19,15 @@ return {
 		hidedamage = true,
 		levelground = false,
 		mass = 10000000000,
-		health = 5320, --4x armclaw
-		maxslope = 24,
+		health = 75320, --4x armclaw
+		maxslope = 35,
 		maxwaterdepth = 0,
 		nochasecategory = "MOBILE",
 		objectname = "Units/ARMLWALL.s3o",
 		script = "Units/ARMLWALL.cob",
 		seismicsignature = 0,
 		selfdestructas = "tinyBuildingExplosionGenericSelfd",
-		sightdistance = 330,
+		sightdistance = 630,
 		stealth = true,
 		turnrate = 0,
 		upright = true,
@@ -71,7 +71,8 @@ return {
 				category = "heaps",
 				collisionvolumescales = "35.0 4.0 6.0",
 				collisionvolumetype = "cylY",
-				damage = 500,
+				crushresistance = 2500,
+				damage = 5000,
 				footprintx = 2,
 				footprintz = 2,
 				height = 20,
@@ -116,7 +117,7 @@ return {
 		},
 		weapondefs = {
 			lightning = {
-				areaofeffect = 8,
+				areaofeffect = 38,
 				avoidfeature = false,
 				beamttl = 1,
 				burst = 10,
@@ -130,12 +131,14 @@ return {
 				explosiongenerator = "custom:genericshellexplosion-medium-lightning2",
 				firestarter = 50,
 				impactonly = 1,
-				impulsefactor = 0,
-				intensity = 28, --was 24
+				impulsefactor = 0.33,
+				intensity = 22, --was 24
 				name = "Medium Lightning Cannon",
 				noselfdamage = true,
-				range = 315,
-				reloadtime = 1.33, --was 0.3333
+				paralyzer = true,
+				paralyzetime = 2,
+				range = 1215,
+				reloadtime = 0.7777, --was 0.3333
 				rgbcolor = "0.5 0.5 1",
 				soundhit = "lashit",
 				soundhitwet = "sizzle",
@@ -148,12 +151,13 @@ return {
 				customparams = {
 					exclude_preaim = true,
 					spark_ceg = "genericshellexplosion-splash-lightning",
-					spark_forkdamage = "0.3", --was 0.5
-					spark_maxunits = "3", --2x armclaw
-					spark_range = "80", --66% more than armclaw
+					spark_forkdamage = "0.83", --was 0.5
+					spark_maxunits = "7", --2x armclaw
+					spark_range = "180", --66% more than armclaw
 				},
 				damage = {
 					default = 64, --1/2 of armthor | 2.66x armclaw
+					vtol = 44,
 				},
 			},
 			-- banisher = {
@@ -208,7 +212,7 @@ return {
 		weapons = {
 			[1] = {
 				def = "lightning",
-				onlytargetcategory = "SURFACE",
+				onlytargetcategory = "NOTSUB SURFACE", -- SURFACE
 				fastautoretargeting = true,
 			},
 		},

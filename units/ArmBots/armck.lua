@@ -66,6 +66,7 @@ return {
 			[28] = "armjamt",
 			[29] = "armjuno",
 			[30] = "armsy",
+			[31] = "armlwall",
 		},
 		customparams = {
 			model_author = "Kaiser",

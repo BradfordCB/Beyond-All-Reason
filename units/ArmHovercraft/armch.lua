@@ -81,6 +81,7 @@ return {
 			[43] = "armavp",
 			[44] = "armasy",
 			[45] = "armuwgeo",
+			[46] = "armlwall",
 		},
 		customparams = {
 			model_author = "Beherith",

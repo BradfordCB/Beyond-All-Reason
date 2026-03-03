@@ -78,6 +78,7 @@ return {
 			[42] = "armfrt",
 			[43] = "armtl",
 			[44] = "armuwgeo",
+			[45] = "armlwall",
 		},
 		customparams = {
 			model_author = "Flaka",

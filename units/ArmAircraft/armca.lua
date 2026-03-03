@@ -64,6 +64,7 @@ return {
 			[29] = "armjuno",
 			[30] = "armsy",
 			[31] = "armuwgeo",
+			[32] = "armlwall",
 		},
 		customparams = {
 			model_author = "FireStorm, Flaka",

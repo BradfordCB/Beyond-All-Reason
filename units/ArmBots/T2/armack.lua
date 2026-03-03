@@ -66,6 +66,7 @@ return {
 			[27] = "armdf",
 			[28] = "armlab",
 			[29] = "armalab",
+			[30] = "armlwall",
 		},
 		customparams = {
 			model_author = "Kaiser",
