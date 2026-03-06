@@ -121,7 +121,7 @@ local isSinglePlayer = Spring.Utilities.Gametype.IsSinglePlayer()
 local anonymousMode = spGetModOptions().teamcolors_anonymous_mode
 local anonymousName = '?????'
 
-local usedFontSize
+local usedFontSize = fontSize
 
 local comms = {}
 local comnameList = {}
@@ -467,7 +467,6 @@ local function DrawName(attributes)
 		glScale(usedFontSize / fontSize, usedFontSize / fontSize, usedFontSize / fontSize)
 	end
 	glCallList(comnameList[attributes[1]])
-
 	if nameScaling then
 		glScale(1, 1, 1)
 	end
@@ -539,8 +538,12 @@ function widget:DrawScreenEffects()	-- using DrawScreenEffects so that guishader
 				local camDist = attributes[5]
 				local scale = iconScaleCache[camDist]
 				if not scale then
-					scale = 1 - (camDist / 25000)
-					if scale < 0.5 then
+					if camDist and camDist == camDist and camDist < math.huge then
+						scale = 1 - (camDist / 25000)
+						if scale < 0.5 then
+							scale = 0.5
+						end
+					else
 						scale = 0.5
 					end
 					iconScaleCache[camDist] = scale
@@ -598,7 +601,7 @@ function widget:DrawWorld()
 			local x, y, z = spGetUnitPosition(unitID)
 			if x and y and z then
 				-- Calculate distance once and store it
-				local camDistance = mathDiag(camX - x, camY - y, camZ - z)
+				local camDistance = math.max(150, mathDiag(camX - x, camY - y, camZ - z))
 
 				if drawForIcon and spIsUnitIcon(unitID) then
 					attributes[5] = camDistance
