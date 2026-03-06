@@ -6,6 +6,7 @@ return {
 		buildpic = "ARMLWALL.DDS",
 		buildtime = 14000, --3x armclaw
 		canrepeat = false,
+		cloakcost = 1,
 		collisionvolumeoffsets = "0 -3 0",
 		collisionvolumescales = "32 50 32",
 		collisionvolumetype = "CylY",
@@ -17,11 +18,13 @@ return {
 		footprintx = 2,
 		footprintz = 2,
 		hidedamage = true,
+		initcloaked = true,
 		levelground = false,
 		mass = 10000000000,
-		health = 75320, --4x armclaw
+		health = 65320, --4x armclaw
 		maxslope = 35,
 		maxwaterdepth = 0,
+		mincloakdistance = 20,
 		nochasecategory = "MOBILE",
 		objectname = "Units/ARMLWALL.s3o",
 		script = "Units/ARMLWALL.cob",
@@ -135,8 +138,8 @@ return {
 				intensity = 22, --was 24
 				name = "Medium Lightning Cannon",
 				noselfdamage = true,
-				paralyzer = true,
-				paralyzetime = 2,
+				 -- paralyzer = true,
+				 -- paralyzetime = 2,
 				range = 1215,
 				reloadtime = 0.7777, --was 0.3333
 				rgbcolor = "0.5 0.5 1",
