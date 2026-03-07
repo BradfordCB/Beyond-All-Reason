@@ -102,8 +102,8 @@ return {
 		},
 		weapondefs = {
 			lrpc = {
-				accuracy = 90,
-				areaofeffect = 135,
+				accuracy = 120,
+				areaofeffect = 435,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "arty-huge",
@@ -129,9 +129,9 @@ return {
 				soundhitwet = "splshbig",
 				soundstart = "lrpcshot3",
 				soundstartvolume = 24,
-				sprayangle = 22,
+				sprayangle = 72,
 				startvelocity = 1150,
-				trajectoryheight = 88,
+				trajectoryheight = 588,
 				turret = true,
 				weaponacceleration = 159,
 				weapontype = "Cannon",
