@@ -120,7 +120,7 @@ return {
 				projectiles = 5, --
 				range = 1155,
 				reloadtime = 0.3,
-				rgbcolor = "1 0 0.12",
+				rgbcolor = "1 0.33 0.12",
 				soundhitdry = "",
 				soundhitwet = "sizzle",
 				soundstart = "lasrfir3",
