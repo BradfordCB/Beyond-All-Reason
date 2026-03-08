@@ -1,7 +1,6 @@
 return {
 	armwar = {
 		buildpic = "ARMWAR.DDS",
-		activatewhenbuilt = true,
 		buildtime = 4200,
 		canmove = true,
 		collisionvolumeoffsets = "0 0 1",
@@ -13,8 +12,10 @@ return {
 		footprintx = 3,
 		footprintz = 3,
 		health = 9590,
-		maxacc = 0.0828,
-		maxdec = 0.8211,
+		idleautoheal = 5,
+		idletime = 300,
+		maxacc = 0.1228,
+		maxdec = 1.2211,
 		maxslope = 22,
 		maxwaterdepth = 55,
 		metalcost = 270,
@@ -103,7 +104,7 @@ return {
 			armwar_laser = {
 				areaofeffect = 28,
 				avoidfeature = false,
-				beamtime = 0.11,
+				beamtime = 0.12,
 				corethickness = 0.111,
 				craterareaofeffect = 0,
 				craterboost = 0,
@@ -118,6 +119,7 @@ return {
 				name = "Dual close-quarters g2g laser",
 				noselfdamage = true,
 				projectiles = 5, --
+				sprayangle = 120,
 				range = 1155,
 				reloadtime = 0.3,
 				rgbcolor = "1 0.33 0.12",
@@ -125,11 +127,10 @@ return {
 				soundhitwet = "sizzle",
 				soundstart = "lasrfir3",
 				soundtrigger = 1,
-				sprayangle = 120,
 				thickness = 0.85,
 				turret = true,
 				weapontype = "BeamLaser",
-				weaponvelocity = 950,
+				weaponvelocity = 1150,
 				damage = {
 					default = 55,
 					vtol = 49,
