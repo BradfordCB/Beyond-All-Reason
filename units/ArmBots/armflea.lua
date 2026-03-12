@@ -96,7 +96,7 @@ return {
 		},
 		weapondefs = {
 			flea_laser = {
-				areaofeffect = 8,
+				areaofeffect = 22,
 				avoidfeature = false,
 				beamtime = 0.1,
 				beamttl = 1,
@@ -123,7 +123,7 @@ return {
 				soundhitwet = "sizzle",
 				soundstart = "lasrfir1",
 				soundtrigger = 1,
-				sprayangle = 110,
+				sprayangle = 190,
 				thickness = 0.2,
 				tolerance = 10000,
 				turret = true,
