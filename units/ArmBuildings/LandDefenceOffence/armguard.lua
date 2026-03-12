@@ -116,11 +116,13 @@ return {
 				impulsefactor = 0.5,
 				name = "Heavy g2g long range plasma cannon",
 				noselfdamage = true,
+				projectiles = 3, --
 				range = 1520,
 				reloadtime = 2.85,
 				soundhit = "xplomed2",
 				soundhitwet = "splsmed",
 				soundstart = "cannhvy5",
+				sprayangle = 190,
 				turret = true,
 				weapontype = "Cannon",
 				weaponvelocity = 550,
@@ -137,7 +139,7 @@ return {
 			},
 			plasma_high = {
 				accuracy = 75,
-				areaofeffect = 100,
+				areaofeffect = 190,
 				avoidfeature = false,
 				cegtag = "arty-medium",
 				craterboost = 0,
@@ -150,12 +152,15 @@ return {
 				mygravity = 0.289,
 				name = "Heavy g2g long range plasma cannon",
 				noselfdamage = true,
+				projectiles = 3, --
 				range = 1520,
 				reloadtime = 2.85,
 				soundhit = "xplomed2",
 				soundhitwet = "splsmed",
 				soundstart = "cannhvy5",
+				sprayangle = 120,
 				turret = true,
+				weaponacceleration = 220,
 				weapontype = "Cannon",
 				weaponvelocity = 700,
 				customparams = {
