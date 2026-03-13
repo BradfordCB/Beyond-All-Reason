@@ -144,7 +144,7 @@ return {
 				turret = true,
 				weaponacceleration = 1250,
 				weapontype = "MissileLauncher",
-				weaponvelocity = 1850,
+				weaponvelocity = 1550,
 				customparams = {
 					stockpilelimit = 25,
 				},
