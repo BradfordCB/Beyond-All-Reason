@@ -100,7 +100,7 @@ return {
 		},
 		weapondefs = {
 			rflrpc = {
-				accuracy = 100,
+				accuracy = 200,
 				areaofeffect = 135,
 				avoidfeature = false,
 				avoidfriendly = false,
@@ -124,7 +124,8 @@ return {
 				soundhitvolume = 34,
 				soundhitwet = "splshbig",
 				soundstart = "lrpcshot3",
-				sprayangle = 15,
+				sprayangle = 35,
+				trajectoryheight = 0.99, --
 				turret = true,
 				weaponacceleration = 111,
 				weapontimer = 14,
