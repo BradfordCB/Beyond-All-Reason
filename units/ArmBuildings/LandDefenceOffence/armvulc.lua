@@ -100,7 +100,7 @@ return {
 		},
 		weapondefs = {
 			rflrpc = {
-				accuracy = 200,
+				accuracy = 300,
 				areaofeffect = 135,
 				avoidfeature = false,
 				avoidfriendly = false,
@@ -109,10 +109,11 @@ return {
 				collidefriendly = false,
 				craterboost = 0.1,
 				cratermult = 0.1,
-				edgeeffectiveness = 0.15,
+				edgeeffectiveness = 0.35,
 				energypershot = 15000,
 				explosiongenerator = "custom:genericshellexplosion-huge",
-				gravityaffected = "true",
+				flighttime = 10.4,
+				--gravityaffected = "true",
 				impulsefactor = 2.1,
 				name = "Rapid-fire long-range plasma cannon",
 				noselfdamage = true,
@@ -125,12 +126,21 @@ return {
 				soundhitwet = "splshbig",
 				soundstart = "lrpcshot3",
 				sprayangle = 35,
-				trajectoryheight = 0.99, --
+				startvelocity = 590,
+				trajectoryheight = 1, --
 				turret = true,
-				weaponacceleration = 111,
+				weaponacceleration = 211,
 				weapontimer = 14,
-				weapontype = "Cannon",
-				weaponvelocity = 1100,
+				weapontype = "MissileLauncher",
+				weaponvelocity = 1490,
+				customparams = {
+					cruise_max_height = "290",
+					cruise_min_height = "125",
+					lockon_dist = "150",
+					speceffect = "cruise",
+					overrange_distance = 9897,
+					projectile_destruction_method = "descend",
+				},
 				damage = {
 					default = 1625,
 					shields = 812,
