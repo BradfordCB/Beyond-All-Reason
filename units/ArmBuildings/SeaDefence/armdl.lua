@@ -143,7 +143,7 @@ return {
 				turret = true,
 				waterweapon = true,
 				weaponacceleration = 75,
-				weapontype = "TorpedoLauncher",
+				weapontype = "Cannon",
 				weaponvelocity = 600,
 				customparams = {
 					speceffect = "torpwaterpen",
