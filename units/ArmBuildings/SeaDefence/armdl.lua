@@ -36,7 +36,7 @@ return {
 			normaltex = "unittextures/Arm_normal.dds",
 			removewait = true,
 			subfolder = "ArmBuildings/SeaDefence",
-			unitgroup = "sub",
+			unitgroup = "sub", -- weapon
 			usebuildinggrounddecal = true,
 		},
 		featuredefs = {
@@ -109,6 +109,7 @@ return {
 				bouncerebound = 0.8,
 				bounceslip = 0.2,
 				burnblow = true,
+				canattackground = true,
 				collidefriendly = false,
 				craterareaofeffect = 0,
 				craterboost = 0,
@@ -124,7 +125,7 @@ return {
 				name = "Depthcharge launcher",
 				nogap = false, --
 				noselfdamage = true,
-				numbounce = 2,
+				numbounce = 1,
 				projectiles = 3, --
 				range = 1890,
 				reloadtime = 1.5,
@@ -144,6 +145,9 @@ return {
 				weaponacceleration = 75,
 				weapontype = "TorpedoLauncher",
 				weaponvelocity = 600,
+				customparams = {
+					speceffect = "torpwaterpen",
+				},
 				damage = {
 					default = 225,
 				},
@@ -153,7 +157,7 @@ return {
 			[1] = {
 				badtargetcategory = "VTOL",
 				def = "COAX_DEPTHCHARGE",
-				onlytargetcategory = "NOTHOVER SURFACE",
+				onlytargetcategory = "NOTHOVER SUB SURFACE NOTAIR", -- UNDERWATER CANBEUW
 				fastautoretargeting = true,
 			},
 		},
