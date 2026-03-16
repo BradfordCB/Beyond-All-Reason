@@ -154,6 +154,7 @@ return {
 				badtargetcategory = "VTOL",
 				def = "COAX_DEPTHCHARGE",
 				onlytargetcategory = "NOTHOVER SURFACE",
+				fastautoretargeting = true,
 			},
 		},
 	},
