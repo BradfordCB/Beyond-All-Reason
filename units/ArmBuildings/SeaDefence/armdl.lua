@@ -102,11 +102,11 @@ return {
 		},
 		weapondefs = {
 			coax_depthcharge = {
-				areaofeffect = 335,
+				areaofeffect = 385,
 				avoidfeature = false,
 				avoidfriendly = false,
 				avoidground = false,
-				bouncerebound = 1.22,
+				bouncerebound = 0.99,
 				bounceslip = 0.28,
 				burnblow = true,
 				canattackground = true,
@@ -144,7 +144,7 @@ return {
 				turnrate = 64000,
 				turret = true,
 				waterweapon = true,
-				weaponacceleration = 75,
+				weaponacceleration = 85,
 				weapontype = "Cannon",
 				weaponvelocity = 700,
 				customparams = {
