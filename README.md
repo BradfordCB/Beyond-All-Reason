@@ -1,4 +1,4 @@
-# Beyond-All-Reason
+# Beyond-All-Reason for mod testing
 
 ![Discord](https://img.shields.io/discord/225695362004811776)
 
