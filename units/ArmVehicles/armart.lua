@@ -111,7 +111,7 @@ return {
 		},
 		weapondefs = {
 			tawf113_weapon = {
-				accuracy = 175,
+				accuracy = 215,
 				areaofeffect = 75,
 				avoidfeature = false,
 				cegtag = "arty-small",
@@ -122,11 +122,11 @@ return {
 				gravityaffected = "true",
 				hightrajectory = 1,
 				impulsefactor = 1.91,
-				mygravity = 0.184, -- 0.276
+				mygravity = 0.276, -- 0.276
 				name = "Long-range high-trajectory g2g plasma cannon",
 				noselfdamage = true,
 				projectiles = 3, --
-				sprayangle = 195,
+				sprayangle = 205,
 				range = 1420,
 				reloadtime = 4.3,
 				soundhit = "tawf113a",
@@ -134,7 +134,7 @@ return {
 				soundstart = "cannhvy3",
 				turret = true,
 				weapontype = "Cannon",
-				weaponvelocity = 1200,
+				weaponvelocity = 1000,
 				damage = {
 					default = 99,
 					subs = 61,
