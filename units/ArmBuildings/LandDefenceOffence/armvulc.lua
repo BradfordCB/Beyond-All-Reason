@@ -101,7 +101,7 @@ return {
 		},
 		weapondefs = {
 			rflrpc = {
-				accuracy = 400, --700
+				accuracy = 210, --700
 				areaofeffect = 505,
 				avoidfeature = false,
 				avoidfriendly = false,
