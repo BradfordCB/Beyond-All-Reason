@@ -104,7 +104,7 @@ return {
 		weapondefs = {
 			lrpc = {
 				accuracy = 120,
-				areaofeffect = 435,
+				areaofeffect = 335,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "arty-huge",
@@ -124,13 +124,13 @@ return {
 				maxvelocity = 1600, --
 				projectiles = 3, --
 				range = 6650,
-				reloadtime = 13.2,
+				reloadtime = 10.2,
 				soundhit = "lrpcexplo",
 				soundhitvolume = 38,
 				soundhitwet = "splshbig",
 				soundstart = "lrpcshot3",
 				soundstartvolume = 24,
-				sprayangle = 72,
+				sprayangle = 122,
 				startvelocity = 1150,
 				trajectoryheight = 588,
 				turret = true,
@@ -138,9 +138,9 @@ return {
 				weapontype = "Cannon",
 				-- weaponvelocity = 1100, -- 1100
 				damage = {
-					default = 1625,
-					shields = 812,
-					subs = 500,
+					default = 625,
+					shields = 312,
+					subs = 200,
 				},
 			},
 		},
