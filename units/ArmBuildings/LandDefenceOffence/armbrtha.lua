@@ -132,7 +132,7 @@ return {
 				soundstartvolume = 24,
 				sprayangle = 222,
 				startvelocity = 1150,
-				trajectoryheight = 2,
+				-- trajectoryheight = 2,
 				turret = true,
 				weaponacceleration = 159,
 				weapontype = "Cannon",
