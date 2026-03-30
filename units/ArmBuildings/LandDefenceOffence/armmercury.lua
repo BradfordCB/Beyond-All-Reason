@@ -95,7 +95,7 @@ return {
 		},
 		weapondefs = {
 			arm_advsam = {
-				areaofeffect = 225,
+				areaofeffect = 295,
 				avoidfeature = false,
 				avoidfriendly = false,
 				burnblow = true,
@@ -110,13 +110,14 @@ return {
 				energypershot = 1800,
 				explosiongenerator = "custom:genericshellexplosion-huge",
 				firestarter = 90,
-				flighttime = 8.5,
+				flighttime = 8.9,
 				impulsefactor = 0,
 				metalpershot = 0,
 				model = "corscreamermissile.s3o",
 				name = "Heavy long-range g2a guided missile launcher",
 				noselfdamage = true,
 				projectiles = 3, --
+				sprayangle = 200,
 				proximitypriority = -1,
 				range = 3100,
 				reloadtime = 1.5,
@@ -132,7 +133,7 @@ return {
 				soundstart = "aarocket",
 				soundstartvolume = 8,
 				sprayangle = 10000,
-				startvelocity = 400,
+				startvelocity = 100,
 				stockpile = true,
 				stockpiletime = 2.22,
 				texture1 = "null",
@@ -142,7 +143,7 @@ return {
 				trajectoryheight = 1.95,
 				turnrate = 99000,
 				turret = true,
-				weaponacceleration = 90,
+				weaponacceleration = 50,
 				weapontype = "MissileLauncher",
 				weaponvelocity = 690,
 				customparams = {
