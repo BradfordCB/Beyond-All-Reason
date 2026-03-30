@@ -14,7 +14,6 @@ return {
 		footprintx = 8,
 		footprintz = 8,
 		health = 32000,
-		hightrajectory = 1,
 		maxacc = 0,
 		maxdec = 0,
 		maxslope = 13,
@@ -101,7 +100,7 @@ return {
 		},
 		weapondefs = {
 			rflrpc = {
-				accuracy = 250, --700
+				accuracy = 150, --700
 				areaofeffect = 505,
 				avoidfeature = false,
 				avoidfriendly = false,
@@ -115,10 +114,11 @@ return {
 				explosiongenerator = "custom:genericshellexplosion-huge",
 				-- flighttime = 20,
 				gravityaffected = "true",
+				hightrajectory = 1,
 				impulsefactor = 5.22,
 				name = "Rapid-fire long-range plasma cannon",
 				noselfdamage = true,
-				maxvelocity = 1600, --
+				maxvelocity = 1200, --
 				projectiles = 3, --
 				sprayangle = 205,
 				range = 8750,
