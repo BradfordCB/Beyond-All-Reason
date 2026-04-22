@@ -27,16 +27,16 @@ local isSingleplayer = Spring.Utilities.Gametype.IsSinglePlayer()
 
 if gadgetHandler:IsSyncedCode() then
 
-	local validation = string.randomString(4)
+	local validation = string.randomString(2)
 	_G.validationPlayerData = validation
 
 	function gadget:RecvLuaMsg(msg, player)
-		if msg:sub(3, 6) == validation then
+		if msg:sub(3, 4) == validation then
 			if msg:sub(1, 2) == "sd" then
 				local name = Spring.GetPlayerInfo(player, false)
-				-- Extract requestingPlayerID from position 7 onwards until first semicolon
-				local semicolonPos = string.find(msg, ";", 7)
-				local requestingPlayerID = string.sub(msg, 7, semicolonPos - 1)
+				-- Extract requestingPlayerID from position 5 onwards until first semicolon
+				local semicolonPos = string.find(msg, ";", 5)
+				local requestingPlayerID = string.sub(msg, 5, semicolonPos - 1)
 				-- Everything after first semicolon (includes "screenshot;" + compressed data)
 				local data = string.sub(msg, semicolonPos + 1)
 				SendToUnsynced("ReceiveScreenshot", requestingPlayerID .. ";" .. name .. ";" .. data)
@@ -44,7 +44,7 @@ if gadgetHandler:IsSyncedCode() then
 			elseif msg:sub(1, 2) == "ss" then
 				-- Screenshot request from synced
 				-- Format: "ss" + width + ";" + targetPlayerID, then append requestingPlayerID
-				local screenshotData = string.sub(msg, 7) .. ";" .. player
+				local screenshotData = string.sub(msg, 5) .. ";" .. player
 				SendToUnsynced("StartScreenshot", screenshotData)
 				return true
 			end
@@ -76,8 +76,11 @@ else
 
 	local myPlayerID = Spring.GetMyPlayerID()
 	local myPlayerName = Spring.GetPlayerInfo(myPlayerID)
-	local accountID = Spring.Utilities.GetAccountID(myPlayerID)
-	local authorized = SYNCED.permissions.playerdata[accountID]
+	local function isAuthorized()
+		local acID = Spring.Utilities.GetAccountID(myPlayerID)
+		local perms = SYNCED.permissions.playerdata
+		return perms and (perms[acID] or (myPlayerName and perms[myPlayerName]))
+	end
 
 	function gadget:Initialize()
 		gadgetHandler:AddSyncAction("ReceiveScreenshot", ReceiveScreenshot)
@@ -126,7 +129,7 @@ else
 	end
 
 	local function requestScreenshot(targetPlayerName, width)
-		if not authorized then
+		if not isAuthorized() then
 			return
 		end
 		if not targetPlayerName then
@@ -460,7 +463,7 @@ else
 		local thirdSemicolonPos = string.find(data, ";")
 		local screenshotTypeCheck = thirdSemicolonPos and string.sub(data, thirdSemicolonPos + 1, thirdSemicolonPos + 1) or ""
 
-		if authorized and (mySpec or isSingleplayer or screenshotTypeCheck == '1') then
+		if isAuthorized() and (mySpec or isSingleplayer or screenshotTypeCheck == '1') then
 			PlayerDataBroadcast(myPlayerName, fullMsg)
 		end
 	end

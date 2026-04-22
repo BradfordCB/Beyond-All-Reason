@@ -84,11 +84,6 @@ return {
 			explosiongenerators = {
 				[1] = "custom:barrelshot-large",
 			},
-			pieceexplosiongenerators = {
-				[1] = "deathceg2",
-				[2] = "deathceg3",
-				[3] = "deathceg4",
-			},
 		},
 		sounds = {
 			canceldestruct = "cancel2",
@@ -182,6 +177,9 @@ return {
 				weapontimer = 5,
 				weapontype = "MissileLauncher",
 				weaponvelocity = 800,
+				customparams = {
+					weapons_role = "secondary",
+				},
 				damage = {
 					vtol = 60,
 				},

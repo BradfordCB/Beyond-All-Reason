@@ -73,20 +73,7 @@ return {
 		},
 		sfxtypes = {
 			explosiongenerators = {
-			},
-			crashexplosiongenerators = {
-				[1] = "crashing-large",
-				[2] = "crashing-large",
-				[3] = "crashing-large2",
-				[4] = "crashing-large3",
-				[5] = "crashing-large3",
-			},
-			pieceexplosiongenerators = {
-				[1] = "airdeathceg3",
-				[2] = "airdeathceg4",
-				[3] = "airdeathceg2",
-			},
-		},
+			},		},
 		sounds = {
 			canceldestruct = "cancel2",
 			underattack = "warning1",
@@ -174,14 +161,14 @@ return {
 				range = 1280,
 				reloadtime = 7,
 				weapontype = "AircraftBomb",
-				damage = {
-					default = 0,
-					subs = 0,
-				},
 				customparams = {
 					bogus = 1,
 					nodecal = 1,
 					water_splash = 0, -- targetting weapon aircraftbomb
+				},
+				damage = {
+					default = 0,
+					subs = 0,
 				},
 			},
 			legphsound = {
@@ -193,14 +180,12 @@ return {
 				SoundHitDryVolume = 18,
 				weapontype = "Cannon",
 				customparams = {
+					bogus = 1,
+					nodecal = 1,
 					noexplosionlight = 1,
 				},
 				damage = {
 					default = 0,
-				},
-				customparams = {
-					bogus = 1,
-					nodecal = 1,
 				},
 			},
 		},

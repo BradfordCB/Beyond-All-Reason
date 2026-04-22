@@ -77,11 +77,6 @@ return {
 			explosiongenerators = {
 				[1] = "custom:rocketflare",
 			},
-			pieceexplosiongenerators = {
-				[1] = "deathceg2",
-				[2] = "deathceg3",
-				[3] = "deathceg4",
-			},
 		},
 		sounds = {
 			canceldestruct = "cancel2",
@@ -148,6 +143,9 @@ return {
 				weapontimer = 5,
 				weapontype = "MissileLauncher",
 				weaponvelocity = 670,
+				customparams = {
+					weapons_group = 1,
+				},
 				damage = {
 					default = 1,
 					vtol = 160,
@@ -196,6 +194,7 @@ return {
 				customparams = {
 					overrange_distance = 633,
 					projectile_destruction_method = "descend",
+					weapons_group = 2,
 				},
 				damage = {
 					default = 86,
