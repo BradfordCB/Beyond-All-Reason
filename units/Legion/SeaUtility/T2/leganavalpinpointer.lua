@@ -6,7 +6,7 @@ return {
 		buildtime = 10300,
 		canrepeat = false,
 		collisionvolumeoffsets = "0 0 0",
-		collisionvolumescales = "69 95 58",
+		collisionvolumescales = "48 80 48",
 		collisionvolumetype = "CylY",
 		corpse = "DEAD",
 		energycost = 7500,
@@ -15,8 +15,6 @@ return {
 		footprintx = 4,
 		footprintz = 4,
 		health = 1530,
-		idleautoheal = 5,
-		idletime = 1800,
 		istargetingupgrade = true,
 		maxacc = 0,
 		maxdec = 0,
@@ -69,13 +67,6 @@ return {
 				object = "Units/cor4X4D.s3o",
 				reclaimable = true,
 				resurrectable = 0,
-			},
-		},
-		sfxtypes = {
-			pieceexplosiongenerators = {
-				[1] = "deathceg2",
-				[2] = "deathceg3",
-				[3] = "deathceg4",
 			},
 		},
 		sounds = {

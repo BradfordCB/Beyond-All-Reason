@@ -49,6 +49,9 @@ local spGetConfigString = Spring.GetConfigString
 local spGetAllFeatures = Spring.GetAllFeatures
 local spGetSpectatingState = Spring.GetSpectatingState
 local spGetVisibleProjectiles = Spring.GetVisibleProjectiles
+local spGetProjectilesInRectangle = Spring.GetProjectilesInRectangle
+local mapSizeX = Game.mapSizeX
+local mapSizeZ = Game.mapSizeZ
 
 -- Localized GL functions
 local glClear = gl.Clear
@@ -274,6 +277,7 @@ local numAddDistortions = 0 -- how many times AddDistortion was called
 local spec = spGetSpectatingState()
 
 local vsx, vsy, vpx, vpy
+local invVsx, invVsy = 0, 0
 local DistortionTexture -- RGBA 8bit
 local ScreenCopy -- RGBA 8bit
 
@@ -337,6 +341,8 @@ function widget:ViewResize()
 	})
 	if not ScreenCopy then spEcho("Distortions GL4 Manager failed to create a ScreenCopy") return false end
 	if not DistortionTexture then spEcho("ScreenCopy Manager failed to create a DistortionTexture") return false end
+	invVsx = 1 / vsx
+	invVsy = 1 / vsy
 	return true
 end
 
@@ -549,6 +555,22 @@ local function updateDistortionPosition(distortionVBO, instanceID, posx, posy, p
 		instData[instanceIndex + 7] = p2z
 	end
 	if theta then instData[instanceIndex + 8] = theta end
+	distortionVBO.dirty = true
+	return instanceIndex
+end
+
+-- Specialized fast path for projectile position updates: no nil-checks, always writes pos+dir
+local function updateProjectilePosition(distortionVBO, instanceID, posx, posy, posz, dx, dy, dz)
+	local instanceIndex = distortionVBO.instanceIDtoIndex[instanceID]
+	if instanceIndex == nil then return nil end
+	instanceIndex = (instanceIndex - 1) * distortionVBO.instanceStep
+	local instData = distortionVBO.instanceData
+	instData[instanceIndex + 1] = posx
+	instData[instanceIndex + 2] = posy
+	instData[instanceIndex + 3] = posz
+	instData[instanceIndex + 5] = dx
+	instData[instanceIndex + 6] = dy
+	instData[instanceIndex + 7] = dz
 	distortionVBO.dirty = true
 	return instanceIndex
 end
@@ -1002,12 +1024,13 @@ end
 
 
 local function updateProjectileDistortions(newgameframe)
-	local nowprojectiles = spGetVisibleProjectiles()
-	gameFrame = spGetGameFrame()
-	local newgameframe = true
-	if gameFrame == lastGameFrame then newgameframe = false end
-	--spEcho(gameFrame, lastGameFrame, newgameframe)
-	lastGameFrame = gameFrame
+	-- Use GetProjectilesInRectangle to also capture BeamLaser projectiles
+	-- (spGetVisibleProjectiles misses them)
+	local nowprojectiles = spGetProjectilesInRectangle(0, 0, mapSizeX, mapSizeZ, false, true)
+	local gf = spGetGameFrame()
+	gameFrame = gf
+	local newgameframe = (gf ~= lastGameFrame)
+	lastGameFrame = gf
 	-- turn off uploading vbo
 	-- one known issue regarding to every gameframe respawning distortions is to actually get them to update existing dead distortion candidates, this is very very hard to do sanely
 	-- BUG: having a lifeTime associated with each projectile kind of bugs out updates
@@ -1027,8 +1050,8 @@ local function updateProjectileDistortions(newgameframe)
 					distortionType = trackedProjectileTypes[projectileID]
 					if distortionType ~= 'beam' then
 						local dx,dy,dz = spGetProjectileVelocity(projectileID)
-						local instanceIndex = updateDistortionPosition(projectileDistortionVBOMapCache[distortionType],
-							projectileID, px,py,pz, nil, dx,dy,dz)
+						local instanceIndex = updateProjectilePosition(projectileDistortionVBOMapCache[distortionType],
+							projectileID, px,py,pz, dx,dy,dz)
 						if debugproj then spEcho("Updated", instanceIndex, projectileID, px, py, pz,dx,dy,dz) end
 					end
 
@@ -1049,7 +1072,6 @@ local function updateProjectileDistortions(newgameframe)
 					if projectileDefDistortion and ( projectileID % (projectileDefDistortion.fraction or 1) == 0 ) then
 						local distortionParamTable = projectileDefDistortion.distortionParamTable
 						distortionType = projectileDefDistortion.distortionType
-
 
 						distortionParamTable[1] = px
 						distortionParamTable[2] = py
@@ -1072,8 +1094,6 @@ local function updateProjectileDistortions(newgameframe)
 
 						AddDistortion(projectileID, nil, nil, projectileDistortionVBOMapCache[distortionType], distortionParamTable,noUpload)
 						--AddDistortion(projectileID, nil, nil, projectilePointDistortionVBO, distortionParamTable)
-					else
-						--spEcho("No projectile distortion defined for", projectileID, weaponDefID, px, pz)
 					end
 				end
 				numadded = numadded + 1
@@ -1084,19 +1104,20 @@ local function updateProjectileDistortions(newgameframe)
 			trackedProjectiles[projectileID] = gameFrame
 		end
 	end
-	-- remove theones that werent updated
+	-- remove the ones that werent updated
 	local numremoved = 0
-	for projectileID, gf in pairs(trackedProjectiles) do
-		if gf < gameFrame then
+	if newgameframe then
+	for projectileID, pgf in pairs(trackedProjectiles) do
+		if pgf < gf then
 			-- SO says we can modify or remove elements while iterating, we just cant add
 			-- a possible hack to keep projectiles visible, is trying to keep getting their pos
 			local px, py, pz = spGetProjectilePosition(projectileID)
 			if px then -- this means that this projectile
 				local distortionType = trackedProjectileTypes[projectileID]
-				if newgameframe and distortionType ~= 'beam' then
+				if distortionType ~= 'beam' then
 					local dx,dy,dz = spGetProjectileVelocity(projectileID)
-					updateDistortionPosition(projectileDistortionVBOMapCache[distortionType],
-						projectileID, px,py,pz, nil, dx,dy,dz )
+					updateProjectilePosition(projectileDistortionVBOMapCache[distortionType],
+						projectileID, px,py,pz, dx,dy,dz )
 				end
 			else
 				numremoved = numremoved + 1
@@ -1111,12 +1132,11 @@ local function updateProjectileDistortions(newgameframe)
 			end
 		end
 	end
+	end -- newgameframe guard
 	-- upload all changed elements in one go
-	for _, targetVBO in pairs(projectileDistortionVBOMapCache) do
-		if targetVBO.dirty then
-			uploadAllElements(targetVBO)
-		end
-	end
+	if projectilePointDistortionVBO.dirty then uploadAllElements(projectilePointDistortionVBO) end
+	if projectileBeamDistortionVBO.dirty then uploadAllElements(projectileBeamDistortionVBO) end
+	if projectileConeDistortionVBO.dirty then uploadAllElements(projectileConeDistortionVBO) end
 	--if debugproj then
 	--	spEcho("#points", projectilePointDistortionVBO.usedElements, '#projs', #nowprojectiles )
 	--end
@@ -1142,7 +1162,6 @@ end
 
 function widget:Update(dt)
 	if autoupdate then checkConfigUpdates() end
-	local tus = spGetTimerMicros()
 
 	updateProjectileDistortions()
 end
@@ -1154,12 +1173,6 @@ local function DrawDistortionFunction2(gf) -- For render-to-texture
 		-- Set is as black with zero alpha
 		glClear(GL.COLOR_BUFFER_BIT, 0.0, 0.0, 0.0, 0.0)
 
-		local alt, ctrl = spGetModKeyState()
-
-		--if autoupdate and ctrl and (isSinglePlayer or spec) and (Spring.GetConfigInt('DevUI', 0) == 1) then
-		--	glBlending(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA)
-		--else
-		--end
 		-- So we are gonna multiply each effect with its own alpha, and then add them together on the destination
 		-- This means we also will be ignoring the destination alpha channel.
 		-- The default blending function is GL_FUNC_ADD
@@ -1279,7 +1292,7 @@ function widget:DrawWorld() -- We are drawing in world space, probably a bad ide
 	--spEcho("Drawing Distortion")
 	screenDistortionShader:Activate()
 
-	screenDistortionShader:SetUniformFloat("inverseScreenResolution", 1/vsx, 1/vsy)
+	screenDistortionShader:SetUniformFloat("inverseScreenResolution", invVsx, invVsy)
 	screenDistortionShader:SetUniformFloat("distortionOverallStrength", 1)
 	fullScreenQuadVAO:DrawArrays(GL.TRIANGLES)
 	screenDistortionShader:Deactivate()

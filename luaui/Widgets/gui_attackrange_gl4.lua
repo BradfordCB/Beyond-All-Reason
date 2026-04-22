@@ -338,7 +338,7 @@ local function initializeUnitDefRing(unitDefID)
 			local isDgun = (weaponDef.type == "DGun") and 1 or 0
 
 			local wName = weaponDef.name
-			if (weaponDef.type == "AircraftBomb") or (wName:find("bogus")) or weaponDef.customParams.bogus or weaponDef.customParams.norangering then
+			if (weaponDef.type == "AircraftBomb") or weaponDef.customParams.bogus == "1" or weaponDef.customParams.norangering then
 				range = 0
 			end
 			--spEcho("weaponNum: ".. weaponNum ..", name: " .. tableToString(weaponDef.name))
@@ -574,6 +574,7 @@ local shaderSourceCache = {
 		selBuilderCount = 1.0,
 		selUnitCount = 1.0,
 		inMiniMap = 0.0,
+		pipVisibleArea = {0, 1, 0, 1}, -- left, right, bottom, top in normalized [0,1] coords for PIP minimap
 	},
 }
 
@@ -1233,7 +1234,13 @@ function widget:DrawWorld(inMiniMap)
 
 	if chobbyInterface or not (selUnitCount > 0 or mouseUnit) then return end
 	if not Spring.IsGUIHidden() and (not WG['topbar'] or not WG['topbar'].showingQuit()) then
-		cameraHeightFactor = GetCameraHeightFactor() * 0.5 + 0.5
+		-- For PIP minimap, use thicker lines since PIP is larger than engine minimap
+		local inPip = inMiniMap and WG['minimap'] and WG['minimap'].isDrawingInPip
+		if inPip then
+			cameraHeightFactor = 2.5  -- PIP is larger, needs thicker lines
+		else
+			cameraHeightFactor = GetCameraHeightFactor() * 0.5 + 0.5
+		end
 		glTexture(0, "$heightmap")
 		glTexture(1, "$info")
 		-- glTexture(2, '$normals')
@@ -1260,6 +1267,14 @@ function widget:DrawWorld(inMiniMap)
 			attackRangeShader:SetUniformInt("rotationMiniMap", getCurrentMiniMapRotationOption() or ROTATION.DEG_0)
 			attackRangeShader:SetUniform("drawAlpha", colorConfig.fill_alpha)
 			attackRangeShader:SetUniform("fadeDistOffset", colorConfig.outer_fade_height_difference)
+
+			-- Pass PIP visible area if drawing in PIP minimap
+			if inMiniMap and WG['minimap'] and WG['minimap'].isDrawingInPip and WG['minimap'].getNormalizedVisibleArea then
+				local left, right, bottom, top = WG['minimap'].getNormalizedVisibleArea()
+				attackRangeShader:SetUniform("pipVisibleArea", left, right, bottom, top)
+			else
+				attackRangeShader:SetUniform("pipVisibleArea", 0, 1, 0, 1)
+			end
 
 			DRAWRINGS(GL_TRIANGLE_FAN) -- FILL THE CIRCLES
 

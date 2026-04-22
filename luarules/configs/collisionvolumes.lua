@@ -131,6 +131,16 @@ dynamicPieceCollisionVolume['cordoomt3'] = {
         ['0']={96,80,96,0,10,0,2,1,0},
     }
 }
+dynamicPieceCollisionVolume['leganavybattleship'] = {
+	on = {
+		['1'] = { 48, 48, 120, 0, 8, -58, 1, 2 },
+		offsets = { 0, 30, 0 },
+	},
+	off = {
+		['1'] = { 48, 48, 120, 0, 8, -58, 1, 2 },
+		offsets = { 0, 0, 0 },
+	},
+}
 
 unitCollisionVolume['armanni'] = {
 	on={54,81,54,0,-2,0,2,1,0},
@@ -164,6 +174,10 @@ unitCollisionVolume['cordoom'] = {
 unitCollisionVolume['corplat'] = {
 	on={96,60,96,0,28,0,1,1,1},
 	off={96,42,96,0,-20,0,1,1,1},
+}
+unitCollisionVolume['legsplab'] = {
+	on={96,76,96,0,24,0,1,1,1},
+	off={96,46,96,0,-12,0,1,1,1},
 }
 unitCollisionVolume['legsolar'] = {
 
@@ -390,9 +404,6 @@ pieceCollisionVolume['armshockwave'] = {
 pieceCollisionVolume['legmohoconct'] = {
 	['0']={70,30,70,0,-3,0,1,1},
 	['1']={21,16,30,0,-3,-1,2,1},
-}
-pieceCollisionVolume['leganavybattleship'] = {
-	['1'] = { 48, 48, 120, 0, 8, -58, 1, 2 },
 }
 
 for name, v in pairs(pieceCollisionVolume) do
