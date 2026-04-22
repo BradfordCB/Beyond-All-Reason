@@ -15,12 +15,12 @@ end
 
 if gadgetHandler:IsSyncedCode() then
 
-	local validation = string.randomString(4)
+	local validation = string.randomString(2)
 	_G.validationSys = validation
 
 	function gadget:RecvLuaMsg(msg, playerID)
-		if msg:sub(1,3)=="$y$" and msg:sub(4,7)==validation then
-			SendToUnsynced("systemBroadcast",playerID,msg:sub(8))
+		if msg:sub(1,3)=="$y$" and msg:sub(4,5)==validation then
+			SendToUnsynced("systemBroadcast",playerID,msg:sub(6))
 			return true
 		end
 	end
@@ -35,11 +35,14 @@ else
 
 	local myPlayerID = Spring.GetMyPlayerID()
 	local myPlayerName = Spring.GetPlayerInfo(myPlayerID)
-	local accountID = Spring.Utilities.GetAccountID(myPlayerID)
-	local authorized = SYNCED.permissions.sysinfo[accountID]
+	local function isAuthorized()
+		local acID = Spring.Utilities.GetAccountID(myPlayerID)
+		local perms = SYNCED.permissions.sysinfo
+		return perms and (perms[acID] or (myPlayerName and perms[myPlayerName]))
+	end
 
 	local function handleSystemEvent(_,playerID,system)
-		if authorized then
+		if isAuthorized() then
 			if Script.LuaUI("SystemEvent") then
 				if systems[playerID] == nil and system ~= nil then
 					systems[playerID] = system

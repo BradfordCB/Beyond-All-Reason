@@ -74,11 +74,6 @@ return {
 			explosiongenerators = {
 				[1] = "custom:barrelshot-tiny",
 			},
-			pieceexplosiongenerators = {
-				[1] = "deathceg2",
-				[2] = "deathceg3",
-				[3] = "deathceg4",
-			},
 		},
 		sounds = {
 			canceldestruct = "cancel2",
@@ -125,8 +120,8 @@ return {
 				range = 1200,
 				reloadtime = 9,
 				smokecolor = 0.5,
-				smokeperiod = 4,
-				smokesize = 8.5,
+				smokeperiod = 5,
+				smokesize = 7,
 				smoketime = 12,
 				smoketrail = true,
 				smoketrailcastshadow = false,

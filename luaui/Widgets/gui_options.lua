@@ -503,7 +503,7 @@ function updateInputDlist()
 		-- background
 		local x2 = math.max(textPosX+lineHeight+floor(usedFont:GetTextWidth(inputText) * inputFontSize), floor(activationArea[1]+((activationArea[3]-activationArea[1])/5)))
 		chatInputArea = { activationArea[1], activationArea[2]+chatlogHeightDiff-distance-inputHeight, x2, activationArea[2]+chatlogHeightDiff-distance }
-		UiElement(chatInputArea[1], chatInputArea[2], chatInputArea[3], chatInputArea[4], 0,0,nil,nil, 0,nil,nil,nil, math.max(0.75, Spring.GetConfigFloat("ui_opacity", 0.7)))
+		UiElement(chatInputArea[1], chatInputArea[2], chatInputArea[3], chatInputArea[4], 0,0,nil,nil, 0,nil,nil,nil, WG.FlowUI.clampedOpacity)
 		if WG['guishader'] then
 			WG['guishader'].InsertRect(activationArea[1], activationArea[2]+chatlogHeightDiff-distance-inputHeight, x2, activationArea[2]+chatlogHeightDiff-distance, 'optionsinput')
 		end
@@ -637,7 +637,7 @@ function DrawWindow()
 	windowRect = { screenX, screenY - screenHeight, screenX + screenWidth, screenY }
 
 	-- background
-	UiElement(screenX, screenY - screenHeight, screenX + screenWidth, screenY, (showTextInput and inputText ~= '' and inputMode == '') and 1 or 0, 0, 1, (showTextInput and 0 or 1), 1, 1, 1, 1, math.max(0.75, Spring.GetConfigFloat("ui_opacity", 0.7)))
+	UiElement(screenX, screenY - screenHeight, screenX + screenWidth, screenY, (showTextInput and inputText ~= '' and inputMode == '') and 1 or 0, 0, 1, (showTextInput and 0 or 1), 1, 1, 1, 1, WG.FlowUI.clampedOpacity)
 
 	-- title
 	local groupMargin = math.floor(bgpadding * 0.8)
@@ -2263,6 +2263,7 @@ function init()
 			distortioneffects = false,
 			snow = false,
 			particles = 10000,
+			nanoparticletype = 0,
 			guishader = 0,
 			decalsgl4 = 0,
 			decals = 0,
@@ -2286,6 +2287,7 @@ function init()
 			distortioneffects = true,
 			snow = false,
 			particles = 15000,
+			nanoparticletype = 1,
 			guishader = 0,
 			decalsgl4 = 1,
 			decals = 1,
@@ -2309,6 +2311,7 @@ function init()
 			distortioneffects = true,
 		 	snow = true,
 		 	particles = 20000,
+			nanoparticletype = 2,
 			decalsgl4 = 1,
 		 	decals = 2,
 			shadowslider = 4,
@@ -2331,6 +2334,7 @@ function init()
 			distortioneffects = true,
 			snow = true,
 			particles = 30000,
+			nanoparticletype = 2,
 			decalsgl4 = 1,
 			decals = 3,
 			shadowslider = 5,
@@ -2353,6 +2357,7 @@ function init()
 			distortioneffects = true,
 			snow = true,
 			particles = 40000,
+			nanoparticletype = 2,
 			decalsgl4 = 1,
 			decals = 4,
 			shadowslider = 6,
@@ -2778,7 +2783,7 @@ function init()
 		},
 
 		{ id = "ssao", group = "gfx", category = types.basic, widget = "SSAO", name = Spring.I18N('ui.settings.option.ssao'), type = "bool", value = GetWidgetToggleValue("SSAO"), description = Spring.I18N('ui.settings.option.ssao_descr') },
-		{ id = "ssao_strength", group = "gfx", category = types.dev, name = widgetOptionColor .. "   " .. Spring.I18N('ui.settings.option.ssao_strength'), type = "slider", min = 5, max = 11, step = 1, value = 8, description = '',
+		{ id = "ssao_strength", group = "gfx", category = types.dev, name = widgetOptionColor .. "   " .. Spring.I18N('ui.settings.option.ssao_strength'), type = "slider", min = 5, max = 15, step = 1, value = 10, description = '',
 		  onload = function(i)
 			  loadWidgetData("SSAO", "ssao_strength", { 'strength' })
 		  end,
@@ -2798,7 +2803,7 @@ function init()
 		},
 
 		{ id = "bloomdeferred", group = "gfx", category = types.basic, widget = "Bloom Shader Deferred", name = Spring.I18N('ui.settings.option.bloomdeferred'), type = "bool", value = GetWidgetToggleValue("Bloom Shader Deferred"), description = Spring.I18N('ui.settings.option.bloomdeferred_descr') },
-		{ id = "bloomdeferredbrightness", group = "gfx", category = types.advanced, name = widgetOptionColor .. "   " .. Spring.I18N('ui.settings.option.bloomdeferredbrightness'), type = "slider", min = 0.4, max = 1.4, step = 0.05, value = 0.9, description = '',
+		{ id = "bloomdeferredbrightness", group = "gfx", category = types.advanced, name = widgetOptionColor .. "   " .. Spring.I18N('ui.settings.option.bloomdeferredbrightness'), type = "slider", min = 0.5, max = 2.0, step = 0.05, value = 1.0, description = '',
 		  onload = function(i)
 			  loadWidgetData("Bloom Shader Deferred", "bloomdeferredbrightness", { 'glowAmplifier' })
 		  end,
@@ -3026,7 +3031,39 @@ function init()
 		  end,
 		  onchange = function(i, value)
 			  Spring.SetConfigInt("MaxParticles", value)
-			  Spring.SetConfigInt("MaxNanoParticles", math.floor(value*0.34))
+			  -- Keep the engine nano-spray budget in sync when the gadget is
+			  -- handing particles back to the engine (NanoParticleMode 0).
+			  if Spring.GetConfigInt("NanoParticleMode", 2) == 0 then
+				  Spring.SetConfigInt("MaxNanoParticles", math.floor(value * 0.34))
+				if Spring.GetConfigInt("NanoParticleMode", 2) == 0 then
+					Spring.SetConfigInt("MaxNanoParticles", math.floor(Spring.GetConfigInt("MaxParticles", 15000) * 0.34))
+				else
+					Spring.SetConfigInt("MaxNanoParticles", 0)
+				end
+			  end
+		  end,
+		},
+
+		{ id = "nanoparticletype", group = "gfx", category = types.basic,
+		  name = widgetOptionColor .. "   " .. Spring.I18N('ui.settings.option.nanoparticletype'),
+		  type = "select",
+		  options = {
+			  Spring.I18N('ui.settings.option.nanoparticletype_simple'),
+			  Spring.I18N('ui.settings.option.nanoparticletype_smart'),
+			  Spring.I18N('ui.settings.option.nanoparticletype_shapes'),
+		  },
+		  value = (tonumber(Spring.GetConfigInt("NanoParticleMode", 2)) or 2) + 1,
+		  description = Spring.I18N('ui.settings.option.nanoparticletype_descr'),
+		  onload = function(i)
+		  end,
+		  onchange = function(i, value)
+			  local mode = value - 1
+			  Spring.SetConfigInt("NanoParticleMode", mode)
+			  if mode == 0 then
+				  Spring.SetConfigInt("MaxNanoParticles", math.floor(Spring.GetConfigInt("MaxParticles", 15000) * 0.34))
+			  else
+				  Spring.SetConfigInt("MaxNanoParticles", 0)
+			  end
 		  end,
 		},
 

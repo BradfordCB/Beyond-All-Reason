@@ -78,10 +78,6 @@ return {
 				[3] = "custom:pilotlight",
 				[4] = "custom:flamestream",
 			},
-			pieceexplosiongenerators = {
-				[1] = "deathceg2",
-				[2] = "deathceg3",
-			},
 		},
 		sounds = {
 			canceldestruct = "cancel2",
@@ -147,6 +143,9 @@ return {
 				weapontimer = 5,
 				weapontype = "MissileLauncher",
 				weaponvelocity = 450,
+				customparams = {
+					weapons_role = "secondary",
+				},
 				damage = {
 					vtol = 138,
 				},

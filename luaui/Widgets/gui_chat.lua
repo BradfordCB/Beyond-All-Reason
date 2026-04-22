@@ -493,6 +493,8 @@ local autocompleteCommands = {
 	'defrange enemy air',
 	'defrange enemy nuke',
 	'defrange enemy ground',
+	'set_camera_anchor',
+	'focus_camera_anchor',
 }
 
 local playernames = {}
@@ -1974,15 +1976,7 @@ function widget:DrawScreen()
 		end
 		if updateDrawUi ~= nil then
 			lastDrawUiUpdate = clock()
-			gl.R2tHelper.RenderToTexture(uiTex,
-				function()
-					gl.Translate(-1, -1, 0)
-					gl.Scale(2 / ((rttArea[3]-rttArea[1])), 2 / ((rttArea[4]-rttArea[2])),	0)
-					gl.Translate(-rttArea[1], -rttArea[2], 0)
-					drawUi()
-				end,
-				true
-			)
+			gl.R2tHelper.RenderInRect(uiTex, rttArea[1], rttArea[2], rttArea[3], rttArea[4], drawUi, true)
 
 			-- drawUi() needs to run twice to fix some alignment issues so lets scedule one more update as workaround for now
 			if updateDrawUi == false then

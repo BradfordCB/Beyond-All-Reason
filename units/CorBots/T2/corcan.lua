@@ -68,13 +68,6 @@ return {
 				resurrectable = 0,
 			},
 		},
-		sfxtypes = {
-			pieceexplosiongenerators = {
-				[1] = "deathceg2",
-				[2] = "deathceg3",
-				[3] = "deathceg4",
-			},
-		},
 		sounds = {
 			canceldestruct = "cancel2",
 			underattack = "warning1",
@@ -106,6 +99,7 @@ return {
 				soundhitdryvolume = 16,
 				weapontype = "Cannon",
 				customparams = {
+					bogus = 1,
 					noexplosionlight = 1,
 				},
 				damage = {

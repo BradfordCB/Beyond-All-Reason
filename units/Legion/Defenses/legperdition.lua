@@ -84,11 +84,6 @@ return {
 				[1] = "custom:barrelshot-large",
 				[2] = "custom:dust_cloud_dirt",
 			},
-			pieceexplosiongenerators = {
-				[1] = "deathceg2",
-				[2] = "deathceg3",
-				[3] = "deathceg4",
-			},
 		},
 		sounds = {
 			canceldestruct = "cancel2",
@@ -165,6 +160,7 @@ return {
 					area_onhit_resistance = "fire",
 					area_onhit_time = 15,
 					stockpilelimit = 10,
+					water_splash = 0,
 				},
 				damage = {
 					commanders = 700,
