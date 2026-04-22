@@ -37,7 +37,7 @@ return {
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 1.749,
 		turnrate = 1290.29993,
-		workertime = 150,
+		workertime = 250,
 		customparams = {
 			model_author = "Kaiser",
 			normaltex = "unittextures/Arm_normal.dds",

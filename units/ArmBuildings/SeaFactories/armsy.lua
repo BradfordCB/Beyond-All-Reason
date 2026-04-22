@@ -26,7 +26,7 @@ return {
 		sightdistance = 340,
 		terraformspeed = 500,
 		waterline = 1,
-		workertime = 150,
+		workertime = 250,
 		yardmap = "oyyyyo yeeeey yeeeey yeeeey yeeeey oyyyyo",
 		buildoptions = {
 			[1] = "armcs",

@@ -33,7 +33,7 @@ return {
 		turninplaceanglelimit = 90,
 		turnrate = 405,
 		waterline = 80,
-		workertime = 350,
+		workertime = 550,
 		buildoptions = {
 			[1] = "armuwfus",
 			[2] = "armuwmmm",

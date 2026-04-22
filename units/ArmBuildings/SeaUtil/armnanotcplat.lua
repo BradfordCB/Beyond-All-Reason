@@ -39,7 +39,7 @@ return {
 		turnrate = 1,
 		upright = true,
 		waterline = 0,
-		workertime = 200,
+		workertime = 300,
 		customparams = {
 			buildinggrounddecaldecayspeed = 30,
 			buildinggrounddecalsizex = 5,

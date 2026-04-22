@@ -29,7 +29,7 @@ return {
 		selfdestructas = "largeBuildingExplosionGenericSelfd",
 		sightdistance = 312,
 		terraformspeed = 1000,
-		workertime = 200,
+		workertime = 300,
 		yardmap = "ooooooooo ooooooooo ooooooooo ooooooooo ooooooooo ooooooooo ooooooooo ooooooooo ooooooooo",
 		buildoptions = {
 			[1] = "armaca",

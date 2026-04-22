@@ -35,7 +35,7 @@ return {
 		turninplacespeedlimit = 0.759,
 		turnrate = 1138.5,
 		upright = true,
-		workertime = 210,
+		workertime = 310,
 		buildoptions = {
 			[1] = "armfus",
 			[2] = "armafus",

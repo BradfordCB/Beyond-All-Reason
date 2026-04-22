@@ -36,7 +36,7 @@ return {
 		terraformspeed = 1000,
 		turnrate = 1,
 		upright = true,
-		workertime = 200,
+		workertime = 300,
 		customparams = {
 			buildinggrounddecaldecayspeed = 30,
 			buildinggrounddecalsizex = 5,

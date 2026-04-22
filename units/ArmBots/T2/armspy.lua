@@ -44,7 +44,7 @@ return {
 		turninplacespeedlimit = 1.4388,
 		turnrate = 1581.25,
 		upright = true,
-		workertime = 50,
+		workertime = 90,
 		customparams = {
 			model_author = "FireStorm",
 			normaltex = "unittextures/Arm_normal.dds",
