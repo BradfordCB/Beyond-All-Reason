@@ -1,6 +1,6 @@
 return {
 	armhacv = {
-		builddistance = 136,
+		builddistance = 339,
 		builder = true,
 		buildpic = "ARMCONSUL.DDS",
 		buildtime = 42000,
@@ -39,7 +39,7 @@ return {
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 1.83678,
 		turnrate = 635,
-		workertime = 700,
+		workertime = 600,
 		buildoptions = {
 			[1] = "armafus",
 			[2] = "armfus",
@@ -110,6 +110,13 @@ return {
 				object = "Units/arm3X3A.s3o",
 				reclaimable = true,
 				resurrectable = 0,
+			},
+		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg2-builder",
+				[2] = "deathceg3-builder",
+				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

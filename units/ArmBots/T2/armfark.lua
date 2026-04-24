@@ -1,7 +1,7 @@
 return {
 	armfark = {
 		autoheal = 5,
-		builddistance = 136,
+		builddistance = 339,
 		builder = true,
 		buildpic = "ARMFARK.DDS",
 		buildtime = 6000,
@@ -36,7 +36,7 @@ return {
 		turninplacespeedlimit = 1.7424,
 		turnrate = 1265,
 		upright = true,
-		workertime = 210,
+		workertime = 140,
 		buildoptions = {
 			[1] = "armsolar",
 			[2] = "armwin",
@@ -82,6 +82,13 @@ return {
 				object = "Units/arm2X2D.s3o",
 				reclaimable = true,
 				resurrectable = 0,
+			},
+		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg2-builder",
+				[2] = "deathceg3-builder",
+				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

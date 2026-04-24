@@ -1,6 +1,6 @@
 return {
 	armsack = {
-		builddistance = 136,
+		builddistance = 339,
 		builder = true,
 		buildpic = "LEGACK.DDS",
 		buildtime = 12000,
@@ -35,7 +35,7 @@ return {
 		turninplacespeedlimit = 0.759,
 		turnrate = 1138.5,
 		upright = true,
-		workertime = 280,
+		workertime = 180,
 		buildoptions = {
 			[1] = "armafus",
 			[2] = "armageo",
@@ -87,6 +87,13 @@ return {
 				object = "Units/arm2X2B.s3o",
 				reclaimable = true,
 				resurrectable = 0,
+			},
+		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg2-builder",
+				[2] = "deathceg3-builder",
+				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

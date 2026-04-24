@@ -1,7 +1,7 @@
 return {
 	armrectr = {
 		autoheal = 5,
-		builddistance = 96,
+		builddistance = 339,
 		builder = true,
 		buildpic = "ARMRECTR.DDS",
 		buildtime = 2800,
@@ -37,7 +37,7 @@ return {
 		turninplacespeedlimit = 1.716,
 		turnrate = 1290.29993,
 		upright = true,
-		workertime = 300,
+		workertime = 200,
 		customparams = {
 			model_author = "Kaiser",
 			normaltex = "unittextures/Arm_normal.dds",
@@ -73,6 +73,13 @@ return {
 				object = "Units/arm2X2D.s3o",
 				reclaimable = true,
 				resurrectable = 0,
+			},
+		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg3-builder",
+				[2] = "deathceg2-builder",
+				[3] = "deathceg2",
 			},
 		},
 		sounds = {

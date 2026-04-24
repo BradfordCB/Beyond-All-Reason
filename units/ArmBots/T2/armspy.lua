@@ -1,7 +1,7 @@
 return {
 	armspy = {
 		activatewhenbuilt = true,
-		builddistance = 136,
+		builddistance = 339,
 		builder = true,
 		buildpic = "ARMSPY.DDS",
 		buildtime = 12000,
@@ -44,7 +44,7 @@ return {
 		turninplacespeedlimit = 1.4388,
 		turnrate = 1581.25,
 		upright = true,
-		workertime = 90,
+		workertime = 50,
 		customparams = {
 			model_author = "FireStorm",
 			normaltex = "unittextures/Arm_normal.dds",
@@ -82,6 +82,13 @@ return {
 				object = "Units/arm2X2D.s3o",
 				reclaimable = true,
 				resurrectable = 0,
+			},
+		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg2",
+				[2] = "deathceg3",
+				[3] = "deathceg4",
 			},
 		},
 		sounds = {

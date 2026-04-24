@@ -1,6 +1,6 @@
 return {
 	armsacv = {
-		builddistance = 136,
+		builddistance = 339,
 		builder = true,
 		buildpic = "LEGACV.DDS",
 		buildtime = 16000,
@@ -38,7 +38,7 @@ return {
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 1.2342,
 		turnrate = 399,
-		workertime = 350,
+		workertime = 250,
 		buildoptions = {
 			[1] = "armafus",
 			[2] = "armageo",
@@ -95,6 +95,11 @@ return {
 		sfxtypes = {
 			explosiongenerators = {
 				[1] = "custom:dust_cloud_dirt_light",
+			},
+			pieceexplosiongenerators = {
+				[1] = "deathceg2-builder",
+				[2] = "deathceg3-builder",
+				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

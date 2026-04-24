@@ -1,6 +1,6 @@
 return {
 	armbeaver = {
-		builddistance = 112,
+		builddistance = 339,
 		builder = true,
 		buildpic = "ARMBEAVER.DDS",
 		buildtime = 6700,
@@ -37,7 +37,7 @@ return {
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 0.9834,
 		turnrate = 311,
-		workertime = 180,
+		workertime = 80,
 		buildoptions = {
 			[1] = "armsolar",
 			[2] = "armadvsol",
@@ -119,6 +119,13 @@ return {
 				object = "Units/arm3X3C.s3o",
 				reclaimable = true,
 				resurrectable = 0,
+			},
+		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg2",
+				[2] = "deathceg3",
+				[3] = "deathceg4",
 			},
 		},
 		sounds = {

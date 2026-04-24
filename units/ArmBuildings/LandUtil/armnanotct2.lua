@@ -1,6 +1,6 @@
 return {
 	armnanotct2 = {
-		builddistance = 500,
+		builddistance = 900,
 		builder = true,
 		buildpic = "ARMNANOTC.DDS",
 		buildtime = 21000,
@@ -36,7 +36,7 @@ return {
 		terraformspeed = 3000,
 		turnrate = 1,
 		upright = true,
-		workertime = 900,
+		workertime = 600,
 		customparams = {
 			buildinggrounddecaldecayspeed = 30,
 			buildinggrounddecalsizex = 5,
@@ -47,6 +47,13 @@ return {
 			subfolder = "ArmBuildings/LandUtil",
 			unitgroup = "builder",
 			usebuildinggrounddecal = true,
+		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg2-builder",
+				[2] = "deathceg3-builder",
+				[3] = "deathceg4-builder",
+			},
 		},
 		sounds = {
 			build = "nanlath1",

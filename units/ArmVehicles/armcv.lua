@@ -1,6 +1,6 @@
 return {
 	armcv = {
-		builddistance = 130,
+		builddistance = 339,
 		builder = true,
 		buildpic = "ARMCV.DDS",
 		buildtime = 4050,
@@ -39,7 +39,7 @@ return {
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 1.2705,
 		turnrate = 435,
-		workertime = 190,
+		workertime = 90,
 		buildoptions = {
 			[1] = "armsolar",
 			[2] = "armadvsol",
@@ -108,6 +108,13 @@ return {
 				object = "Units/arm3X3C.s3o",
 				reclaimable = true,
 				resurrectable = 0,
+			},
+		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg2-builder",
+				[2] = "deathceg3-builder",
+				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

@@ -1,7 +1,7 @@
 return {
 	armmlv = {
 		activatewhenbuilt = true,
-		builddistance = 1330,
+		builddistance = 1430,
 		builder = true,
 		buildpic = "ARMMLV.DDS",
 		buildtime = 3520,
@@ -45,7 +45,7 @@ return {
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 1.66584,
 		turnrate = 629,
-		workertime = 320,
+		workertime = 220,
 		buildoptions = {
 			[1] = "armmine1",
 			[2] = "armmine2",
@@ -89,6 +89,12 @@ return {
 				object = "Units/arm3X3B.s3o",
 				reclaimable = true,
 				resurrectable = 0,
+			},
+		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg2",
+				[2] = "deathceg3",
 			},
 		},
 		sounds = {

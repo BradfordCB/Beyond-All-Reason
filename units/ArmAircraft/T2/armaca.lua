@@ -1,7 +1,7 @@
 return {
 	armaca = {
 		blocking = false,
-		builddistance = 136,
+		builddistance = 339,
 		builder = true,
 		buildpic = "ARMACA.DDS",
 		buildtime = 22000,
@@ -32,7 +32,7 @@ return {
 		terraformspeed = 650,
 		turninplaceanglelimit = 360,
 		turnrate = 240,
-		workertime = 180,
+		workertime = 120,
 		buildoptions = {
 			[1] = "armfus",
 			[2] = "armafus",
@@ -72,6 +72,20 @@ return {
 			subfolder = "ArmAircraft/T2",
 			techlevel = 2,
 			unitgroup = "buildert2",
+		},
+		sfxtypes = {
+			crashexplosiongenerators = {
+				[1] = "crashing-small",
+				[2] = "crashing-small",
+				[3] = "crashing-small2",
+				[4] = "crashing-small3",
+				[5] = "crashing-small3",
+			},
+			pieceexplosiongenerators = {
+				[1] = "airdeathceg3-builder",
+				[2] = "airdeathceg4-builder",
+				[3] = "airdeathceg2-builder",
+			},
 		},
 		sounds = {
 			build = "nanlath1",

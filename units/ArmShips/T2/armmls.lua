@@ -1,6 +1,6 @@
 return {
 	armmls = {
-		builddistance = 250,
+		builddistance = 690,
 		builder = true,
 		buildpic = "ARMMLS.DDS",
 		buildtime = 6000,
@@ -32,7 +32,7 @@ return {
 		turninplaceanglelimit = 90,
 		turnrate = 405,
 		waterline = 2,
-		workertime = 300,
+		workertime = 200,
 		buildoptions = {
 			[1] = "armtide",
 			[2] = "armmex",
@@ -95,6 +95,11 @@ return {
 		sfxtypes = {
 			explosiongenerators = {
 				[1] = "custom:waterwake-small",
+			},
+			pieceexplosiongenerators = {
+				[1] = "deathceg2",
+				[2] = "deathceg3",
+				[3] = "deathceg4",
 			},
 		},
 		sounds = {

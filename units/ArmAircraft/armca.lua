@@ -1,7 +1,7 @@
 return {
 	armca = {
 		blocking = false,
-		builddistance = 136,
+		builddistance = 339,
 		builder = true,
 		buildpic = "ARMCA.DDS",
 		buildtime = 7960,
@@ -31,7 +31,7 @@ return {
 		terraformspeed = 225,
 		turninplaceanglelimit = 360,
 		turnrate = 240,
-		workertime = 90,
+		workertime = 60,
 		buildoptions = {
 			[1] = "armsolar",
 			[2] = "armadvsol",
@@ -71,6 +71,19 @@ return {
 			normaltex = "unittextures/Arm_normal.dds",
 			subfolder = "ArmAircraft",
 			unitgroup = "builder",
+		},
+		sfxtypes = {
+			crashexplosiongenerators = {
+				[1] = "crashing-small",
+				[2] = "crashing-small",
+				[3] = "crashing-small2",
+				[4] = "crashing-small3",
+				[5] = "crashing-small3",
+			},
+			pieceexplosiongenerators = {
+				[1] = "airdeathceg3-builder",
+				[2] = "airdeathceg2-builder",
+			},
 		},
 		sounds = {
 			build = "nanlath1",

@@ -1,7 +1,7 @@
 return {
 	armspid = {
 		autoheal = 15,
-		builddistance = 150,
+		builddistance = 369,
 		builder = true,
 		buildpic = "ARMSPID.DDS",
 		buildtime = 7000,
@@ -37,7 +37,7 @@ return {
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 1.749,
 		turnrate = 1290.29993,
-		workertime = 250,
+		workertime = 150,
 		customparams = {
 			model_author = "Kaiser",
 			normaltex = "unittextures/Arm_normal.dds",
@@ -76,6 +76,13 @@ return {
 				object = "Units/arm2X2A.s3o",
 				reclaimable = true,
 				resurrectable = 0,
+			},
+		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg2",
+				[2] = "deathceg3",
+				[3] = "deathceg4",
 			},
 		},
 		sounds = {

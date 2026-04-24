@@ -1,6 +1,6 @@
 return {
 	armacsub = {
-		builddistance = 180,
+		builddistance = 400,
 		builder = true,
 		buildpic = "ARMACSUB.DDS",
 		buildtime = 23000,
@@ -33,7 +33,7 @@ return {
 		turninplaceanglelimit = 90,
 		turnrate = 405,
 		waterline = 80,
-		workertime = 550,
+		workertime = 350,
 		buildoptions = {
 			[1] = "armuwfus",
 			[2] = "armuwmmm",
@@ -86,6 +86,13 @@ return {
 				object = "Units/arm2X2A.s3o",
 				reclaimable = true,
 				resurrectable = 0,
+			},
+		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg2-builder",
+				[2] = "deathceg3-builder",
+				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

@@ -1,6 +1,6 @@
 return {
 	armch = {
-		builddistance = 150,
+		builddistance = 379,
 		builder = true,
 		buildpic = "ARMCH.DDS",
 		buildtime = 4470,
@@ -34,7 +34,7 @@ return {
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 1.6698,
 		turnrate = 425,
-		workertime = 220,
+		workertime = 110,
 		buildoptions = {
 			[1] = "armsolar",
 			[2] = "armadvsol",
@@ -125,6 +125,11 @@ return {
 				[1] = "custom:waterwake-small-hover",
 				[2] = "custom:bowsplash-small-hover",
 				[3] = "custom:hover-wake-tiny",
+			},
+			pieceexplosiongenerators = {
+				[1] = "deathceg2-builder",
+				[2] = "deathceg3-builder",
+				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

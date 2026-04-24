@@ -1,7 +1,7 @@
 return {
 	armhaca = {
 		blocking = false,
-		builddistance = 136,
+		builddistance = 339,
 		builder = true,
 		buildpic = "ARMACA.DDS",
 		buildtime = 58000,
@@ -32,7 +32,7 @@ return {
 		terraformspeed = 300,
 		turninplaceanglelimit = 360,
 		turnrate = 240,
-		workertime = 600,
+		workertime = 400,
 		buildoptions = {
 			[1] = "armafus",
 			[2] = "armfus",
@@ -73,6 +73,20 @@ return {
 			subfolder = "ArmSeaplanes",
 			techlevel = 3,
 			unitgroup = "builder",
+		},
+		sfxtypes = {
+			crashexplosiongenerators = {
+				[1] = "crashing-small",
+				[2] = "crashing-small",
+				[3] = "crashing-small2",
+				[4] = "crashing-small3",
+				[5] = "crashing-small3",
+			},
+			pieceexplosiongenerators = {
+				[1] = "airdeathceg2-builder",
+				[2] = "airdeathceg3-builder",
+				[3] = "airdeathceg4-builder",
+			},
 		},
 		sounds = {
 			build = "nanlath1",

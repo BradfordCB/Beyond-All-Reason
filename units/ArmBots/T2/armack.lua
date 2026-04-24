@@ -1,6 +1,6 @@
 return {
 	armack = {
-		builddistance = 136,
+		builddistance = 339,
 		builder = true,
 		buildpic = "ARMACK.DDS",
 		buildtime = 12500,
@@ -35,7 +35,7 @@ return {
 		turninplacespeedlimit = 0.759,
 		turnrate = 1138.5,
 		upright = true,
-		workertime = 310,
+		workertime = 210,
 		buildoptions = {
 			[1] = "armfus",
 			[2] = "armafus",
@@ -104,6 +104,13 @@ return {
 				object = "Units/arm2X2B.s3o",
 				reclaimable = true,
 				resurrectable = 0,
+			},
+		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg2-builder",
+				[2] = "deathceg3-builder",
+				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

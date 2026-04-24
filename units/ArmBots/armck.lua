@@ -1,6 +1,6 @@
 return {
 	armck = {
-		builddistance = 130,
+		builddistance = 339,
 		builder = true,
 		buildpic = "ARMCK.DDS",
 		buildtime = 3450,
@@ -34,7 +34,7 @@ return {
 		turninplacespeedlimit = 0.792,
 		turnrate = 1265,
 		upright = true,
-		workertime = 120,
+		workertime = 80,
 		buildoptions = {
 			[1] = "armsolar",
 			[2] = "armadvsol",
@@ -103,6 +103,12 @@ return {
 				object = "Units/arm2X2D.s3o",
 				reclaimable = true,
 				resurrectable = 0,
+			},
+		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg3-builder",
+				[2] = "deathceg2-builder",
 			},
 		},
 		sounds = {

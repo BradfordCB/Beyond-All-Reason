@@ -2,7 +2,7 @@ return {
 	armdecom = {
 		activatewhenbuilt = true,
 		autoheal = 0,
-		builddistance = 145,
+		builddistance = 359,
 		builder = true,
 		buildpic = "ARMDECOM.DDS",
 		buildtime = 30000,
@@ -51,7 +51,7 @@ return {
 		turninplacespeedlimit = 0.825,
 		turnrate = 1148,
 		upright = true,
-		workertime = 450,
+		workertime = 300,
 		buildoptions = {
 			[1] = "armmine1",
 			[2] = "armmine2",
@@ -85,6 +85,11 @@ return {
 				[1] = "custom:com_sea_laser_bubbles",
 				[2] = "custom:barrelshot-medium",
 				[3] = "custom:footstep-medium",
+			},
+			pieceexplosiongenerators = {
+				[1] = "deathceg2",
+				[2] = "deathceg3",
+				[3] = "deathceg4",
 			},
 		},
 		sounds = {
@@ -145,9 +150,6 @@ return {
 				turret = true,
 				weapontype = "BeamLaser",
 				weaponvelocity = 900,
-				customparams = {
-					weapons_group = 1,
-				},
 				damage = {
 					default = 75,
 					subs = 5,
@@ -186,9 +188,6 @@ return {
 				waterweapon = true,
 				weapontype = "BeamLaser",
 				weaponvelocity = 900,
-				customparams = {
-					weapons_group = 2,
-				},
 				damage = {
 					default = 62.5,
 					subs = 18.75,
@@ -225,9 +224,6 @@ return {
 				weapontimer = 4.2,
 				weapontype = "DGun",
 				weaponvelocity = 300,
-				customparams = {
-					weapons_group = 1,
-				},
 				damage = {
 					default = 40,
 				},

@@ -1,6 +1,6 @@
 return {
 	armconsul = {
-		builddistance = 136,
+		builddistance = 339,
 		builder = true,
 		buildpic = "ARMCONSUL.DDS",
 		buildtime = 8500,
@@ -38,7 +38,7 @@ return {
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 1.83678,
 		turnrate = 635,
-		workertime = 290,
+		workertime = 150,
 		buildoptions = {
 			[1] = "armsolar",
 			[2] = "armmex",
@@ -100,6 +100,13 @@ return {
 				object = "Units/arm3X3A.s3o",
 				reclaimable = true,
 				resurrectable = 0,
+			},
+		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg2-builder",
+				[2] = "deathceg3-builder",
+				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

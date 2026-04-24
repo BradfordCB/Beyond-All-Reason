@@ -2,7 +2,7 @@ return {
 	armrecl = {
 		activatewhenbuilt = true,
 		autoheal = 5,
-		builddistance = 140,
+		builddistance = 379,
 		builder = true,
 		buildpic = "ARMRECL.DDS",
 		buildtime = 6200,
@@ -34,7 +34,7 @@ return {
 		turninplaceanglelimit = 90,
 		turnrate = 525,
 		waterline = 80,
-		workertime = 230,
+		workertime = 150,
 		customparams = {
 			model_author = "FireStorm",
 			normaltex = "unittextures/Arm_normal.dds",
@@ -44,6 +44,11 @@ return {
 		sfxtypes = {
 			explosiongenerators = {
 				[1] = "custom:subbubbles",
+			},
+			pieceexplosiongenerators = {
+				[1] = "deathceg2-builder",
+				[2] = "deathceg3-builder",
+				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {
