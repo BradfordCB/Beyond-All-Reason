@@ -109,7 +109,7 @@ return {
 				craterboost = 0,
 				cratermult = 0,
 				edgeeffectiveness = 0.95,
-				explosiongenerator = custom:genericshellexplosion-medium",
+				explosiongenerator = "custom:genericshellexplosion-medium",
 				firestarter = 70,
 				flighttime = 3.1,
 				impulsefactor = 0.99,
