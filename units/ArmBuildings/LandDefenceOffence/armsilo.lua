@@ -117,7 +117,7 @@ return {
 				weaponacceleration = 949,
 				weapontimer = 0.1,
 				weapontype = "Cannon",
-				weaponvelocity = 1279,
+				weaponvelocity = 1281,
 				damage = {
 					default = 0,
 				},
@@ -169,7 +169,7 @@ return {
 				weaponacceleration = 195,
 				weapontimer = 7.53,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 1627,
+				weaponvelocity = 1633,
 				customparams = {
 					place_target_on_ground = "true",
 					shield_aoe_penetration = true,
