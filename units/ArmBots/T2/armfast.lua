@@ -1,5 +1,6 @@
 return {
 	armfast = {
+		airsightdistance = 1000,
 		buildpic = "ARMFAST.DDS",
 		buildtime = 5000,
 		canmove = true,
@@ -11,11 +12,11 @@ return {
 		explodeas = "tinyExplosionGeneric",
 		footprintx = 3,
 		footprintz = 3,
-		health = 690,
+		health = 25690,
 		maxacc = 0.414,
 		maxdec = 1.29375,
-		maxslope = 17,
-		maxwaterdepth = 12,
+		maxslope = 33,
+		maxwaterdepth = 55,
 		metalcost = 160,
 		movementclass = "BOT3",
 		nochasecategory = "VTOL",
@@ -23,8 +24,8 @@ return {
 		script = "Units/ARMFAST.cob",
 		seismicsignature = 0,
 		selfdestructas = "tinyExplosionGenericSelfd",
-		sightdistance = 351,
-		speed = 111.3,
+		sightdistance = 951,
+		speed = 191.3,
 		turninplace = true,
 		turninplaceanglelimit = 90,
 		turninplacespeedlimit = 2.4486,
@@ -98,7 +99,7 @@ return {
 		},
 		weapondefs = {
 			arm_fast = {
-				areaofeffect = 16,
+				areaofeffect = 36,
 				avoidfeature = false,
 				burst = 5,
 				burstrate = 0.1,
@@ -110,11 +111,13 @@ return {
 				explosiongenerator = "custom:plasmahit-small",
 				flighttime = 0.47,
 				gravityaffected = "true",
-				impulsefactor = 0.123,
+				impulsefactor = 0.523,
 				intensity = 0.7,
 				name = "Rapid-firing close-quarters g2g plasma guns",
 				noselfdamage = true,
-				range = 230,
+				projectiles = 3, --
+				sprayangle = 190, --
+				range = 900,
 				reloadtime = 0.5,
 				rgbcolor = "1 0.95 0.4",
 				size = 2.05,
@@ -123,7 +126,7 @@ return {
 				turret = true,
 				weapontimer = 0.6,
 				weapontype = "Cannon",
-				weaponvelocity = 600,
+				weaponvelocity = 900,
 				damage = {
 					default = 12,
 					vtol = 4,
