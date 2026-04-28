@@ -165,9 +165,9 @@ return {
 				texture2 = "railguntrail",
 				texture3 = "null",
 				tolerance = 4000,
-				turnrate = 3050,
+				turnrate = 3450,
 				weaponacceleration = 205,
-				weapontimer = 7.63,
+				weapontimer = 7.43,
 				weapontype = "StarburstLauncher",
 				weaponvelocity = 1630,
 				customparams = {
