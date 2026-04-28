@@ -99,7 +99,7 @@ return {
 		},
 		weapondefs = {
 			armrl_missile = {
-				areaofeffect = 98,
+				areaofeffect = 298,
 				avoidfeature = false,
 				burnblow = true,
 				canattackground = true,
@@ -111,13 +111,15 @@ return {
 				edgeeffectiveness = 0.95,
 				explosiongenerator = "custom:genericshellexplosion-medium",
 				firestarter = 70,
-				flighttime = 3.1,
-				impulsefactor = 0.99,
+				flighttime = 5.1,
+				impulsefactor = 1.39,
 				metalpershot = 0,
 				model = "cormissile.s3o",
 				name = "Heavy a2g armor-piercing sabot missile launcher",
 				noselfdamage = true,
-				range = 1265,
+				projectiles = 3, --
+				sprayangle = 210,
+				range = 2465,
 				reloadtime = 1.7,
 				smokecolor = 0.95,
 				smokeperiod = 6,
@@ -136,10 +138,10 @@ return {
 				trajectoryheight = 1.95, --
 				turnrate = 69000,
 				turret = true,
-				weaponacceleration = 150,
+				weaponacceleration = 145,
 				weapontimer = 5,
 				weapontype = "MissileLauncher",
-				weaponvelocity = 900,
+				weaponvelocity = 1080,
 				damage = {
 					default = 155,
 					vtol = 215,
