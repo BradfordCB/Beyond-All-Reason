@@ -17,8 +17,8 @@ return {
 		mass = 749,
 		maxacc = 0.3018,
 		maxdec = 1.0589,
-		maxslope = 39,
-		maxwaterdepth = 122,
+		maxslope = 89,
+		maxwaterdepth = 222,
 		metalcost = 65,
 		movementclass = "ABOTBOMB2",
 		nochasecategory = "VTOL",
@@ -69,6 +69,13 @@ return {
 				resurrectable = 0,
 			},
 		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg2",
+				[2] = "deathceg3",
+				[3] = "deathceg4",
+			},
+		},
 		sounds = {
 			canceldestruct = "cancel2",
 			underattack = "warning1",
@@ -103,14 +110,11 @@ return {
 				gravityaffected = "true",
 				impulsefactor = 0,
 				name = "Self-destruction",
-				range = 1,
+				range = 42,
 				reloadtime = 0.1,
 				soundhitwet = "splshbig",
 				weapontype = "Cannon",
 				weaponvelocity = 1000,
-				customparams = {
-					bogus = 1,
-				},
 				damage = {
 					crawlingbombs = 100,
 					default = 33000,
