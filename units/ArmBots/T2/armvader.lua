@@ -21,7 +21,7 @@ return {
 		maxslope = 99,
 		maxwaterdepth = 399,
 		metalcost = 265,
-		mincloakdistance = 580, --
+		mincloakdistance = 380, --
 		movementclass = "ABOTBOMB2",
 		nochasecategory = "VTOL",
 		objectname = "Units/ARMVADER.s3o",
