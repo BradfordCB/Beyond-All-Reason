@@ -95,7 +95,7 @@ return {
 		},
 		weapondefs = {
 			arm_advsam = {
-				areaofeffect = 395,
+				areaofeffect = 495,
 				avoidfeature = false,
 				avoidfriendly = false,
 				burnblow = true,
@@ -140,7 +140,7 @@ return {
 				tolerance = 10000,
 				tracks = true,
 				trajectoryheight = 1.95,
-				turnrate = 75000,
+				turnrate = 65000,
 				turret = true,
 				weaponacceleration = 50,
 				weapontype = "MissileLauncher",
@@ -149,7 +149,7 @@ return {
 					stockpilelimit = 32,
 				},
 				damage = {
-					default = 400,
+					default = 300,
 					vtol = 790,
 				},
 			},
