@@ -70,6 +70,10 @@ return {
 			explosiongenerators = {
 				[1] = "custom:juno_sphere_emit",
 			},
+			pieceexplosiongenerators = {
+				[1] = "deathceg3",
+				[2] = "deathceg4",
+			},
 		},
 		sounds = {
 			canceldestruct = "cancel2",
@@ -131,10 +135,10 @@ return {
 				texture3 = "null",
 				tolerance = 4000,
 				turnrate = 5500,
-				weaponacceleration = 75,
-				weapontimer = 4,
+				weaponacceleration = 65,
+				weapontimer = 6,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 500,
+				weaponvelocity = 600,
 				customparams = {
 					junotype = "base",
 					nofire = true,
@@ -143,8 +147,9 @@ return {
 					water_splash = 0,
 				},
 				damage = {
-					default = 1,
+					default = 5,
 					mines = 1,
+					vtol = 33,
 				},
 			},
 		},
