@@ -117,7 +117,7 @@ return {
 				edgeeffectiveness = 0.65,
 				explosiongenerator = "custom:genericshellexplosion-huge",
 				firetolerance = 5000,
-				flighttime = 7.75,
+				flighttime = 11.75,
 				gravityaffected = "true",
 				heightboostfactor = 9.8,
 				impulsefactor = 5.5,
