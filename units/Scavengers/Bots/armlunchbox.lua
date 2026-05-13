@@ -103,11 +103,11 @@ return {
 		weapondefs = {
 			shocker = {
 				areaofeffect = 592,
-				avoidfeature = false,
+				avoidfeature = true,
 				avoidfriendly = true,
 				avoidground = false,
-				bouncerebound = 0.32,
-				bounceslip = 0.32,
+				bouncerebound = 0.25,
+				bounceslip = 0.12,
 				burnblow = true,
 				canattackground = true,
 				cegtag = "arty-huge",
@@ -123,7 +123,7 @@ return {
 				groundbounce = true,
 				heightboostfactor = 9.8,
 				impulsefactor = 5.5,
-				mygravity = 0.2,
+				--mygravity = 0.2,
 				name = "Heavy long-range g2g plasma cannon",
 				noselfdamage = true,
 				numbounce = 2,
@@ -142,7 +142,7 @@ return {
 				turret = true,
 				weaponacceleration = 85,
 				weapontype = "Cannon",
-				weaponvelocity = 1200,
+				weaponvelocity = 900,
 				damage = {
 					commanders = 1100,
 					default = 1265,
