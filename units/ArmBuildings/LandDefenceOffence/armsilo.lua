@@ -107,8 +107,8 @@ return {
 				edgeeffectiveness = 0,
 				gravityaffected = "true", --
 				impulsefactor = 0,
-				mygravity = 0.25, --
-				maxvelocity = 2400, --
+				mygravity = 0.35, --
+				maxvelocity = 2200, --
 				metalpershot = 0,
 				name = "Nuclear Launch",
 				range = 0,
@@ -169,11 +169,11 @@ return {
 				texture2 = "railguntrail",
 				texture3 = "null",
 				tolerance = 5000,
-				turnrate = 2000,
-				weaponacceleration = 400,
-				weapontimer = 7.0,
+				turnrate = 3300,
+				weaponacceleration = 300,
+				weapontimer = 6.0,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 3000,
+				weaponvelocity = 2600,
 				customparams = {
 					place_target_on_ground = "true",
 					shield_aoe_penetration = true,
