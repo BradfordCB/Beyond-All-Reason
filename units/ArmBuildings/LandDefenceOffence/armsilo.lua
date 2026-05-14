@@ -117,9 +117,9 @@ return {
 				soundhitvolume = 50,
 				startvelocity = 1200, --
 				tolerance = 5000,
-				turnrate = 395,
+				turnrate = 445,
 				weaponacceleration = 1200,
-				weapontimer = 0.1,
+				weapontimer = 0.05,
 				weapontype = "Cannon",
 				-- weaponvelocity = 2100,
 				damage = {
@@ -171,9 +171,9 @@ return {
 				tolerance = 5000,
 				turnrate = 4200,
 				weaponacceleration = 200,
-				weapontimer = 6.2,
+				weapontimer = 5.8,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 2500,
+				weaponvelocity = 2400,
 				customparams = {
 					place_target_on_ground = "true",
 					shield_aoe_penetration = true,
