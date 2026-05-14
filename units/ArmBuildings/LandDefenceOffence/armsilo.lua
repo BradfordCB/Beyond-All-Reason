@@ -107,7 +107,7 @@ return {
 				edgeeffectiveness = 0,
 				gravityaffected = "true", --
 				impulsefactor = 0,
-				mygravity = 0.19, --
+				mygravity = 0.25, --
 				maxvelocity = 2400, --
 				metalpershot = 0,
 				name = "Nuclear Launch",
@@ -115,9 +115,9 @@ return {
 				reloadtime = 30,
 				soundhit = "nukelaunchalarm",
 				soundhitvolume = 50,
-				startvelocity = 100, --
+				startvelocity = 1200, --
 				tolerance = 5000,
-				turnrate = 355,
+				turnrate = 325,
 				weaponacceleration = 1200,
 				weapontimer = 0.1,
 				weapontype = "Cannon",
@@ -169,11 +169,11 @@ return {
 				texture2 = "railguntrail",
 				texture3 = "null",
 				tolerance = 5000,
-				turnrate = 2500,
-				weaponacceleration = 200,
+				turnrate = 2000,
+				weaponacceleration = 400,
 				weapontimer = 7.0,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 2800,
+				weaponvelocity = 3000,
 				customparams = {
 					place_target_on_ground = "true",
 					shield_aoe_penetration = true,
