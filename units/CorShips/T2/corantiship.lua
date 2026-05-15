@@ -115,7 +115,7 @@ return {
 		},
 		weapondefs = {
 			amd_rocket = {
-				areaofeffect = 1220,
+				areaofeffect = 2220,
 				avoidfeature = false,
 				avoidfriendly = false,
 				burnblow = true,
@@ -131,7 +131,7 @@ return {
 				energypershot = 7500,
 				explosiongenerator = "custom:antinuke",
 				firestarter = 100,
-				flighttime = 20,
+				flighttime = 30,
 				impulsefactor = 3.123,
 				interceptor = 1,
 				metalpershot = 150,
@@ -156,7 +156,7 @@ return {
 				texture3 = "null",
 				tolerance = 7000,
 				tracks = true,
-				turnrate = 10000,
+				turnrate = 15000,
 				weaponacceleration = 150,
 				weapontimer = 4.55,
 				weapontype = "StarburstLauncher",
