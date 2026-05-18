@@ -107,17 +107,17 @@ return {
 				edgeeffectiveness = 0,
 				gravityaffected = "true", --
 				impulsefactor = 0,
-				mygravity = 0.35, --
-				maxvelocity = 3200, --
+				mygravity = 0.33, --
+				maxvelocity = 3500, --
 				metalpershot = 0,
 				name = "Nuclear Launch",
 				range = 0,
 				reloadtime = 30,
 				soundhit = "nukelaunchalarm",
 				soundhitvolume = 50,
-				startvelocity = 2400, --
+				startvelocity = 2600, --
 				tolerance = 7000,
-				turnrate = 290,
+				turnrate = 190,
 				weaponacceleration = 1600,
 				weapontimer = 0.05,
 				weapontype = "Cannon",
@@ -127,7 +127,7 @@ return {
 				},
 			},
 			nuclear_missile = {
-				areaofeffect = 2580,
+				areaofeffect = 1480,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "NUKETRAIL",
@@ -135,9 +135,9 @@ return {
 				collidefeature = false,
 				collidefriendly = false,
 				commandfire = true,
-				craterareaofeffect = 2580,
-				craterboost = 14.4,
-				cratermult = 6.8,
+				craterareaofeffect = 1480,
+				craterboost = 2.4,
+				cratermult = 2.4,
 				edgeeffectiveness = 0.45,
 				energypershot = 125000,
 				explosiongenerator = "custom:newnuke",
@@ -169,11 +169,11 @@ return {
 				texture2 = "railguntrail",
 				texture3 = "null",
 				tolerance = 7000,
-				turnrate = 4080,
-				weaponacceleration = 310,
-				weapontimer = 4.5,
+				turnrate = 4090,
+				weaponacceleration = 340,
+				weapontimer = 4.3,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 3900,
+				weaponvelocity = 4050,
 				customparams = {
 					place_target_on_ground = "true",
 					shield_aoe_penetration = true,
