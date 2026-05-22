@@ -91,7 +91,7 @@ return {
 		},
 		weapondefs = {
 			cortron_weapon = {
-				areaofeffect = 712,
+				areaofeffect = 1212,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "cruisemissiletrail-tacnuke",
@@ -99,15 +99,16 @@ return {
 				collidefeature = false,
 				collidefriendly = false,
 				commandfire = true,
-				craterareaofeffect = 512,
+				craterareaofeffect = 912,
 				craterboost = 1.6,
 				cratermult = 0.7,
-				edgeeffectiveness = 0.55,
+				edgeeffectiveness = 0.65,
 				energypershot = 17437,
 				explosiongenerator = "custom:newnuketac",
 				firestarter = 0,
 				flighttime = 400,
-				impulsefactor = 31.1,
+				impulseboost = 9.5,
+				impulsefactor = 55.1,
 				interceptedbyshieldtype = 0,
 				metalpershot = 550,
 				model = "cortronmissile.s3o",
@@ -130,10 +131,10 @@ return {
 				texture3 = "null",
 				tolerance = 4000,
 				turnrate = 10000,
-				weaponacceleration = 190,
+				weaponacceleration = 220,
 				weapontimer = 5.5,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 1800,
+				weaponvelocity = 2200,
 				customparams = {
 					shield_aoe_penetration = true,
 					water_splash_ceg = "splash-gigantic", -- 1 bigger than it would get
@@ -143,7 +144,7 @@ return {
 				damage = {
 					commanders = 10,
 					default = 40,
-					vtol = 1000
+					vtol = 100
 				},
 			},
 		},
