@@ -173,7 +173,7 @@ return {
 				weaponacceleration = 350,
 				weapontimer = 4.25,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 4110,
+				weaponvelocity = 4510,
 				customparams = {
 					place_target_on_ground = "true",
 					shield_aoe_penetration = true,
