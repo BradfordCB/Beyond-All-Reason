@@ -112,7 +112,7 @@ return {
 				craterareaofeffect = 480,
 				edgeeffectiveness = 0.45,
 				energypershot = 15000,
-				model = "airbomb.s3o",
+				model = "cormissile2.s3o",
 				name = "Heavy long-range g2g ballistic missile launcher",
 				flighttime = 23,
 				gravityaffected = "true",
