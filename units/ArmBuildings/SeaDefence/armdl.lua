@@ -70,6 +70,13 @@ return {
 				resurrectable = 0,
 			},
 		},
+		sfxtypes = {
+			pieceexplosiongenerators = {
+				[1] = "deathceg2",
+				[2] = "deathceg3",
+				[3] = "deathceg4",
+			},
+		},
 		sounds = {
 			canceldestruct = "cancel2",
 			cloak = "kloak1",
@@ -99,8 +106,8 @@ return {
 				avoidfeature = false,
 				avoidfriendly = false,
 				avoidground = false,
-				bouncerebound = 0.89,
-				bounceslip = 0.28,
+				bouncerebound = 0.79,
+				bounceslip = 0.19,
 				burnblow = true,
 				canattackground = true,
 				cegtag = "arty-heavy",
@@ -139,7 +146,7 @@ return {
 				waterweapon = true,
 				weaponacceleration = 85,
 				weapontype = "Cannon",
-				weaponvelocity = 700,
+				weaponvelocity = 720,
 				customparams = {
 					speceffect = "torpwaterpen",
 				},
