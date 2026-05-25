@@ -75,6 +75,10 @@ return {
 			explosiongenerators = {
 				[1] = "custom:barrelshot-huge",
 			},
+			pieceexplosiongenerators = {
+				[1] = "deathceg3",
+				[2] = "deathceg4",
+			},
 		},
 		sounds = {
 			canceldestruct = "cancel2",
@@ -99,7 +103,7 @@ return {
 		},
 		weapondefs = {
 			lrpc = {
-				accuracy = 250,
+				accuracy = 220,
 				areaofeffect = 335,
 				avoidfeature = false,
 				avoidfriendly = false,
@@ -108,7 +112,7 @@ return {
 				craterareaofeffect = 116,
 				craterboost = 0.1,
 				cratermult = 0.1,
-				edgeeffectiveness = 0.15,
+				edgeeffectiveness = 0.45,
 				energypershot = 5000,
 				explosiongenerator = "custom:genericshellexplosion-huge",
 				gravityaffected = "true",
@@ -120,7 +124,7 @@ return {
 				maxvelocity = 1400, --
 				projectiles = 3, --
 				range = 6650,
-				reloadtime = 9.2,
+				reloadtime = 9.4,
 				soundhit = "lrpcexplo",
 				soundhitvolume = 38,
 				soundhitwet = "splshbig",
@@ -128,7 +132,7 @@ return {
 				soundstartvolume = 24,
 				sprayangle = 222,
 				startvelocity = 1150,
-				-- trajectoryheight = 2,
+				trajectoryheight = 2,
 				turret = true,
 				weaponacceleration = 159,
 				weapontype = "Cannon",
