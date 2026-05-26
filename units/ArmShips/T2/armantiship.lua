@@ -115,7 +115,7 @@ return {
 		},
 		weapondefs = {
 			amd_rocket = {
-				areaofeffect = 2220,
+				areaofeffect = 420,
 				avoidfeature = false,
 				avoidfriendly = false,
 				burnblow = true,
@@ -132,7 +132,7 @@ return {
 				explosiongenerator = "custom:antinuke",
 				firestarter = 100,
 				flighttime = 30,
-				impulsefactor = 3.123,
+				impulsefactor = 0.53,
 				interceptor = 1,
 				metalpershot = 150,
 				model = "fmdmissile.s3o",
@@ -165,6 +165,7 @@ return {
 					stockpilelimit = 20,
 				},
 				damage = {
+					commanders = 20,
 					default = 4500,
 				},
 			},
