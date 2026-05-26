@@ -95,7 +95,7 @@ return {
 		},
 		weapondefs = {
 			armscab_weapon = {
-				areaofeffect = 2222,
+				areaofeffect = 420,
 				avoidfeature = false,
 				avoidfriendly = false,
 				burnblow = true,
@@ -110,7 +110,7 @@ return {
 				explosiongenerator = "custom:antinuke",
 				firestarter = 100,
 				flighttime = 30,
-				impulsefactor = 3.123,
+				impulsefactor = 0.53,
 				interceptor = 1,
 				metalpershot = 150,
 				model = "fmdmissile.s3o",
@@ -134,16 +134,17 @@ return {
 				texture3 = "null",
 				tolerance = 7000,
 				tracks = true,
-				turnrate = 15100,
+				turnrate = 14000,
 				weaponacceleration = 163,
-				weapontimer = 4.1,
+				weapontimer = 3.1,
 				weapontype = "StarburstLauncher",
 				weaponvelocity = 7000,
 				customparams = {
 					stockpilelimit = 20,
 				},
 				damage = {
-					default = 4510,
+					commanders = 20,
+					default = 4500,
 				},
 			},
 		},
