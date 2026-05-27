@@ -107,7 +107,7 @@ return {
 				edgeeffectiveness = 0,
 				gravityaffected = "true", --
 				impulsefactor = 0,
-				mygravity = 0.18, --
+				mygravity = 0.14, --
 				maxvelocity = 2000, --
 				metalpershot = 0,
 				name = "Nuclear Launch",
@@ -117,7 +117,7 @@ return {
 				soundhitvolume = 50,
 				startvelocity = 1000, --
 				tolerance = 10000,
-				turnrate = 220,
+				turnrate = 200,
 				weaponacceleration = 1000,
 				weapontimer = 0.05,
 				weapontype = "Cannon",
@@ -145,8 +145,8 @@ return {
 				flighttime = 300,
 				gravityaffected = "false", --
 				-- mygravity = 0.71, --
-				impulseboost = 4.5,
-				impulsefactor = 14.1,
+				impulseboost = 20,
+				impulsefactor = 25.5,
 				interceptedbyshieldtype = 0,
 				metalpershot = 1000,
 				model = "crblmssl.s3o",
@@ -171,11 +171,12 @@ return {
 				texture2 = "railguntrail",
 				texture3 = "null",
 				tolerance = 4000,
-				turnrate = 3990,
-				weaponacceleration = 300,
+				turnrate = 3090,
+				weaponacceleration = 360,
 				weapontimer = 3.5,
 				weapontype = "StarburstLauncher",
-				weaponvelocity = 4000,
+				maxvelocity = 3000, --
+				-- weaponvelocity = 3000,
 				customparams = {
 					place_target_on_ground = "true",
 					shield_aoe_penetration = true,
