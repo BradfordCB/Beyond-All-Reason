@@ -133,10 +133,10 @@ return {
 				texture1 = "null",
 				texture2 = "smoketrailbar",
 				texture3 = "null",
-				tolerance = 4000,
-				turnrate = 5500,
+				tolerance = 5000,
+				turnrate = 5000,
 				weaponacceleration = 165,
-				weapontimer = 6.3,
+				weapontimer = 6.0,
 				weapontype = "StarburstLauncher",
 				weaponvelocity = 900,
 				customparams = {
