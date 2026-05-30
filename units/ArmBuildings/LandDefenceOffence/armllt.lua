@@ -33,7 +33,7 @@ return {
 			buildinggrounddecalsizey = 6,
 			buildinggrounddecalsizex = 6,
 			buildinggrounddecaldecayspeed = 30,
-			unitgroup = 'weapon',
+			unitgroup = 'weaponaa',
 			model_author = "ZephyrSkies",
 			normaltex = "unittextures/leg_normal.dds",
 			removewait = true,
@@ -101,7 +101,7 @@ return {
 		weapondefs = {
 			armmg_weapon = {
 				accuracy = 7,
-				areaofeffect = 46,
+				areaofeffect = 48,
 				avoidfeature = false,
 				burst = 5,
 				burstrate = 0.07,
@@ -118,8 +118,8 @@ return {
 				firestarter = 100,
 				gravityaffected = "true",
 				mygravity = 0.22,
-				impulsefactor = 9.5,  
-                impulseboost = 2.0,  -- 
+				impulsefactor = 9.0,  
+                impulseboost = 3.0,  -- 
                 impulsethreshold = 0, --
 				intensity = 0.8,
 				projectiles = 3, --
@@ -128,8 +128,8 @@ return {
 				ownerExpAccWeight = 5.0,
 				proximitypriority = 1,
 				range = 1975,
-				reloadtime = 0.4,
-				rgbcolor = "1 0.95 0.4",
+				reloadtime = 0.8,
+				rgbcolor = "1 0.85 0.4",
 				soundhit = "bimpact3",
 				soundhitwet = "splshbig",
 				soundstart = "mgun6heavy",
