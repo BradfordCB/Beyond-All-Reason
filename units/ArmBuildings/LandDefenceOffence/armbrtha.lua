@@ -103,7 +103,7 @@ return {
 		},
 		weapondefs = {
 			lrpc = {
-				accuracy = 220,
+				accuracy = 250,
 				areaofeffect = 335,
 				avoidfeature = false,
 				avoidfriendly = false,
@@ -112,10 +112,13 @@ return {
 				craterareaofeffect = 116,
 				craterboost = 0.1,
 				cratermult = 0.1,
-				edgeeffectiveness = 0.45,
+				edgeeffectiveness = 0.15,
 				energypershot = 5000,
 				explosiongenerator = "custom:genericshellexplosion-huge",
-				gravityaffected = "true",
+				gravityaffected    = true,
+				hightrajectory     = 1,
+				trajectoryheight   = 1.2,
+				mygravity          = 0.16,
 				heightboostfactor = 8,
 				impulsefactor = 3.1,
 				leadbonus = 0,
@@ -124,7 +127,7 @@ return {
 				maxvelocity = 1400, --
 				projectiles = 3, --
 				range = 6650,
-				reloadtime = 9.4,
+				reloadtime = 9.2,
 				soundhit = "lrpcexplo",
 				soundhitvolume = 38,
 				soundhitwet = "splshbig",
@@ -132,7 +135,7 @@ return {
 				soundstartvolume = 24,
 				sprayangle = 222,
 				startvelocity = 1150,
-				trajectoryheight = 2,
+				-- trajectoryheight = 2,
 				turret = true,
 				weaponacceleration = 159,
 				weapontype = "Cannon",
