@@ -122,6 +122,7 @@ return {
 				groundbounce = true,
 				heightboostfactor = 9.8,
 				hightrajectory = 1,
+				trajectoryheight   = 1.2,
 				impulsefactor = 5.5,
 				--mygravity = 0.2,
 				name = "Heavy long-range g2g plasma cannon",
@@ -129,7 +130,7 @@ return {
 				numbounce = 2,
 				projectiles = 3, --
 				predictboost = 0.95,
-				range = 2925,
+				range = 3925,
 				reloadtime = 5,
 				separation = 2,
 				size = 6,
@@ -140,9 +141,9 @@ return {
 				sprayangle = 305,
 				-- trajectoryheight = 2,
 				turret = true,
-				weaponacceleration = 125,
+				weaponacceleration = 130,
 				weapontype = "Cannon",
-				weaponvelocity = 800,
+				weaponvelocity = 850,
 				damage = {
 					commanders = 1100,
 					default = 1265,
