@@ -175,7 +175,7 @@ return {
 				weaponacceleration = 260,
 				weapontimer = 4.9,
 				weapontype = "StarburstLauncher",
-				maxvelocity = 2400, --
+				maxvelocity = 2380, --
 				-- weaponvelocity = 3000,
 				customparams = {
 					place_target_on_ground = "true",
