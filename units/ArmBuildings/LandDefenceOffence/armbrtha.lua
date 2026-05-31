@@ -117,7 +117,7 @@ return {
 				explosiongenerator = "custom:genericshellexplosion-huge",
 				gravityaffected    = true,
 				hightrajectory     = 1,
-				trajectoryheight   = 1.2,
+				trajectoryheight   = 0.65,
 				mygravity          = 0.16,
 				heightboostfactor = 8,
 				impulsefactor = 3.1,
@@ -134,10 +134,10 @@ return {
 				soundstart = "lrpcshot3",
 				soundstartvolume = 24,
 				sprayangle = 222,
-				startvelocity = 1150,
+				startvelocity = 1000,
 				-- trajectoryheight = 2,
 				turret = true,
-				weaponacceleration = 159,
+				weaponacceleration = 100,
 				weapontype = "Cannon",
 				-- weaponvelocity = 1100, -- 1100
 				damage = {
