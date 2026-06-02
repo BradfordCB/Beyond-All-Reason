@@ -100,7 +100,7 @@ return {
 				collidefriendly = false,
 				commandfire = true,
 				craterareaofeffect = 312,
-				craterboost = 1.2,
+				craterboost = 1.1,
 				cratermult = 0.92,
 				edgeeffectiveness = 0.77,
 				energypershot = 17437,
@@ -108,7 +108,7 @@ return {
 				firestarter = 0,
 				flighttime = 400,
 				impulsefactor = 150,
-				impulseboost = 50,
+				impulseboost = 150,
 				impulsethreshold = 0,
 				interceptedbyshieldtype = 0,
 				metalpershot = 550,
@@ -145,7 +145,7 @@ return {
 				},
 				damage = {
 					commanders = 1,
-					default = 15,
+					default = 10,
 					vtol = 50
 				},
 			},
