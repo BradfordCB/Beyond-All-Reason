@@ -108,7 +108,7 @@ return {
 				gravityaffected = "true", --
 				impulsefactor = 0,
 				mygravity = 0.05, --
-				maxvelocity = 2500, --
+				maxvelocity = 1800, --
 				metalpershot = 0,
 				name = "Nuclear Launch",
 				range = 0,
@@ -143,7 +143,7 @@ return {
 				explosiongenerator = "custom:newnuke",
 				firestarter = 100,
 				flighttime = 300,
-				gravityaffected = "true", --
+				-- gravityaffected = "true", --
 				-- mygravity = 0.71, --
 				impulseboost = 20,
 				impulsefactor = 25.5,
@@ -172,10 +172,10 @@ return {
 				texture3 = "null",
 				tolerance = 4000,
 				turnrate = 4090,
-				weaponacceleration = -100,
+				weaponacceleration = 50,
 				weapontimer = 4.7,
 				weapontype = "StarburstLauncher",
-				maxvelocity = 3000, --
+				maxvelocity = 2000, --
 				-- weaponvelocity = 3000,
 				customparams = {
 					place_target_on_ground = "true",
