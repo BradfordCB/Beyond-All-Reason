@@ -104,7 +104,7 @@ return {
 		weapondefs = {
 			lrpc = {
 				accuracy = 250,
-				areaofeffect = 335,
+				areaofeffect = 4435,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "arty-huge",
@@ -116,8 +116,7 @@ return {
 				energypershot = 5000,
 				explosiongenerator = "custom:genericshellexplosion-huge",
 				gravityaffected    = true,
-				hightrajectory     = 1,
-				trajectoryheight   = 0.65,
+				-- hightrajectory     = 1,
 				mygravity          = 0.16,
 				heightboostfactor = 8,
 				impulsefactor = 3.1,
@@ -126,7 +125,7 @@ return {
 				noselfdamage = true,
 				maxvelocity = 1400, --
 				projectiles = 3, --
-				range = 6650,
+				range = 7350,
 				reloadtime = 9.2,
 				soundhit = "lrpcexplo",
 				soundhitvolume = 38,
@@ -135,7 +134,7 @@ return {
 				soundstartvolume = 24,
 				sprayangle = 222,
 				startvelocity = 1000,
-				-- trajectoryheight = 2,
+				trajectoryheight = 2, --
 				turret = true,
 				weaponacceleration = 100,
 				weapontype = "Cannon",
