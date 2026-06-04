@@ -104,7 +104,7 @@ return {
 		weapondefs = {
 			lrpc = {
 				accuracy = 250,
-				areaofeffect = 4435,
+				areaofeffect = 535,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "arty-huge",
@@ -116,33 +116,34 @@ return {
 				energypershot = 5000,
 				explosiongenerator = "custom:genericshellexplosion-huge",
 				gravityaffected    = true,
-				-- hightrajectory     = 1,
-				mygravity          = 0.16,
+				-- hightrajectory = 1,
+				-- mygravity = 0.98,
 				heightboostfactor = 8,
 				impulsefactor = 3.1,
 				leadbonus = 0,
 				name = "Long-range plasma cannon",
 				noselfdamage = true,
-				maxvelocity = 1400, --
-				projectiles = 3, --
+				maxvelocity = 1200, --
+				projectiles = 5, --
 				range = 7350,
-				reloadtime = 9.2,
+				reloadtime = 10,
 				soundhit = "lrpcexplo",
 				soundhitvolume = 38,
 				soundhitwet = "splshbig",
 				soundstart = "lrpcshot3",
 				soundstartvolume = 24,
 				sprayangle = 222,
-				startvelocity = 1000,
-				trajectoryheight = 2, --
+				startvelocity = 1085,
+				trajectoryheight = 0.61, --
 				turret = true,
-				weaponacceleration = 100,
+				weaponacceleration = 50,
 				weapontype = "Cannon",
 				-- weaponvelocity = 1100, -- 1100
 				damage = {
 					default = 625,
 					shields = 312,
 					subs = 200,
+					vtol = 1200,
 				},
 			},
 		},
