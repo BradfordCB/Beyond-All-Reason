@@ -14,7 +14,7 @@ return {
 		maxdec = 0,
 		maxslope = 20,
 		metalcost = 330,
-		metalstorage = 3000,
+		metalstorage = 15000,
 		minwaterdepth = 31,
 		objectname = "Units/ARMUWMS.s3o",
 		script = "Units/ARMUWMS.cob",
