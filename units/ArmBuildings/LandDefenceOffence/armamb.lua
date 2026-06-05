@@ -78,11 +78,6 @@ return {
 			explosiongenerators = {
 				[1] = "custom:barrelshot-larger",
 			},
-			pieceexplosiongenerators = {
-				[1] = "deathceg2",
-				[2] = "deathceg3",
-				[3] = "deathceg4",
-			},
 		},
 		sounds = {
 			canceldestruct = "cancel2",
@@ -137,6 +132,7 @@ return {
 					exclude_preaim = true,
 					norangering = 1,
 					smart_priority = true,
+					weapons_group = 1,
 				},
 				damage = {
 					default = 390,
@@ -172,6 +168,7 @@ return {
 				customparams = {
 					exclude_preaim = true,
 					smart_backup = true,
+					weapons_group = 2,
 				},
 				damage = {
 					default = 390,
@@ -180,7 +177,7 @@ return {
 				},
 			},
 			smart_trajectory_dummy = {
-				accuracy = 400,
+				accuracy = 200,
 				areaofeffect = 152,
 				avoidfeature = false,
 				avoidneutral = true,
@@ -203,6 +200,7 @@ return {
 				weapontype = "Cannon",
 				weaponvelocity = 770,
 				customparams = {
+					bogus = 1,
 					exclude_preaim = true,
 					norangering = 1,
 					smart_trajectory_checker = true,
