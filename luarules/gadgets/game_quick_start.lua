@@ -49,10 +49,10 @@ local quickStartAmountConfig = {
 		traversabilityGridRange = 480
 	},
 	large = {
-		budget = 10000,
-		range = 1900,
-		baseGenerationRange = 1900,
-		traversabilityGridRange = 2000
+		budget = 100000,
+		range = 2700,
+		baseGenerationRange = 2700,
+		traversabilityGridRange = 3000
 	},
 }
 
