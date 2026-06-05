@@ -146,6 +146,12 @@ return {
 				customparams = {
 					shield_aoe_penetration = true,
 					stockpilelimit = 15,
+					area_onhit_ceg = "fire-area-150-repeat",
+					area_onhit_damageCeg = "burnflamexl-gen",
+					area_onhit_resistance = "fire",
+					area_onhit_damage = 2,--30,
+					area_onhit_range = 420,
+					area_onhit_time = 7,
 				},
 				damage = {
 					default = 250000,
@@ -155,6 +161,8 @@ return {
 		weapons = {
 			[1] = {
 				badtargetcategory = "MOBILE",
+				maindir = "0 .5 1",
+				maxangledif = 180,
 				def = "ARMEMP_WEAPON",
 				onlytargetcategory = "EMPABLE",
 			},
