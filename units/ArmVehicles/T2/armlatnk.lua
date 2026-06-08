@@ -1,6 +1,6 @@
 return {
 	armlatnk = {
-		airsightdistance = 36000,
+		airsightdistance = 9000,
 		buildpic = "ARMLATNK.DDS",
 		buildtime = 8000,
 		canmove = true,
@@ -138,13 +138,13 @@ return {
 				tracks = true,
 				turnrate = 48000,
 				turret = true,
-				weaponacceleration = 20,
+				weaponacceleration = 30,
 				weapontimer = 3,
 				weapontype = "MissileLauncher",
 				weaponvelocity = 900,
 				customparams = {
-					-- weapons_role = "secondary",
-				-- },
+					weapons_role = "secondary",
+				},
 				damage = {
 					vtol = 190,
 					default = 128,
@@ -203,7 +203,6 @@ return {
 				badtargetcategory = "NOTAIR",
 				def = "ARMAMPH_MISSILE",
 				fastautoretargeting = true,
-				fastquerypointupdate = true,
 				onlytargetcategory = "VTOL",
 			},
 		},
