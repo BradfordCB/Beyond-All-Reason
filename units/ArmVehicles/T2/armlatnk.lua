@@ -169,7 +169,7 @@ return {
 				name = "Close-quarters lightning turret",
 				noselfdamage = true,
 				-- projectiles = 3, --
-				range = 1400,
+				range = 900,
 				reloadtime = 1.1,
 				rgbcolor = "0.5 0.5 1",
 				soundhit = "lashit",
@@ -187,7 +187,7 @@ return {
 					spark_range = "120",
 				},
 				damage = {
-					vtol = 44,
+					vtol = 54,
 					default = 44,
 				},
 			},
