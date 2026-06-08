@@ -106,6 +106,7 @@ return {
 				cratermult = 0,
 				edgeeffectiveness = 0,
 				gravityaffected = "true", --
+				-- hightrajectory = 1,
 				impulsefactor = 0,
 				mygravity = 0.05, --
 				maxvelocity = 1710, --
@@ -164,7 +165,7 @@ return {
 				soundhitwetvolume = 53,
 				soundstart = "nukelaunch",
 				soundstartvolume = 20,
-				-- startvelocity = 610, --
+				startvelocity = 810, --
 				stockpile = true,
 				stockpiletime = 120,
 				targetable = 1,
@@ -174,7 +175,7 @@ return {
 				tolerance = 4000, -- works
 				turnrate = 3500, -- 
 				weaponacceleration = 30,
-				weapontimer = 4.5,
+				weapontimer = 5.0,
 				weapontype = "StarburstLauncher",
 				maxvelocity = 1920, --
 				-- weaponvelocity = 3000,
