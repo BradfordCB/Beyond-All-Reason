@@ -115,8 +115,8 @@ return {
 				edgeeffectiveness = 0.89,
 				explosiongenerator = "custom:genericshellexplosion-medium",
 				firestarter = 70,
-				flighttime = 25,
-				-- hightrajectory = 1, --
+				flighttime = 35,
+				hightrajectory = 1, --
 				impulsefactor = 0.54,
 				metalpershot = 0,
 				model = "cormissile2.s3o",
@@ -138,13 +138,13 @@ return {
 				soundhitwet = "splshbig",
 				soundstart = "rocklit1",
 				soundtrigger = true,
-				startvelocity = 100,
+				startvelocity = 70,
 				texture1 = "null",
 				texture2 = "smoketrailbar",
 				tolerance = 9000,
 				tracks = true,
-				trajectoryheight = 1.99, --
-				turnrate = 48000,
+				-- trajectoryheight = 1.99, --
+				turnrate = 9900,
 				turret = true,
 				weaponacceleration = 15,
 				weapontimer = 3,
@@ -152,6 +152,10 @@ return {
 				weaponvelocity = 990,
 				customparams = {
 					weapons_role = "secondary",
+					cruise_max_height = "1800",
+					cruise_min_height = "1000",
+					lockon_dist = "1200",
+					speceffect = "cruise",
 				},
 				damage = {
 					vtol = 290,
