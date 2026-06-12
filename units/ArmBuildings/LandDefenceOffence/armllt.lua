@@ -101,13 +101,13 @@ return {
 		weapondefs = {
 			armmg_weapon = {
 				accuracy = 55,
-				areaofeffect = 114,
+				areaofeffect = 354,
 				avoidfeature = false,
 				burst = 5,
-				burstrate = 0.07,
+				burstrate = 0.08,
 				burnblow = true,
 				sprayangle = 258,
-				craterareaofeffect = 0,
+				craterareaofeffect = 255,
 				craterboost = 0,
 				cratermult = 0,
 				-- duration = 0.05,
@@ -118,28 +118,28 @@ return {
 				-- fallOffRate = 0.2,
 				firestarter = 100,
 				gravityaffected = "true",
-				mygravity = 0.16,
-				impulsefactor = 11.0,  
-                impulseboost = 5.0,  -- 
+				mygravity = 0.02,
+				impulsefactor = 15.0,  
+                impulseboost = 10.0,  -- 
                 impulsethreshold = 0, --
 				intensity = 0.8,
 				projectiles = 3, --
-				maxvelocity = 2170, --
+				maxvelocity = 2200, --
 				name = "Heavy Rapid-fire Machine Gun",
 				noselfdamage = true,
 				ownerExpAccWeight = 5.0,
 				proximitypriority = 1,
 				range = 1975,
-				reloadtime = 0.8,
+				reloadtime = 0.77,
 				separation = 2,
-				rgbcolor = "1 0.75 0.39",
+				rgbcolor = "1 0.85 0.25",
 				soundhit = "bimpact3",
 				soundhitwet = "splshbig",
 				soundstart = "mgun6heavy",
 				soundstartvolume = 3.0,
 				soundtrigger = true,
-				startvelocity = 800,
-				sprayangle = 468,
+				startvelocity = 1600,
+				sprayangle = 568,
 				texture1 = "shot",
 				texture2 = "empty",
 				-- thickness = 3.0,
@@ -149,8 +149,8 @@ return {
 				weapontype = "Cannon", --
 				-- weaponvelocity = 2058,
 				damage = {
-					default = 25,
-					vtol = 49,
+					default = 33,
+					vtol = 55,
 				},
 			},
 		},
