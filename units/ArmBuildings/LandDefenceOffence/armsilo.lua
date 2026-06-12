@@ -116,9 +116,9 @@ return {
 				reloadtime = 30,
 				soundhit = "nukelaunchalarm",
 				soundhitvolume = 50,
-				startvelocity = 810, --
+				startvelocity = 790, --
 				tolerance = 10000,
-				turnrate = 90,
+				turnrate = 100,
 				weaponacceleration = 950,
 				weapontimer = 0.05,
 				weapontype = "Cannon",
@@ -147,7 +147,7 @@ return {
 				gravityaffected = "true", --
 				mygravity = 0.05, --
 				impulseboost = 20,
-				impulsefactor = 25.5,
+				impulsefactor = 30,
 				interceptedbyshieldtype = 0,
 				metalpershot = 1000,
 				model = "crblmssl.s3o",
@@ -165,7 +165,7 @@ return {
 				soundhitwetvolume = 53,
 				soundstart = "nukelaunch",
 				soundstartvolume = 20,
-				startvelocity = 810, --
+				startvelocity = 790, --
 				stockpile = true,
 				stockpiletime = 120,
 				targetable = 1,
@@ -175,9 +175,9 @@ return {
 				tolerance = 4000, -- works
 				turnrate = 3500, -- 
 				weaponacceleration = 30,
-				weapontimer = 5.0,
+				weapontimer = 4.7,
 				weapontype = "StarburstLauncher",
-				maxvelocity = 1920, --
+				maxvelocity = 1880, --
 				-- weaponvelocity = 3000,
 				customparams = {
 					place_target_on_ground = "true",
