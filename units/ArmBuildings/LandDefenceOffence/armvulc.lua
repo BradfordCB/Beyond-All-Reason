@@ -105,6 +105,7 @@ return {
 				avoidfeature = false,
 				avoidfriendly = false,
 				avoidground = false,
+				castshadow = true,
 				cegtag = "arty-huge",
 				collidefriendly = false,
 				craterboost = 0.1,
@@ -124,6 +125,7 @@ return {
 				projectiles = 3, --
 				range = 9050,
 				reloadtime = 3,
+				size = 7,
 				-- rgbcolor = "1, 0.4, 0",
 				smokecolor = 1,
 				smokeperiod = 10,
@@ -136,7 +138,7 @@ return {
 				soundhitwet = "splshbig",
 				soundstart = "rocklit1",
 				sprayangle = 895,
-				startvelocity = 50,
+				-- startvelocity = 60,
 				texture1 = "null",
 				texture2 = "smoketrailbar",
 				trajectoryheight = 2,
@@ -149,7 +151,7 @@ return {
 				weaponvelocity = 1450,
 				customparams = {
 					cruise_max_height = "6000",
-					cruise_min_height = "2000",
+					cruise_min_height = "80",
 					lockon_dist = "900",
 					speceffect = "cruise",
 					overrange_distance = 9200,
