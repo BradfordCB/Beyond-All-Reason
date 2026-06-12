@@ -99,7 +99,7 @@ return {
 		},
 		weapondefs = {
 			armemp_weapon = {
-				areaofeffect = 412,
+				areaofeffect = 612,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "cruisemissiletrail-emp",
@@ -122,7 +122,7 @@ return {
 				noselfdamage = true,
 				paralyzer = true,
 				paralyzetime = 65,
-				range = 6190,
+				range = 7190,
 				reloadtime = 4,
 				smokecolor = 0.9,
 				smokeperiod = 8,
@@ -149,9 +149,9 @@ return {
 					area_onhit_ceg = "fire-area-150-repeat",
 					area_onhit_damageCeg = "burnflamexl-gen",
 					area_onhit_resistance = "fire",
-					area_onhit_damage = 2,--30,
-					area_onhit_range = 420,
-					area_onhit_time = 7,
+					area_onhit_damage = 4,--30,
+					area_onhit_range = 520,
+					area_onhit_time = 9,
 				},
 				damage = {
 					default = 250000,
