@@ -108,7 +108,7 @@ return {
 				gravityaffected = "true", --
 				-- hightrajectory = 1,
 				impulsefactor = 0,
-				mygravity = 0.05, --
+				mygravity = 0.04, --
 				maxvelocity = 1710, --
 				metalpershot = 0,
 				name = "Nuclear Launch",
@@ -116,7 +116,7 @@ return {
 				reloadtime = 30,
 				soundhit = "nukelaunchalarm",
 				soundhitvolume = 50,
-				startvelocity = 790, --
+				startvelocity = 800, --
 				tolerance = 10000,
 				turnrate = 100,
 				weaponacceleration = 950,
@@ -145,7 +145,7 @@ return {
 				firestarter = 100,
 				flighttime = 300,
 				gravityaffected = "true", --
-				mygravity = 0.05, --
+				mygravity = 0.04, --
 				impulseboost = 20,
 				impulsefactor = 30,
 				interceptedbyshieldtype = 0,
@@ -165,7 +165,7 @@ return {
 				soundhitwetvolume = 53,
 				soundstart = "nukelaunch",
 				soundstartvolume = 20,
-				startvelocity = 790, --
+				startvelocity = 800, --
 				stockpile = true,
 				stockpiletime = 120,
 				targetable = 1,
@@ -173,11 +173,11 @@ return {
 				texture2 = "railguntrail",
 				texture3 = "null",
 				tolerance = 4000, -- works
-				turnrate = 3400, -- 
-				weaponacceleration = 30,
-				weapontimer = 4.6,
+				turnrate = 3350, -- 
+				weaponacceleration = 25,
+				weapontimer = 4.5,
 				weapontype = "StarburstLauncher",
-				maxvelocity = 1830, --
+				maxvelocity = 1800, --
 				-- weaponvelocity = 3000,
 				customparams = {
 					place_target_on_ground = "true",
