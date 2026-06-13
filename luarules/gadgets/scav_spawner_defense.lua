@@ -244,7 +244,7 @@ if gadgetHandler:IsSyncedCode() then
 				local units = GetTeamUnits(teamID)
 				scavteamhasplayers = true
 				for u = 1,#units do
-					Spring.DestroyUnit(units[u], false, true)
+					DestroyUnit(units[u], false, true)
 				end
 				Spring.KillTeam(teamID)
 			end
@@ -257,7 +257,7 @@ if gadgetHandler:IsSyncedCode() then
 			if (AI or LuaAI) and scavAllies[i] ~= scavTeamID then
 				local units = GetTeamUnits(scavAllies[i])
 				for u = 1,#units do
-					Spring.DestroyUnit(units[u], false, true)
+					DestroyUnit(units[u], false, true)
 					Spring.KillTeam(scavAllies[i])
 				end
 			end
@@ -481,9 +481,7 @@ if gadgetHandler:IsSyncedCode() then
 				-- Spring.Echo("Life is 0, time to do some killing")
 				if SetCount(squadsTable[i].squadUnits) > 0 and SetCount(burrows) > 2 then
 					if squadsTable[i].squadBurrow and nSpawnedBosses == 0 then
-						if Spring.GetUnitTeam(squadsTable[i].squadBurrow) == scavTeamID then
-							Spring.DestroyUnit(squadsTable[i].squadBurrow, true, false)
-						elseif Spring.GetUnitIsDead(squadsTable[i].squadBurrow) == false then
+						if Spring.GetUnitIsDead(squadsTable[i].squadBurrow) == false then
 							squadsTable[i].squadBurrow = nil
 						end
 					end
@@ -499,7 +497,7 @@ if gadgetHandler:IsSyncedCode() then
 					for j = 1,#destroyQueue do
 						-- Spring.Echo("Destroying Unit. ID: ".. unitID .. ", Name:" .. UnitDefs[Spring.GetUnitDefID(unitID)].name)
 						if Spring.GetUnitTeam(destroyQueue[j]) == scavTeamID then
-							Spring.DestroyUnit(destroyQueue[j], true, false)
+							DestroyUnit(destroyQueue[j], true, false)
 						end
 					end
 					destroyQueue = nil
@@ -1059,6 +1057,9 @@ if gadgetHandler:IsSyncedCode() then
 						if burrowID then
 							SetupBurrow(burrowID, spawnPosX, spawnPosY, spawnPosZ)
 							Spring.SpawnCEG("commander-spawn-alwaysvisible", spawnPosX, spawnPosY, spawnPosZ, 0, 0, 0)
+							if GG.SpawnEnvironmentalLightning then
+								GG.SpawnEnvironmentalLightning("commanderspawn", spawnPosX, spawnPosY, spawnPosZ)
+							end
 							Spring.PlaySoundFile("commanderspawn-mono", 0.15, spawnPosX, spawnPosY, spawnPosZ, 0, 0, 0, "sfx")
 							GG.ComSpawnDefoliate(spawnPosX, spawnPosY, spawnPosZ)
 							break
@@ -1096,9 +1097,9 @@ if gadgetHandler:IsSyncedCode() then
 		end
 
 		if SetCount(bossIDs) > 0 then
-			
+
 			if bossStagger.currentlyStaggered == false then
-				
+
 				if bossStagger.CurrentHealth > 0 then
 					SetGameRulesParam("scavBossStaggerPercentage", math.ceil((bossStagger.CurrentHealth/bossStagger.Health)*100))
 					for bossID, _ in pairs(bossIDs) do
@@ -1137,6 +1138,7 @@ if gadgetHandler:IsSyncedCode() then
 
 		SetGameRulesParam("scavBossHealth", math.floor(0.5 + ((totalHealth / totalMaxHealth) * 100)))
 		SetGameRulesParam("pveBossInfo", Json.encode(bosses))
+		ScavBossHealthPercentage = math.floor(0.5 + ((totalHealth / totalMaxHealth) * 100))
 	end
 
 	function SpawnBoss()
@@ -1664,7 +1666,7 @@ if gadgetHandler:IsSyncedCode() then
 				if not UnitDefs[unitDefID].customParams.scav_swap_override_created then
 					if UnitDefs[unitDefID] and UnitDefs[unitDefID].name and UnitDefNames[UnitDefs[unitDefID].name .. "_scav"] then
 						createUnitQueue[#createUnitQueue+1] = {UnitDefs[unitDefID].name .. "_scav", x, y, z, Spring.GetUnitBuildFacing(unitID) or 0, scavTeamID}
-						Spring.DestroyUnit(unitID, true, true)
+						DestroyUnit(unitID, true, true)
 					end
 				elseif UnitDefs[unitDefID].customParams.scav_swap_override_created == "delete" then
 					Spring.DestroyUnit(unitID, true, true)
@@ -1672,7 +1674,7 @@ if gadgetHandler:IsSyncedCode() then
 					if UnitDefNames[UnitDefs[unitDefID].customParams.scav_swap_override_created] then
 						createUnitQueue[#createUnitQueue+1] = {UnitDefs[unitDefID].customParams.scav_swap_override_created, x, y, z, Spring.GetUnitBuildFacing(unitID) or 0, scavTeamID}
 					end
-					Spring.DestroyUnit(unitID, true, true)
+					DestroyUnit(unitID, true, true)
 				end
 				return
 			else
@@ -1738,6 +1740,20 @@ if gadgetHandler:IsSyncedCode() then
 				if weaponID == -1 and damage > 1 then
 					damage = 1
 				end
+
+				if ScavBossHealthPercentage then
+					if ScavBossHealthPercentage > 50 then
+						damage = damage * 2
+					elseif ScavBossHealthPercentage > 25 then
+					elseif ScavBossHealthPercentage > 10 then
+						damage = damage * 0.75
+					elseif ScavBossHealthPercentage > 5 then
+						damage = damage * 0.5
+					elseif ScavBossHealthPercentage <= 5 then
+						damage = damage * 0.25
+					end
+				end
+
 				attackerDefID = tostring(attackerDefID)
 				if not bossResistance[attackerDefID] then
 					bossResistance[attackerDefID] = {
@@ -1773,6 +1789,21 @@ if gadgetHandler:IsSyncedCode() then
 			end
 			return damage
 		end
+
+		if attackerID and bossIDs[attackerID] then -- Boss Resistance
+			if ScavBossHealthPercentage then
+				if ScavBossHealthPercentage > 50 then
+					damage = damage * 0.25
+				elseif ScavBossHealthPercentage > 25 then
+					damage = damage * 0.5
+				elseif ScavBossHealthPercentage > 10 then
+					damage = damage * 0.75
+				elseif ScavBossHealthPercentage > 5 then
+				elseif ScavBossHealthPercentage <= 5 then
+					damage = damage * 2
+				end
+			end
+		end
 		return damage, 1
 	end
 
@@ -1789,7 +1820,7 @@ if gadgetHandler:IsSyncedCode() then
 					local sinA, cosA = math.sin(angle), math.cos(angle)
 					local distance = mRandom(math.ceil(config.scavBehaviours.SKIRMISH[attackerDefID].distance*0.75), math.floor(config.scavBehaviours.SKIRMISH[attackerDefID].distance*1.25))
 					local dx, dz = sinA * distance, cosA * distance
-					if config.scavBehaviours.SKIRMISH[attackerDefID].teleport and (unitTeleportCooldown[attackerID] or 1) < GetGameFrame and positionCheckLibrary.FlatAreaCheck(x - dx, y, z - dz, 64, 30, false) and positionCheckLibrary.MapEdgeCheck(x - dx, y, z - dz, 64) then
+					if config.scavBehaviours.SKIRMISH[attackerDefID].teleport and (unitTeleportCooldown[attackerID] or 1) < GetGameFrame and positionCheckLibrary.FlatAreaCheck(x - dx, y, z - dz, 64, 30, false) and positionCheckLibrary.MapEdgeCheck(x - dx, y, z - dz, 64) and positionCheckLibrary.OccupancyCheck(x - dx, y, z - dz, 64) then
 						GG.ScavengersSpawnEffectUnitDefID(attackerDefID, x, y, z)
 						SetUnitPosition(attackerID, x - dx, z - dz)
 						GiveOrderToUnit(attackerID, CMD.STOP, 0, 0)
@@ -1811,7 +1842,7 @@ if gadgetHandler:IsSyncedCode() then
 						local sinA, cosA = math.sin(angle), math.cos(angle)
 						local distance = mRandom(math.ceil(config.scavBehaviours.COWARD[unitDefID].distance*0.75), math.floor(config.scavBehaviours.COWARD[unitDefID].distance*1.25))
 						local dx, dz = sinA * distance, cosA * distance
-						if config.scavBehaviours.COWARD[unitDefID].teleport and (unitTeleportCooldown[unitID] or 1) < GetGameFrame and positionCheckLibrary.FlatAreaCheck(x - dx, y, z - dz, 64, 30, false) and positionCheckLibrary.MapEdgeCheck(x - dx, y, z - dz, 64) then
+						if config.scavBehaviours.COWARD[unitDefID].teleport and (unitTeleportCooldown[unitID] or 1) < GetGameFrame and positionCheckLibrary.FlatAreaCheck(x - dx, y, z - dz, 64, 30, false) and positionCheckLibrary.MapEdgeCheck(x - dx, y, z - dz, 64) and positionCheckLibrary.OccupancyCheck(x - dx, y, z - dz, 64) then
 							GG.ScavengersSpawnEffectUnitDefID(unitDefID, x, y, z)
 							SetUnitPosition(unitID, x - dx, z - dz)
 							GiveOrderToUnit(unitID, CMD.STOP, 0, 0)
@@ -1829,16 +1860,16 @@ if gadgetHandler:IsSyncedCode() then
 				local x, y, z = GetUnitPosition(unitID)
 				local separation = GetUnitSeparation(unitID, attackerID)
 				if ax and separation < (config.scavBehaviours.BERSERK[unitDefID].distance or 10000) then
-					if config.scavBehaviours.BERSERK[unitDefID].teleport and (unitTeleportCooldown[unitID] or 1) < GetGameFrame and positionCheckLibrary.FlatAreaCheck(ax, ay, az, 128, 30, false) and positionCheckLibrary.MapEdgeCheck(ax, ay, az, 128) then
+					ax = ax + mRandom(-256,256)
+					az = az + mRandom(-256,256)
+					if config.scavBehaviours.BERSERK[unitDefID].teleport and (unitTeleportCooldown[unitID] or 1) < GetGameFrame and positionCheckLibrary.FlatAreaCheck(ax, ay, az, 128, 30, false) and positionCheckLibrary.MapEdgeCheck(ax, ay, az, 128) and positionCheckLibrary.OccupancyCheck(ax, ay, az, 64) then
 						GG.ScavengersSpawnEffectUnitDefID(unitDefID, x, y, z)
-						ax = ax + mRandom(-256,256)
-						az = az + mRandom(-256,256)
 						SetUnitPosition(unitID, ax, ay, az)
 						GiveOrderToUnit(unitID, CMD.STOP, 0, 0)
 						GG.ScavengersSpawnEffectUnitDefID(attackerDefID, ax, ay, az)
 						unitTeleportCooldown[unitID] = GetGameFrame + config.scavBehaviours.BERSERK[unitDefID].teleportcooldown*30
 					else
-						GiveOrderToUnit(unitID, CMD.MOVE, { ax+mRandom(-64,64), ay, az+mRandom(-64,64)}, {})
+						GiveOrderToUnit(unitID, CMD.MOVE, {ax, ay, az}, {})
 					end
 					unitCowardCooldown[unitID] = GetGameFrame + 900
 				end
@@ -1848,16 +1879,16 @@ if gadgetHandler:IsSyncedCode() then
 				local x, y, z = GetUnitPosition(attackerID)
 				local separation = GetUnitSeparation(unitID, attackerID)
 				if ax and separation < (config.scavBehaviours.BERSERK[attackerDefID].distance or 10000) then
-					if config.scavBehaviours.BERSERK[attackerDefID].teleport and (unitTeleportCooldown[attackerID] or 1) < GetGameFrame and positionCheckLibrary.FlatAreaCheck(ax, ay, az, 128, 30, false) and positionCheckLibrary.MapEdgeCheck(ax, ay, az, 128) then
+					ax = ax + mRandom(-256,256)
+					az = az + mRandom(-256,256)
+					if config.scavBehaviours.BERSERK[attackerDefID].teleport and (unitTeleportCooldown[attackerID] or 1) < GetGameFrame and positionCheckLibrary.FlatAreaCheck(ax, ay, az, 128, 30, false) and positionCheckLibrary.MapEdgeCheck(ax, ay, az, 128) and positionCheckLibrary.OccupancyCheck(ax, ay, az, 64) then
 						GG.ScavengersSpawnEffectUnitDefID(attackerDefID, x, y, z)
-						ax = ax + mRandom(-256,256)
-						az = az + mRandom(-256,256)
 						SetUnitPosition(attackerID, ax, ay, az)
 						GiveOrderToUnit(attackerID, CMD.STOP, 0, 0)
 						GG.ScavengersSpawnEffectUnitDefID(unitDefID, ax, ay, az)
 						unitTeleportCooldown[attackerID] = GetGameFrame + config.scavBehaviours.BERSERK[attackerDefID].teleportcooldown*30
 					else
-						GiveOrderToUnit(attackerID, CMD.MOVE, { ax+mRandom(-64,64), ay, az+mRandom(-64,64)}, {})
+						GiveOrderToUnit(attackerID, CMD.MOVE, {ax, ay, az}, {})
 					end
 					unitCowardCooldown[attackerID] = GetGameFrame + 900
 				end
@@ -2275,7 +2306,11 @@ if gadgetHandler:IsSyncedCode() then
 							if captureLevel+captureProgress >= 0.99 then
 								SpawnCEG("scavmist", ux, uy+100, uz, 0,0,0)
 								SpawnCEG("scavradiation", ux, uy+100, uz, 0,0,0)
-								SpawnCEG("scavradiation-lightning", ux, uy+100, uz, 0,0,0)
+								if GG.SpawnEnvironmentalLightning then
+									GG.SpawnEnvironmentalLightning("scavradiation", ux, uy+100, uz)
+								else
+									SpawnCEG("scavradiation-lightning", ux, uy+100, uz, 0,0,0)
+								end
 								-- UnitGiven may destroy and replace this unit with a _scav variant
 								TransferUnit(unitID, scavTeamID, false)
 								if ValidUnitID(unitID) then
