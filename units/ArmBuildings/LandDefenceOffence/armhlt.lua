@@ -124,7 +124,7 @@ return {
 				firestarter = 90,
 				-- impactonly = 1,
 				impulsefactor = 1.1,
-				intensity = 0.8, --
+				intensity = 1.6, --
 				-- laserflaresize = 9.9,
 				name = "Heavy g2g high energy laser",
 				noselfdamage = true,
@@ -133,7 +133,7 @@ return {
 				proximitypriority = 1,
 				range = 1750,
 				reloadtime = 1.8,
-				rgbcolor = "0.2 1 0.6",
+				rgbcolor = "0 1 0.6",
 				soundhit = "bimpact3",
 				soundhitwet = "splshbig",
 				soundstart = "mgun3",
