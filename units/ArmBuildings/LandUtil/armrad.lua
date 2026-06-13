@@ -1,5 +1,6 @@
 return {
 	armrad = {
+		airsightdistance = 4700,
 		activatewhenbuilt = true,
 		buildangle = 8192,
 		buildpic = "ARMRAD.DDS",
@@ -15,22 +16,22 @@ return {
 		explodeas = "smallBuildingexplosiongeneric",
 		footprintx = 2,
 		footprintz = 2,
-		health = 180,
+		health = 220,
 		mass = 5100,
 		maxacc = 0,
 		maxdec = 0,
-		maxslope = 10,
+		maxslope = 25,
 		maxwaterdepth = 0,
 		metalcost = 60,
 		objectname = "Units/ARMRAD.s3o",
 		onoffable = false,
-		radardistance = 2100,
-		radaremitheight = 66,
+		radardistance = 9100,
+		radaremitheight = 122,
 		script = "Units/ARMRAD.cob",
 		seismicsignature = 0,
 		selfdestructas = "smallBuildingExplosionGenericSelfd",
-		sightdistance = 680,
-		sightemitheight = 66,
+		sightdistance = 2280,
+		sightemitheight = 100,
 		usepiececollisionvolumes = 0,
 		yardmap = "oooo",
 		customparams = {
@@ -80,6 +81,10 @@ return {
 		sfxtypes = {
 			explosiongenerators = {
 				[1] = "custom:radarpulse_t1_slow",
+			},
+			pieceexplosiongenerators = {
+				[1] = "deathceg2",
+				[2] = "deathceg3",
 			},
 		},
 		sounds = {
