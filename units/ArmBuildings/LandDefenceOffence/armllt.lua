@@ -101,7 +101,7 @@ return {
 		weapondefs = {
 			armmg_weapon = {
 				accuracy = 55,
-				areaofeffect = 354,
+				areaofeffect = 254,
 				avoidfeature = false,
 				burst = 5,
 				burstrate = 0.08,
@@ -122,7 +122,7 @@ return {
 				impulsefactor = 15.0,  
                 impulseboost = 10.0,  -- 
                 impulsethreshold = 0, --
-				intensity = 0.8,
+				intensity = 0.5,
 				projectiles = 3, --
 				maxvelocity = 2200, --
 				name = "Heavy Rapid-fire Machine Gun",
@@ -132,7 +132,7 @@ return {
 				range = 1975,
 				reloadtime = 0.77,
 				separation = 2,
-				rgbcolor = "1 0.85 0.25",
+				rgbcolor = "1 0.85 0.5",
 				soundhit = "bimpact3",
 				soundhitwet = "splshbig",
 				soundstart = "mgun6heavy",
