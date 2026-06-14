@@ -104,27 +104,27 @@ return {
 		},
 		weapondefs = {
 			arm_laserh1 = {
-				accuracy = 8,
-				areaofeffect = 22,
+				accuracy = 24,
+				areaofeffect = 44,
 				avoidfeature = true,
 				avoidfriendly = false,
 				-- beamtime = 0.15,
-				burst = 4,
-				burstrate = 0.1,
+				burst = 3,
+				burstrate = 0.2,
 				-- corethickness = 0.25,
 				burnblow = false,
 				collideFriendly = false,
 				craterareaofeffect = 0,
 				craterboost = 0,
 				cratermult = 0,
-				duration = 0.015, --
+				duration = 0.022, --
 				edgeeffectiveness = 0.95,
 				energypershot = 75,
-				explosiongenerator = "custom:laserhit-medium-green",
+				explosiongenerator = "custom:laserhit-large-green",
 				firestarter = 90,
 				-- impactonly = 1,
-				impulsefactor = 1.1,
-				intensity = 1.6, --
+				impulsefactor = 1.84,
+				intensity = 1.8, --
 				-- laserflaresize = 9.9,
 				name = "Heavy g2g high energy laser",
 				noselfdamage = true,
@@ -148,9 +148,9 @@ return {
 				weapontype = "LaserCannon", --
 				weaponvelocity = 2250,
 				damage = {
-					commanders = 580.5,
-					default = 387,
-					vtol = 350,
+					commanders = 380.5,
+					default = 427,
+					vtol = 390,
 				},
 			},
 		},
