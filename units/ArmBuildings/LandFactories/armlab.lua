@@ -37,7 +37,8 @@ return {
 			[5] = "armham",
 			[6] = "armjeth",
 			[7] = "armwar",
-			[8] = "armflea",
+			[8] = "armflea", 
+			[9] = "arm_superpawn",
 		},
 		customparams = {
 			buildinggrounddecaldecayspeed = 30,
