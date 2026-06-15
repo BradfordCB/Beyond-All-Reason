@@ -123,10 +123,10 @@ return {
 				name = "Heavy a2g armor-piercing sabot missile launcher",
 				noselfdamage = true,
 				projectiles = 3, --
-				sprayangle = 1210,
+				sprayangle = 1410,
 				proximitypriority = 3000,
 				range = 5700,
-				reloadtime = 17,
+				reloadtime = 15,
 				size = 2,
 				smokecolor = 0.5,
 				smokeperiod = 49,
@@ -147,7 +147,7 @@ return {
 				turnrate = 14090,
 				turret = true,
 				weaponacceleration = 15,
-				weapontimer = 3,
+				weapontimer = 10,
 				weapontype = "MissileLauncher",
 				weaponvelocity = 990,
 				customparams = {
@@ -214,7 +214,7 @@ return {
 			[2] = {
 				badtargetcategory = "NOTAIR",
 				def = "ARMAMPH_MISSILE",
-				fastautoretargeting = true,
+				-- fastautoretargeting = true,
 				onlytargetcategory = "VTOL",
 			},
 		},
