@@ -173,11 +173,11 @@ return {
 				texture2 = "railguntrail",
 				texture3 = "null",
 				tolerance = 4000, -- works
-				turnrate = 3050, -- 
+				turnrate = 3100, -- 
 				weaponacceleration = 23,
-				weapontimer = 3.8,
+				weapontimer = 3.5,
 				weapontype = "StarburstLauncher",
-				maxvelocity = 1450, --
+				maxvelocity = 1350, --
 				-- weaponvelocity = 3000,
 				customparams = {
 					place_target_on_ground = "true",
