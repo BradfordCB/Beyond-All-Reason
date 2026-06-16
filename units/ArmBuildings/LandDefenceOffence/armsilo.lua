@@ -116,10 +116,10 @@ return {
 				reloadtime = 30,
 				soundhit = "nukelaunchalarm",
 				soundhitvolume = 50,
-				startvelocity = 750, --
+				startvelocity = 700, --
 				tolerance = 10000,
 				turnrate = 100,
-				weaponacceleration = 950,
+				weaponacceleration = 200,
 				weapontimer = 0.05,
 				weapontype = "Cannon",
 				-- weaponvelocity = 1200,
@@ -165,7 +165,7 @@ return {
 				soundhitwetvolume = 53,
 				soundstart = "nukelaunch",
 				soundstartvolume = 20,
-				startvelocity = 750, --
+				startvelocity = 700, --
 				stockpile = true,
 				stockpiletime = 120,
 				targetable = 1,
@@ -173,9 +173,9 @@ return {
 				texture2 = "railguntrail",
 				texture3 = "null",
 				tolerance = 4000, -- works
-				turnrate = 3700, -- 
+				turnrate = 3900, -- 
 				weaponacceleration = 23,
-				weapontimer = 3.5,
+				weapontimer = 3.2,
 				weapontype = "StarburstLauncher",
 				maxvelocity = 1350, --
 				-- weaponvelocity = 3000,
