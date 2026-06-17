@@ -174,8 +174,8 @@ return {
 				texture1 = "null",
 				texture2 = "railguntrail",
 				texture3 = "null",
-				tolerance = 4000, -- works
-				turnrate = 3700, -- 
+				tolerance = 4000, --
+				turnrate = 3600, -- 
 				weaponacceleration = 35,
 				weapontimer = 4.5,
 				weapontype = "StarburstLauncher",
