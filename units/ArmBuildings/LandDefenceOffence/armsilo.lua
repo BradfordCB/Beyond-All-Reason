@@ -118,7 +118,7 @@ return {
 				reloadtime = 30,
 				soundhit = "nukelaunchalarm",
 				soundhitvolume = 50,
-				startvelocity = 710, --
+				startvelocity = 650, --
 				tolerance = 10000,
 				turnrate = 100,
 				weaponacceleration = 200,
@@ -167,7 +167,7 @@ return {
 				soundhitwetvolume = 53,
 				soundstart = "nukelaunch",
 				soundstartvolume = 20,
-				startvelocity = 710, --
+				startvelocity = 650, --
 				stockpile = true,
 				stockpiletime = 120,
 				targetable = 1,
