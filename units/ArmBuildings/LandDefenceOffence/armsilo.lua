@@ -176,8 +176,8 @@ return {
 				texture3 = "null",
 				tolerance = 4000, -- works
 				turnrate = 3700, -- 
-				weaponacceleration = 40,
-				weapontimer = 4.2,
+				weaponacceleration = 35,
+				weapontimer = 4.5,
 				weapontype = "StarburstLauncher",
 				maxvelocity = 1620, --
 				-- weaponvelocity = 3000,
