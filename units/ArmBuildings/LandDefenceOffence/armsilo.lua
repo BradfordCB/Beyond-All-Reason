@@ -29,6 +29,8 @@ return {
 			buildinggrounddecalsizex = 10,
 			buildinggrounddecalsizey = 10,
 			buildinggrounddecaltype = "decals/armsilo_aoplane.dds",
+		    i18n_en_humanname ="BCB Nuke",      -- The name displayed in-game
+			i18n_en_tooltip = "Hight Trajectory Nuclear warhead", -- The unit tooltip description
 			model_author = "Cremuss",
 			normaltex = "unittextures/Arm_normal.dds",
 			removewait = true,
@@ -116,7 +118,7 @@ return {
 				reloadtime = 30,
 				soundhit = "nukelaunchalarm",
 				soundhitvolume = 50,
-				startvelocity = 700, --
+				startvelocity = 710, --
 				tolerance = 10000,
 				turnrate = 100,
 				weaponacceleration = 200,
@@ -165,7 +167,7 @@ return {
 				soundhitwetvolume = 53,
 				soundstart = "nukelaunch",
 				soundstartvolume = 20,
-				startvelocity = 700, --
+				startvelocity = 710, --
 				stockpile = true,
 				stockpiletime = 120,
 				targetable = 1,
@@ -175,7 +177,7 @@ return {
 				tolerance = 4000, -- works
 				turnrate = 3900, -- 
 				weaponacceleration = 23,
-				weapontimer = 3.2,
+				weapontimer = 3.4,
 				weapontype = "StarburstLauncher",
 				maxvelocity = 1350, --
 				-- weaponvelocity = 3000,
