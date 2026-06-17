@@ -110,7 +110,7 @@ return {
 				gravityaffected = "true", --
 				-- hightrajectory = 1,
 				impulsefactor = 0,
-				mygravity = 0.04, --
+				mygravity = 0.03, --
 				maxvelocity = 1710, --
 				metalpershot = 0,
 				name = "Nuclear Launch",
@@ -147,7 +147,7 @@ return {
 				firestarter = 100,
 				flighttime = 300,
 				gravityaffected = "true", --
-				mygravity = 0.04, --
+				mygravity = 0.03, --
 				impulseboost = 20,
 				impulsefactor = 30,
 				interceptedbyshieldtype = 0,
@@ -175,7 +175,7 @@ return {
 				texture2 = "railguntrail",
 				texture3 = "null",
 				tolerance = 4000, -- works
-				turnrate = 3900, -- 
+				turnrate = 3850, -- 
 				weaponacceleration = 23,
 				weapontimer = 3.4,
 				weapontype = "StarburstLauncher",
