@@ -177,7 +177,7 @@ return {
 				tolerance = 4000, -- works
 				turnrate = 3700, -- 
 				weaponacceleration = 30,
-				weapontimer = 3.8,
+				weapontimer = 4.1,
 				weapontype = "StarburstLauncher",
 				maxvelocity = 1450, --
 				-- weaponvelocity = 3000,
