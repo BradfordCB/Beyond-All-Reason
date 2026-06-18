@@ -111,7 +111,7 @@ return {
 				-- hightrajectory = 1,
 				impulsefactor = 0,
 				mygravity = 0.005, --
-				maxvelocity = 1580, --
+				maxvelocity = 1180, --
 				metalpershot = 0,
 				name = "Nuclear Launch",
 				range = 0,
@@ -177,9 +177,9 @@ return {
 				tolerance = 4000, --
 				turnrate = 3680, -- 
 				weaponacceleration = 35,
-				weapontimer = 4.3,
+				weapontimer = 4.2,
 				weapontype = "StarburstLauncher",
-				maxvelocity = 1580, --
+				maxvelocity = 1180, --
 				-- weaponvelocity = 3000,
 				customparams = {
 					place_target_on_ground = "true",
