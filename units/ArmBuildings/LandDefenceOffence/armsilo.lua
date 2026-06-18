@@ -121,7 +121,7 @@ return {
 				startvelocity = 580, --
 				tolerance = 10000,
 				turnrate = 100,
-				weaponacceleration = 110,
+				weaponacceleration = 100,
 				weapontimer = 0.05,
 				weapontype = "Cannon",
 				-- weaponvelocity = 1200,
@@ -175,9 +175,9 @@ return {
 				texture2 = "railguntrail",
 				texture3 = "null",
 				tolerance = 4000, --
-				turnrate = 3720, -- 
+				turnrate = 3790, -- 
 				weaponacceleration = 33,
-				weapontimer = 4.0,
+				weapontimer = 3.9,
 				weapontype = "StarburstLauncher",
 				maxvelocity = 1280, --
 				-- weaponvelocity = 3000,
