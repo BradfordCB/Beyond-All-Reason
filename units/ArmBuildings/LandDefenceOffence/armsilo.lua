@@ -29,7 +29,7 @@ return {
 			buildinggrounddecalsizex = 10,
 			buildinggrounddecalsizey = 10,
 			buildinggrounddecaltype = "decals/armsilo_aoplane.dds",
-		    i18n_en_humanname ="BCB Nuke",      -- The name displayed in-game
+		    i18n_en_humanname ="BCB Nuke B",      -- The name displayed in-game
 			i18n_en_tooltip = "Hight Trajectory Nuclear warhead", -- The unit tooltip description
 			model_author = "Cremuss",
 			normaltex = "unittextures/Arm_normal.dds",
@@ -110,15 +110,15 @@ return {
 				gravityaffected = "true", --
 				-- hightrajectory = 1,
 				impulsefactor = 0,
-				mygravity = 0.01, --
-				maxvelocity = 1450, --
+				mygravity = 0.005, --
+				maxvelocity = 1580, --
 				metalpershot = 0,
 				name = "Nuclear Launch",
 				range = 0,
 				reloadtime = 30,
 				soundhit = "nukelaunchalarm",
 				soundhitvolume = 50,
-				startvelocity = 585, --
+				startvelocity = 590, --
 				tolerance = 10000,
 				turnrate = 100,
 				weaponacceleration = 110,
@@ -147,7 +147,7 @@ return {
 				firestarter = 100,
 				flighttime = 300,
 				gravityaffected = "true", --
-				mygravity = 0.01, --
+				mygravity = 0.005, --
 				impulseboost = 20,
 				impulsefactor = 30,
 				interceptedbyshieldtype = 0,
@@ -167,7 +167,7 @@ return {
 				soundhitwetvolume = 53,
 				soundstart = "nukelaunch",
 				soundstartvolume = 20,
-				startvelocity = 585, --
+				startvelocity = 590, --
 				stockpile = true,
 				stockpiletime = 120,
 				targetable = 1,
@@ -175,7 +175,7 @@ return {
 				texture2 = "railguntrail",
 				texture3 = "null",
 				tolerance = 4000, --
-				turnrate = 3700, -- 
+				turnrate = 3680, -- 
 				weaponacceleration = 35,
 				weapontimer = 4.3,
 				weapontype = "StarburstLauncher",
