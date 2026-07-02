@@ -1,6 +1,6 @@
 return {
 	armnanotc2plat = {
-		builddistance = 900,
+		builddistance = 500,
 		builder = true,
 		buildpic = "armnanotc2plat.DDS",
 		buildtime = 21000,
@@ -50,13 +50,6 @@ return {
 			subfolder = "ArmBuildings/SeaUtil",
 			unitgroup = "builder",
 			usebuildinggrounddecal = true,
-		},
-		sfxtypes = {
-			pieceexplosiongenerators = {
-				[1] = "deathceg2-builder",
-				[2] = "deathceg3-builder",
-				[3] = "deathceg4-builder",
-			},
 		},
 		sounds = {
 			build = "nanlath1",

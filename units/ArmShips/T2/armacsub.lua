@@ -1,6 +1,6 @@
 return {
 	armacsub = {
-		builddistance = 400,
+		builddistance = 180,
 		builder = true,
 		buildpic = "ARMACSUB.DDS",
 		buildtime = 23000,
@@ -86,13 +86,6 @@ return {
 				object = "Units/arm2X2A.s3o",
 				reclaimable = true,
 				resurrectable = 0,
-			},
-		},
-		sfxtypes = {
-			pieceexplosiongenerators = {
-				[1] = "deathceg2-builder",
-				[2] = "deathceg3-builder",
-				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

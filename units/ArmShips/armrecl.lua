@@ -2,7 +2,7 @@ return {
 	armrecl = {
 		activatewhenbuilt = true,
 		autoheal = 5,
-		builddistance = 379,
+		builddistance = 140,
 		builder = true,
 		buildpic = "ARMRECL.DDS",
 		buildtime = 6200,
@@ -44,11 +44,6 @@ return {
 		sfxtypes = {
 			explosiongenerators = {
 				[1] = "custom:subbubbles",
-			},
-			pieceexplosiongenerators = {
-				[1] = "deathceg2-builder",
-				[2] = "deathceg3-builder",
-				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

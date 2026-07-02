@@ -1,6 +1,6 @@
 return {
 	armacv = {
-		builddistance = 339,
+		builddistance = 136,
 		builder = true,
 		buildpic = "ARMACV.DDS",
 		buildtime = 16000,
@@ -111,11 +111,6 @@ return {
 		sfxtypes = {
 			explosiongenerators = {
 				[1] = "custom:dust_cloud_dirt_light",
-			},
-			pieceexplosiongenerators = {
-				[1] = "deathceg2-builder",
-				[2] = "deathceg3-builder",
-				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

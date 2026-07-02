@@ -34,7 +34,7 @@ local FACTORY_DISCOUNT_MULTIPLIER = 0.90 -- The factory discount will be the bud
 
 local QUICK_START_COST_ENERGY = 400      --will be deducted from commander's energy upon start.
 local QUICK_START_COST_METAL = 800       --will be deducted from commander's metal upon start.
-local READY_REFUNDABLE_BUDGET = 67800       -- Budget threshold when players are allowed to "ready" the game
+local READY_REFUNDABLE_BUDGET = 800       -- Budget threshold when players are allowed to "ready" the game
 local quickStartAmountConfig = {
 	small = {
 		budget = 800,
@@ -49,10 +49,10 @@ local quickStartAmountConfig = {
 		traversabilityGridRange = 480
 	},
 	large = {
-		budget = 70000,
-		range = 2800,
-		baseGenerationRange = 2800,
-		traversabilityGridRange = 3300
+		budget = 2400,
+		range = 600,
+		baseGenerationRange = 500,
+		traversabilityGridRange = 544
 	},
 }
 

@@ -2,7 +2,7 @@ return {
 	armfify = {
 		blocking = false,
 		buildpic = "ARMFIFY.DDS",
-		builddistance = 450,
+		builddistance = 150,
 		builder = true,
         buildtime = 3800,
 		canfly = true,
@@ -37,17 +37,12 @@ return {
 		turnrate = 1100,
 		upright = true,
 		usesmoothmesh = 0,
-        workertime = 275,
+        workertime = 75,
 		customparams = {
 			model_author = "Darknagura, Fritman",
 			normaltex = "unittextures/Arm_normal.dds",
 			subfolder = "ArmAircraft",
 			unitgroup = "builder",
-		},
-		sfxtypes = {
-			pieceexplosiongenerators = {
-				[1] = "airdeathceg2",
-			},
 		},
 		sounds = {
 			canceldestruct = "cancel2",

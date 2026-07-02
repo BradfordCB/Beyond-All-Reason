@@ -1,6 +1,6 @@
 return {
 	armack = {
-		builddistance = 339,
+		builddistance = 136,
 		builder = true,
 		buildpic = "ARMACK.DDS",
 		buildtime = 12500,
@@ -66,7 +66,6 @@ return {
 			[27] = "armdf",
 			[28] = "armlab",
 			[29] = "armalab",
-			[30] = "armlwall",
 		},
 		customparams = {
 			model_author = "Kaiser",
@@ -104,13 +103,6 @@ return {
 				object = "Units/arm2X2B.s3o",
 				reclaimable = true,
 				resurrectable = 0,
-			},
-		},
-		sfxtypes = {
-			pieceexplosiongenerators = {
-				[1] = "deathceg2-builder",
-				[2] = "deathceg3-builder",
-				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

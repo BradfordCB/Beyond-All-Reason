@@ -29,8 +29,6 @@ return {
 			buildinggrounddecalsizex = 10,
 			buildinggrounddecalsizey = 10,
 			buildinggrounddecaltype = "decals/armsilo_aoplane.dds",
-		    i18n_en_humanname ="BCB Nuke B",      -- The name displayed in-game
-			i18n_en_tooltip = "Hight Trajectory Nuclear warhead", -- The unit tooltip description
 			model_author = "Cremuss",
 			normaltex = "unittextures/Arm_normal.dds",
 			removewait = true,
@@ -70,13 +68,6 @@ return {
 				resurrectable = 0,
 			},
 		},
-		sfxtypes = {
-			pieceexplosiongenerators = {
-				[1] = "deathceg2",
-				[2] = "deathceg3",
-				[3] = "deathceg4",
-			},
-		},
 		sounds = {
 			canceldestruct = "cancel2",
 			underattack = "warning1",
@@ -107,30 +98,28 @@ return {
 				craterboost = 0,
 				cratermult = 0,
 				edgeeffectiveness = 0,
-				gravityaffected = "true", --
-				-- hightrajectory = 1,
 				impulsefactor = 0,
-				mygravity = 0.003, --
-				maxvelocity = 1000, --
 				metalpershot = 0,
 				name = "Nuclear Launch",
 				range = 0,
 				reloadtime = 30,
 				soundhit = "nukelaunchalarm",
 				soundhitvolume = 50,
-				startvelocity = 430, --
 				tolerance = 10000,
-				turnrate = 100,
-				weaponacceleration = 60,
-				weapontimer = 0.05,
+				turnrate = 10000,
+				weaponacceleration = 101,
+				weapontimer = 0.1,
 				weapontype = "Cannon",
-				-- weaponvelocity = 1200,
+				weaponvelocity = 100,
+				customparams = {
+					bogus = 1,
+				},
 				damage = {
 					default = 0,
 				},
 			},
 			nuclear_missile = {
-				areaofeffect = 1400,
+				areaofeffect = 1280,
 				avoidfeature = false,
 				avoidfriendly = false,
 				cegtag = "NUKETRAIL",
@@ -138,18 +127,15 @@ return {
 				collidefeature = false,
 				collidefriendly = false,
 				commandfire = true,
-				craterareaofeffect = 1400,
+				craterareaofeffect = 1280,
 				craterboost = 2.4,
 				cratermult = 1.2,
 				edgeeffectiveness = 0.45,
 				energypershot = 125000,
 				explosiongenerator = "custom:newnuke",
 				firestarter = 100,
-				flighttime = 300,
-				gravityaffected = "true", --
-				mygravity = 0.003, --
-				impulseboost = 20,
-				impulsefactor = 30,
+				flighttime = 400,
+				impulsefactor = 1.1,
 				interceptedbyshieldtype = 0,
 				metalpershot = 1000,
 				model = "crblmssl.s3o",
@@ -157,8 +143,8 @@ return {
 				range = 72000,
 				reloadtime = 30,
 				smokecolor = 0.85,
-				smokeperiod = 30,
-				smokesize = 38,
+				smokeperiod = 10,
+				smokesize = 35,
 				smoketime = 130,
 				smoketrail = true,
 				smoketrailcastshadow = true,
@@ -167,20 +153,18 @@ return {
 				soundhitwetvolume = 53,
 				soundstart = "nukelaunch",
 				soundstartvolume = 20,
-				startvelocity = 430, --
 				stockpile = true,
 				stockpiletime = 120,
 				targetable = 1,
 				texture1 = "null",
 				texture2 = "railguntrail",
 				texture3 = "null",
-				tolerance = 5000, --
-				turnrate = 4000, -- 
-				weaponacceleration = 60,
-				weapontimer = 3.5,
+				tolerance = 4000,
+				turnrate = 5500,
+				weaponacceleration = 100,
+				weapontimer = 5.5,
 				weapontype = "StarburstLauncher",
-				maxvelocity = 1580, --
-				-- weaponvelocity = 3000,
+				weaponvelocity = 1600,
 				customparams = {
 					place_target_on_ground = "true",
 					shield_aoe_penetration = true,
@@ -189,7 +173,7 @@ return {
 				},
 				damage = {
 					commanders = 2500,
-					default = 119500,
+					default = 9500,
 				},
 			},
 		},

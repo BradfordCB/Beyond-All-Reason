@@ -1,7 +1,7 @@
 return {
 	armrectr = {
 		autoheal = 5,
-		builddistance = 339,
+		builddistance = 96,
 		builder = true,
 		buildpic = "ARMRECTR.DDS",
 		buildtime = 2800,
@@ -19,8 +19,8 @@ return {
 		health = 220,
 		maxacc = 0.23,
 		maxdec = 0.8625,
-		maxslope = 25,
-		maxwaterdepth = 55,
+		maxslope = 14,
+		maxwaterdepth = 22,
 		metalcost = 130,
 		movementclass = "BOT2",
 		objectname = "Units/ARMRECTR.s3o",
@@ -29,7 +29,7 @@ return {
 		seismicsignature = 0,
 		selfdestructas = "smallbuilderSelfd",
 		sightdistance = 430,
-		speed = 108,
+		speed = 78,
 		stealth = true,
 		terraformspeed = 1000,
 		turninplace = true,
@@ -73,13 +73,6 @@ return {
 				object = "Units/arm2X2D.s3o",
 				reclaimable = true,
 				resurrectable = 0,
-			},
-		},
-		sfxtypes = {
-			pieceexplosiongenerators = {
-				[1] = "deathceg3-builder",
-				[2] = "deathceg2-builder",
-				[3] = "deathceg2",
 			},
 		},
 		sounds = {

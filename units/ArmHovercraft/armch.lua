@@ -1,6 +1,6 @@
 return {
 	armch = {
-		builddistance = 379,
+		builddistance = 150,
 		builder = true,
 		buildpic = "ARMCH.DDS",
 		buildtime = 4470,
@@ -81,7 +81,6 @@ return {
 			[43] = "armavp",
 			[44] = "armasy",
 			[45] = "armuwgeo",
-			[46] = "armlwall",
 		},
 		customparams = {
 			model_author = "Beherith",
@@ -125,11 +124,6 @@ return {
 				[1] = "custom:waterwake-small-hover",
 				[2] = "custom:bowsplash-small-hover",
 				[3] = "custom:hover-wake-tiny",
-			},
-			pieceexplosiongenerators = {
-				[1] = "deathceg2-builder",
-				[2] = "deathceg3-builder",
-				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

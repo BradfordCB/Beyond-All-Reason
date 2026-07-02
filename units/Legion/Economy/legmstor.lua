@@ -18,7 +18,7 @@ return {
 		health = 2100,
 		maxslope = 10,
 		maxwaterdepth = 0,
-		metalstorage = 15000,
+		metalstorage = 3000,
 		objectname = "Units/legmstor.s3o",
 		script = "Units/legmstor.cob",
 		seismicsignature = 0,

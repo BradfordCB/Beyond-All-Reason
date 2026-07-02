@@ -145,7 +145,7 @@ return {
 				},
 				damage = {
 					commanders = 2500,
-					default = 99500,
+					default = 11500,
 				},
 			},
 			nuclear_launch = {

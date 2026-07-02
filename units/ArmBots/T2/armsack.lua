@@ -1,6 +1,6 @@
 return {
 	armsack = {
-		builddistance = 339,
+		builddistance = 136,
 		builder = true,
 		buildpic = "LEGACK.DDS",
 		buildtime = 12000,
@@ -87,13 +87,6 @@ return {
 				object = "Units/arm2X2B.s3o",
 				reclaimable = true,
 				resurrectable = 0,
-			},
-		},
-		sfxtypes = {
-			pieceexplosiongenerators = {
-				[1] = "deathceg2-builder",
-				[2] = "deathceg3-builder",
-				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

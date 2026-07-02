@@ -1,14 +1,14 @@
 return {
 	armca = {
 		blocking = false,
-		builddistance = 339,
+		builddistance = 136,
 		builder = true,
 		buildpic = "ARMCA.DDS",
 		buildtime = 7960,
 		canfly = true,
 		canmove = true,
 		collide = true,
-		cruisealtitude = 570,
+		cruisealtitude = 70,
 		energycost = 3000,
 		energymake = 5,
 		energystorage = 25,
@@ -26,12 +26,12 @@ return {
 		script = "Units/ARMCA.cob",
 		seismicsignature = 0,
 		selfdestructas = "smallExplosionGenericSelfd-builder",
-		sightdistance = 930,
+		sightdistance = 430,
 		speed = 208.2,
 		terraformspeed = 225,
 		turninplaceanglelimit = 360,
 		turnrate = 240,
-		workertime = 110,
+		workertime = 60,
 		buildoptions = {
 			[1] = "armsolar",
 			[2] = "armadvsol",
@@ -64,26 +64,12 @@ return {
 			[29] = "armjuno",
 			[30] = "armsy",
 			[31] = "armuwgeo",
-			[32] = "armlwall",
 		},
 		customparams = {
 			model_author = "FireStorm, Flaka",
 			normaltex = "unittextures/Arm_normal.dds",
 			subfolder = "ArmAircraft",
 			unitgroup = "builder",
-		},
-		sfxtypes = {
-			crashexplosiongenerators = {
-				[1] = "crashing-small",
-				[2] = "crashing-small",
-				[3] = "crashing-small2",
-				[4] = "crashing-small3",
-				[5] = "crashing-small3",
-			},
-			pieceexplosiongenerators = {
-				[1] = "airdeathceg3-builder",
-				[2] = "airdeathceg2-builder",
-			},
 		},
 		sounds = {
 			build = "nanlath1",

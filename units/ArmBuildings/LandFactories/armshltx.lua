@@ -16,7 +16,7 @@ return {
 		health = 16000,
 		maxacc = 0,
 		maxdec = 0,
-		maxslope = 20,
+		maxslope = 10,
 		maxwaterdepth = 0,
 		metalcost = 7900,
 		metalstorage = 800,
@@ -35,7 +35,6 @@ return {
 			[4] = "armvang",
 			[5] = "armlun",
 			[6] = "armthor",
-			[7] = "armlunchbox",
 		},
 		customparams = {
 			buildinggrounddecaldecayspeed = 30,
@@ -81,10 +80,6 @@ return {
 		sfxtypes = {
 			explosiongenerators = {
 				[1] = "custom:YellowLight",
-			},
-			pieceexplosiongenerators = {
-				[1] = "deathceg3",
-				[2] = "deathceg4",
 			},
 		},
 		sounds = {

@@ -1,6 +1,6 @@
 return {
 	armcs = {
-		builddistance = 600,
+		builddistance = 200,
 		builder = true,
 		buildpic = "ARMCS.DDS",
 		buildtime = 3460,
@@ -100,11 +100,6 @@ return {
 		sfxtypes = {
 			explosiongenerators = {
 				[1] = "custom:waterwake-small",
-			},
-			pieceexplosiongenerators = {
-				[1] = "deathceg2-builder",
-				[2] = "deathceg3-builder",
-				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

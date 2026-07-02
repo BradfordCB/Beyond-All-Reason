@@ -1,6 +1,6 @@
 return {
 	armbeaver = {
-		builddistance = 339,
+		builddistance = 112,
 		builder = true,
 		buildpic = "ARMBEAVER.DDS",
 		buildtime = 6700,
@@ -119,13 +119,6 @@ return {
 				object = "Units/arm3X3C.s3o",
 				reclaimable = true,
 				resurrectable = 0,
-			},
-		},
-		sfxtypes = {
-			pieceexplosiongenerators = {
-				[1] = "deathceg2",
-				[2] = "deathceg3",
-				[3] = "deathceg4",
 			},
 		},
 		sounds = {

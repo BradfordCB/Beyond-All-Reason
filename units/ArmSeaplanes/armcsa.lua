@@ -1,7 +1,7 @@
 return {
 	armcsa = {
 		blocking = false,
-		builddistance = 339,
+		builddistance = 136,
 		builder = true,
 		buildpic = "ARMCSA.DDS",
 		buildtime = 14500,
@@ -78,27 +78,12 @@ return {
 			[42] = "armfrt",
 			[43] = "armtl",
 			[44] = "armuwgeo",
-			[45] = "armlwall",
 		},
 		customparams = {
 			model_author = "Flaka",
 			normaltex = "unittextures/Arm_normal.dds",
 			subfolder = "ArmSeaplanes",
 			unitgroup = "builder",
-		},
-		sfxtypes = {
-			crashexplosiongenerators = {
-				[1] = "crashing-small",
-				[2] = "crashing-small",
-				[3] = "crashing-small2",
-				[4] = "crashing-small3",
-				[5] = "crashing-small3",
-			},
-			pieceexplosiongenerators = {
-				[1] = "airdeathceg2-builder",
-				[2] = "airdeathceg3-builder",
-				[3] = "airdeathceg4-builder",
-			},
 		},
 		sounds = {
 			build = "nanlath1",

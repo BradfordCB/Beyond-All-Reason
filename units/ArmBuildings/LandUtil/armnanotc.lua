@@ -1,6 +1,6 @@
 return {
 	armnanotc = {
-		builddistance = 700,
+		builddistance = 400,
 		builder = true,
 		buildpic = "ARMNANOTC.DDS",
 		buildtime = 5300,
@@ -47,13 +47,6 @@ return {
 			subfolder = "ArmBuildings/LandUtil",
 			unitgroup = "builder",
 			usebuildinggrounddecal = true,
-		},
-		sfxtypes = {
-			pieceexplosiongenerators = {
-				[1] = "deathceg2-builder",
-				[2] = "deathceg3-builder",
-				[3] = "deathceg4-builder",
-			},
 		},
 		sounds = {
 			build = "nanlath1",

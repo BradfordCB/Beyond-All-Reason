@@ -1,6 +1,6 @@
 return {
 	armcv = {
-		builddistance = 339,
+		builddistance = 130,
 		builder = true,
 		buildpic = "ARMCV.DDS",
 		buildtime = 4050,
@@ -71,7 +71,6 @@ return {
 			[28] = "armjamt",
 			[29] = "armjuno",
 			[30] = "armsy",
-			[31] = "armlwall",
 		},
 		customparams = {
 			model_author = "Beherith",
@@ -108,13 +107,6 @@ return {
 				object = "Units/arm3X3C.s3o",
 				reclaimable = true,
 				resurrectable = 0,
-			},
-		},
-		sfxtypes = {
-			pieceexplosiongenerators = {
-				[1] = "deathceg2-builder",
-				[2] = "deathceg3-builder",
-				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

@@ -1,6 +1,6 @@
 return {
 	armhacv = {
-		builddistance = 339,
+		builddistance = 136,
 		builder = true,
 		buildpic = "ARMCONSUL.DDS",
 		buildtime = 42000,
@@ -110,13 +110,6 @@ return {
 				object = "Units/arm3X3A.s3o",
 				reclaimable = true,
 				resurrectable = 0,
-			},
-		},
-		sfxtypes = {
-			pieceexplosiongenerators = {
-				[1] = "deathceg2-builder",
-				[2] = "deathceg3-builder",
-				[3] = "deathceg4-builder",
 			},
 		},
 		sounds = {

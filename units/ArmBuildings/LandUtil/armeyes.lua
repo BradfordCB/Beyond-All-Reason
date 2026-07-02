@@ -1,6 +1,5 @@
 return {
 	armeyes = {
-		airsightdistance = 2300,
 		activatewhenbuilt = true,
 		buildangle = 8192,
 		buildpic = "ARMEYES.DDS",
@@ -15,19 +14,19 @@ return {
 		energyupkeep = 3,
 		footprintx = 1,
 		footprintz = 1,
-		health = 980,
+		health = 280,
 		initcloaked = true,
 		levelground = false,
 		maxacc = 0,
 		maxdec = 0,
-		maxslope = 39,
+		maxslope = 24,
 		maxwaterdepth = 0,
 		metalcost = 32,
-		mincloakdistance = 4,
+		mincloakdistance = 36,
 		objectname = "Units/ARMEYES.s3o",
 		script = "Units/ARMEYES.cob",
 		seismicsignature = 0,
-		sightdistance = 1860,
+		sightdistance = 560,
 		stealth = true,
 		waterline = 5,
 		yardmap = "o",
@@ -54,11 +53,6 @@ return {
 				object = "Units/arm1X1A.s3o",
 				reclaimable = true,
 				resurrectable = 0,
-			},
-		},
-		sfxtypes = {
-			pieceexplosiongenerators = {
-				[1] = "deathceg2",
 			},
 		},
 		sounds = {
