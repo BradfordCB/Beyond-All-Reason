@@ -45,7 +45,7 @@ local scenariodata = {
     scenariooptions = { -- this will get lua->json->base64 and passed to scenariooptions in game
         --myoption = "dostuff",
         scenarioid = "benchmark_pathfinding", --must be present for scores
-		disablefactionpicker = true, -- this is needed to prevent faction picking outside of the allowedsides
+		disablefactionpicker = false, -- this is needed to prevent faction picking outside of the allowedsides
 		benchmarkcommand = "luarules benchmark armcv armck 11000 1 12000", -- make sure the matches the debugcommands identically named modoption's info
 		benchmarkframes = 2000,
 		-- quiteforce sucks, does not end the game. 

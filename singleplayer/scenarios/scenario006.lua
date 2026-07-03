@@ -32,13 +32,13 @@ Tips:
     defaultdifficulty = "Normal", -- an entry of the difficulty table
     difficulties    = { -- Array for sortedness, Keys are text that appears in selector (as well as in scoring!), values are handicap levels
     -- handicap values range [-100 - +100], with 0 being regular resources
-        {name = "Beginner", playerhandicap = 50, enemyhandicap=0},
-        {name = "Novice"  , playerhandicap = 25, enemyhandicap=0},
+        {name = "Beginner", playerhandicap = 100, enemyhandicap=-100},
+        {name = "Novice"  , playerhandicap = 75, enemyhandicap=-75},
         {name = "Normal"  , playerhandicap = 0, enemyhandicap=0},
         {name = "Hard"    , playerhandicap = 0,  enemyhandicap=25},
         {name = "Brutal" , playerhandicap = 0,  enemyhandicap=50},
     },
-    allowedsides     = {"Armada","Cortex","Random"}, --these are the permitted factions for this mission
+    allowedsides     = {"Armada","Cortex","Random","Legion"}, --these are the permitted factions for this mission
     victorycondition= "Kill all enemy Commanders", -- This is plaintext, but should be reflected in startscript
     losscondition   = "Death of your Commander",  -- This is plaintext, but should be reflected in startscript
     unitlimits   = { -- table of unitdefname : maxnumberoftese units, 0 is disable it
@@ -71,7 +71,7 @@ Tips:
     scenariooptions = { -- this will get lua->json->base64 and passed to scenariooptions in game
         myoption = "dostuff",
         scenarioid = "twobarbspwakonly006",
-        disablefactionpicker = true, -- this is needed to prevent faction picking outside of the allowedsides
+        disablefactionpicker = false, -- this is needed to prevent faction picking outside of the allowedsides
     },
     -- https://github.com/spring/spring/blob/105.0/doc/StartScriptFormat.txt
     startscript     = [[

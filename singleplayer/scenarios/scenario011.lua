@@ -31,8 +31,8 @@ Scoring:
     difficulties    = { -- Array for sortedness, Keys are text that appears in selector (as well as in scoring!), values are handicap levels
     -- handicap values range [-100 - +100], with 0 being regular resources
     -- Currently difficulty modifier only affects the resource bonuses
-        {name = "Beginner", playerhandicap = 50, enemyhandicap=0},
-        {name = "Novice"  , playerhandicap = 25, enemyhandicap=0},
+        {name = "Beginner", playerhandicap = 100, enemyhandicap=-100},
+        {name = "Novice"  , playerhandicap = 75, enemyhandicap=-75},
         {name = "Normal"  , playerhandicap = 0, enemyhandicap=0},
         {name = "Hard"    , playerhandicap = 0,  enemyhandicap=25},
         {name = "Brutal" , playerhandicap = 0,  enemyhandicap=50},
@@ -49,7 +49,7 @@ Scoring:
     scenariooptions = { -- this will get lua->json->base64 and passed to scenariooptions in game
         myoption = "dostuff", -- blank
         scenarioid = "SpeedMetalSnipe011", -- this MUST be present and identical to the one defined at start
-		disablefactionpicker = true, -- this is needed to prevent faction picking outside of the allowedsides
+		disablefactionpicker = false, -- this is needed to prevent faction picking outside of the allowedsides
 
         unitloadout = {
 			-- You can specify units that you wish to spawn here, they only show up once game starts,

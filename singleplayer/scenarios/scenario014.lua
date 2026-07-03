@@ -53,7 +53,7 @@ The difficulty modifier will change the amount of resources you and the enemy ca
         {name = "Hard"    , playerhandicap = 0, enemyhandicap = 50 },
         {name = "Brutal"  , playerhandicap = 0, enemyhandicap = 100 },
     },
-    allowedsides     = {"Armada","Cortex","Random"}, --these are the permitted factions for this mission
+    allowedsides     = {"Armada","Cortex","Random","Legion"}, --these are the permitted factions for this mission
 	victorycondition= "Kill all construction units", -- This is plaintext, but should be reflected in startscript
 	losscondition	= "Lose all of your construction units",  -- This is plaintext, but should be reflected in startscript
     unitlimits   = { -- table of unitdefname : maxnumberoftese units, 0 is disable it
@@ -65,7 +65,7 @@ The difficulty modifier will change the amount of resources you and the enemy ca
     scenariooptions = { -- this will get lua->json->base64 and passed to scenariooptions in game
         myoption = "dostuff",
         scenarioid = "pinewoodvsbarb014", --must be present for scores
-		disablefactionpicker = true, -- this is needed to prevent faction picking outside of the allowedsides
+		disablefactionpicker = false, -- this is needed to prevent faction picking outside of the allowedsides
     },
     -- https://github.com/spring/spring/blob/105.0/doc/StartScriptFormat.txt
 	startscript		= [[

@@ -65,7 +65,7 @@ The difficulty modifier will change the amount of resources you and the enemy ca
     scenariooptions = { -- this will get lua->json->base64 and passed to scenariooptions in game
         myoption = "dostuff",
         scenarioid = "thronekoth015", --must be present for scores
-		disablefactionpicker = true, -- this is needed to prevent faction picking outside of the allowedsides
+		disablefactionpicker = false, -- this is needed to prevent faction picking outside of the allowedsides
 		unitloadout = {
 			{name = 'corrad', x = 5760, y = 751, z = 5616, rot = 0 , team = 7},
 			{name = 'coradvsol', x = 5760, y = 753, z = 5664, rot = 0 , team = 7},

@@ -50,7 +50,7 @@ Scoring:
     scenariooptions = { -- this will get lua->json->base64 and passed to scenariooptions in game
         myoption = "dostuff", -- blank
         scenarioid = "strongholdkilltraitor010", -- this MUST be present and identical to the one defined at start
-		disablefactionpicker = true, -- this is needed to prevent faction picking outside of the allowedsides
+		disablefactionpicker = false, -- this is needed to prevent faction picking outside of the allowedsides
 
         unitloadout = {
 			-- You can specify units that you wish to spawn here, they only show up once game starts,
