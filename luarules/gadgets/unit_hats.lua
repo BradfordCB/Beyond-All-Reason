@@ -17,6 +17,8 @@ function gadget:GetInfo()
 	}
 end
 
+local DEBUG = false
+
 function gadget:GameID(gameID) 
 	-- make sure gameID is a string because i'm not actually sure
 	cachedGameID = tostring(gameID)
@@ -49,7 +51,7 @@ PlayerCosmeticList = {
 		"CortexNationWarsUSLeftShoulder", -- Nation Wars 2026 1st Place
 	},
 	[641] = { -- ZLO
-		"LegionChampionRightShoulder", -- Legion Fight Night winner
+		"LegionChampionHat", -- Legion Fight Night winner
 	},
 	[694] = { -- Raghna
 		"VikingHat", -- Omega Series 4 Winner
@@ -88,7 +90,7 @@ PlayerCosmeticList = {
 		"CortexNationWarsEECLeftShoulder", -- Nation Wars 2026 2nd Place
 	},
 	[42178] = { -- [pretor]
-		"LegionChampionRightShoulder", -- Legion Fight Night winner
+		"LegionChampionHat", -- Legion Fight Night winner
 	},
 	[50820] = { -- Emre
 		"VikingHat", -- Omega Series 4 Winner
@@ -125,12 +127,15 @@ PlayerCosmeticList = {
 		"ArmadaNationWarsEECLeftShoulder", -- Nation Wars 2026 2nd Place
 		"CortexNationWarsEECLeftShoulder", -- Nation Wars 2026 2nd Place
 	},
+	[88808] = { -- Shadowisper
+		"PirateHat", -- "give it to shadow he deserves it"
+	},
 	[116414] = { -- [APM]random_variable
 		"ArmadaNationWarsGERLeftShoulder", -- Nation Wars 2026 3rd Place
 		"CortexNationWarsGERLeftShoulder", -- Nation Wars 2026 3rd Place
 	},
 	[119539] = { -- [Stud]Lovish, BM_LegionAbuse[Stud]
-		"LegionChampionRightShoulder", -- Legion Fight Night winner
+		"LegionChampionHat", -- Legion Fight Night winner
 		"ArmadaNationWarsUSLeftShoulder", -- Nation Wars 2026 1st Place
 		"CortexNationWarsUSLeftShoulder", -- Nation Wars 2026 1st Place
 	},
@@ -149,7 +154,7 @@ PlayerCosmeticList = {
 		"BronzeMedalNecklace" -- Last Season Top3 Finisher
 	},
 	[144092] = { -- [DmE]Wraxell
-		"LegionChampionRightShoulder" -- Legion Fight Night winner
+		"LegionChampionHat" -- Legion Fight Night winner
 	},
 	[151863] = { -- Blodir
 		"VikingHat", -- Omega Series 4 Winner
@@ -181,9 +186,17 @@ PlayerCosmeticList = {
 	},
 
 	[9999999999] = { -- Debug
+		"HalloweenHat",
+		"FightNightHat",
+		"LegionChampionHat",
+		"VikingHat",
+		"KingCrownHat",
+		"ArmadaNationWarsGERLeftShoulder",
 		"ArmadaNationWarsEECLeftShoulder",
+		"ArmadaNationWarsUSLeftShoulder",
+		"CortexNationWarsGERLeftShoulder",
 		"CortexNationWarsEECLeftShoulder",
-		"LegionChampionRightShoulder",
+		"CortexNationWarsUSLeftShoulder",
 	}
 }
 
@@ -220,10 +233,34 @@ CosmeticDefinitions = {
 		conflictsWith = {},
 	},
 
+	LegionChampionHat = {
+		slot = "hat",
+		implementation = "unit",
+		unitDefID = UnitDefNames.cor_hat_legfn and UnitDefNames.cor_hat_legfn.id,
+		faction = {arm = true, cor = true, leg = true},
+		conflictsWith = {},
+	},
+
 	VikingHat = {
 		slot = "hat",
 		implementation = "unit",
 		unitDefID = UnitDefNames.cor_hat_viking and UnitDefNames.cor_hat_viking.id,
+		faction = {arm = true, cor = true, leg = true},
+		conflictsWith = {},
+	},
+
+	PirateHat = {
+		slot = "hat",
+		implementation = "unit",
+		unitDefID = UnitDefNames.cor_hat_pirate and UnitDefNames.cor_hat_pirate.id,
+		faction = {arm = true, cor = true, leg = true},
+		conflictsWith = {},
+	},
+
+	GnomeHat = {
+		slot = "hat",
+		implementation = "unit",
+		unitDefID = UnitDefNames.cor_hat_gnome and UnitDefNames.cor_hat_gnome.id,
 		faction = {arm = true, cor = true, leg = true},
 		conflictsWith = {},
 	},
@@ -239,14 +276,6 @@ CosmeticDefinitions = {
 	------------------------------------------
 	-- Right Shoulder
 	------------------------------------------
-
-	LegionChampionRightShoulder = {
-		slot = "rightshoulder",
-		implementation = "unit",
-		unitDefID = UnitDefNames.cor_hat_legfn and UnitDefNames.cor_hat_legfn.id,
-		faction = {arm = true, cor = true, leg = true},
-		conflictsWith = {},
-	},
 
 	------------------------------------------
 	-- Left Shoulder
@@ -366,8 +395,6 @@ end
 if not gadgetHandler:IsSyncedCode() then
 	return
 end
-
-local DEBUG = false
 
 local unitsWearingHats = {} -- key unitID of wearer, value unitID of hat
 
