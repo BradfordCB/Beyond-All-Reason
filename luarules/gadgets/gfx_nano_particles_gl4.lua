@@ -44,10 +44,6 @@ if gadgetHandler:IsSyncedCode() then return end
 --------------------------------------------------------------------------------
 
 local spEcho                     = Spring.Echo
-local spGetGameFrame             = Spring.GetGameFrame
-local spGetMyAllyTeamID          = Spring.GetMyAllyTeamID
-local spGetSpectatingState       = Spring.GetSpectatingState
-local spIsPosInLos            = Spring.IsPosInLos
 local spGetAllUnits              = Spring.GetAllUnits
 local spGetUnitTeam              = Spring.GetUnitTeam
 local spGetUnitAllyTeam          = Spring.GetUnitAllyTeam
@@ -57,8 +53,11 @@ local spGetUnitPosition          = Spring.GetUnitPosition
 local spGetUnitRadius            = Spring.GetUnitRadius
 local spGetUnitDefID             = Spring.GetUnitDefID
 local spGetUnitIsBeingBuilt      = Spring.GetUnitIsBeingBuilt
+local spGetUnitIsBuilding        = Spring.GetUnitIsBuilding
 local spGetFeaturePosition       = Spring.GetFeaturePosition
 local spGetFeatureRadius         = Spring.GetFeatureRadius
+local spGetFeatureHealth         = Spring.GetFeatureHealth
+local spGetFeatureResources      = Spring.GetFeatureResources
 local spValidFeatureID           = Spring.ValidFeatureID
 local spValidUnitID              = Spring.ValidUnitID
 local spGetTeamColor             = Spring.GetTeamColor
@@ -66,19 +65,14 @@ local spGetUnitCurrentBuildPower = Spring.GetUnitCurrentBuildPower
 local spGetUnitWorkerTask        = Spring.GetUnitWorkerTask
 local spGetUnitHealth            = Spring.GetUnitHealth
 local spGetUnitMoveTypeData      = Spring.GetUnitMoveTypeData
-local spIsSphereInView           = Spring.IsSphereInView
-local spGetCameraPosition        = Spring.GetCameraPosition
+local spIsUnitVisible            = Spring.IsUnitVisible
+local spGetUnitCollisionVolumeData = Spring.GetUnitCollisionVolumeData
+local spGetGroundHeight          = Spring.GetGroundHeight
 
 -- Engine encodes feature targets in worker-task results as (featureID + MaxUnits()).
 -- Used for CMD_RESURRECT (always) and CMD_RECLAIM of features. See engine
 -- LuaSyncedRead.cpp::GetBuilderWorkerTask.
 local MAX_UNITS = Game.maxUnits or 32000
-
-local glBlending  = gl.Blending
-local glTexture   = gl.Texture
-local glDepthTest = gl.DepthTest
-local glDepthMask = gl.DepthMask
-local glCulling   = gl.Culling
 
 local GL_ONE                 = GL.ONE
 local GL_ONE_MINUS_SRC_ALPHA = GL.ONE_MINUS_SRC_ALPHA
@@ -93,8 +87,8 @@ local uploadElementRange     = InstanceVBOTable.uploadElementRange
 local mathRandom = math.random
 local mathSqrt   = math.sqrt
 local mathFloor  = math.floor
-local spGetTimer   = Spring.GetTimer
-local spDiffTimers = Spring.DiffTimers
+local mathCeil   = math.ceil
+local mathLog    = math.log
 
 local CMD_RECLAIM   = CMD.RECLAIM
 local CMD_RESURRECT = CMD.RESURRECT
@@ -128,127 +122,73 @@ end
 local NANO_TEXTURE    = "bitmaps/projectiletextures/nanopart.tga"
 local LOS_FILTER      = true   -- drop emissions outside our LOS
 
--- Debug: when true, the billboard FS skips the texture and LOS sample and
--- outputs a flat colored quad per particle. Useful to confirm particles are
--- being submitted to the GPU when the normal output looks empty. Cube mode
--- ignores this flag.
-local DEBUG_FLAT_FS = false
+-- Render mode: "shape" (3D polyhedra via geometry shader; specific shape in
+-- MODE_SETTINGS). Driven by the "NanoParticleMode" springsetting (gfx options UI):
+--   0 = engine nano spray (gadget stays loaded but inert)
+--   1 = gadget 3D shapes
+-- Polled live in GameFrame so changes take effect without a /luarules reload.
+if Spring.GetConfigInt("NanoParticleMode", 1) == 2 then
+	Spring.SetConfigInt("NanoParticleMode", 1)
+end
+local NANO_PARTICLE_MODE = Spring.GetConfigInt("NanoParticleMode", 1)
+local RENDER_MODE = "shape"
 
--- Render mode: "billboard" (camera-facing textured quads matching the engine's
--- nano spray look) or "shape" (3D polyhedra that tumble in 3D space, drawn via
--- a geometry shader; the specific polyhedron is picked in
--- MODE_SETTINGS.shape.shape). Shape mode swaps shader pair only; emission,
--- homing, fade, LOS filtering and all other logic are unchanged.
---
--- Driven by the "NanoParticleMode" springsetting (set by the gfx options UI):
---   0 = engine nano spray (gadget stays loaded but inert; engine draws spray)
---   1 = gadget billboards
---   2 = gadget 3D shapes
--- Polled live in GameFrame so the user can switch in the options menu without
--- a /luarules reload.
-local NANO_PARTICLE_MODE = Spring.GetConfigInt("NanoParticleMode", 2)
-local RENDER_MODE = (NANO_PARTICLE_MODE == 1) and "billboard" or "shape"
 
--- Per-mode visual settings. Billboard matches the engine spray; shape is tuned
--- separately because shaded 3D faces read very differently from a soft glow
--- sprite. Edit the active mode's table to tweak its look in isolation.
+-- Color brightness equalization, in [0..1]:
+local NanoParticleColorEqualize = 0.7   -- [0..1]
+-- Global unit particle rate/amount multiplier. 1.0 = unchanged. 0.5 = half particles per unit
+local NanoParticleRate        = 0.4   -- [0..1]
+-- Reclaiming units: tighten target-radius spawn spread so the cloud doesn't
+-- fill the whole unit footprint. 0.6 = 40% less spread.
+local RECLAIM_UNIT_JITTER_SCALE = 0.6
+-- Resurrect emits two legs (outbound + inbound). Scale the resurrect-specific
+-- spray here for BOTH legs: 1.0 = current BAR behaviour, 0.5 = half as many
+-- resurrect particles on both outbound and inbound legs
+local NanoParticleResurrectExtraRate = 0.5
+
+local function takeScaledEmitCount(info, accumKey, emits, scale)
+	if emits <= 0 or not scale or scale <= 0 then return 0 end
+	local accum = (info[accumKey] or 0) + emits * scale
+	local out = mathFloor(accum)
+	info[accumKey] = accum - out
+	return out
+end
+
+-- Per-mode visual settings. Edit the active mode's table to tweak its look in
+-- isolation.
 local MODE_SETTINGS = {
-	billboard = {
-		drawRadius  = 3.1,        -- engine: drawRadius = 3
-		nanoAlpha   = 10 / 255,
-		dirJitter   = 0.15,
-		-- Per-particle randomization (± fraction of the base value). 0 disables.
-		sizeVar     = 0.18,
-		speedVar    = 0.12,
-		alphaVar    = 0,
-		-- Engine static rotation params (Spring.SetNanoProjectileParams default
-		-- in BAR is (-180, -50, -50, 360, 100, 100)). deg, deg/s, deg/s^2.
-		rotValBase  = -180, rotValRange = 360,
-		rotVelBase  = -55,  rotVelRange = 110,
-		rotAccBase  = -55,  rotAccRange = 110,
-		glowIntensity = 0.05,
-		glowFalloff = 3.3,
-		glowScale = 3.3,
-		-- Energy enhancement (all shader-side, zero CPU cost):
-		-- coreBoost: HDR overdrive on the textured core. >1 pushes the bright
-		--   center past white into bloom range; subtle but makes streams pop.
-		coreBoost      = 1.0,
-		-- hueJitter: ± fractional per-channel RGB modulation per particle. Keeps
-		--   team color recognizable but adds shimmer. 0.05-0.10 sweet spot.
-		hueJitter      = 0.07,
-		-- glowBreath + glowBreathFreq: halo intensity oscillation. Per-particle
-		--   phase so adjacent halos don't pulse in lockstep. Freq in cycles/sec.
-		glowBreath     = 0.8,
-		glowBreathFreq = 3.0,
-		-- sizePulseAmp + sizePulseFreq: subtle quad-size oscillation. Reads as
-		--   particles "humming" with energy. Keep amp small (<0.10) to avoid
-		--   visible jumps when sub-frame interpolation kicks in.
-		sizePulseAmp   = 0.05,
-		sizePulseFreq  = 4.0,
-		-- wobbleAmp + wobbleFreq: vortex/swirl displacement perpendicular to the
-		--   particle velocity. Amplitude (in elmos) is bell-shaped over the
-		--   particle lifetime so spawn point and landing point are unchanged --
-		--   the spray bows out in the middle. Set wobbleAmp = 0 to disable.
-		wobbleAmp      = 0.8,    -- elmos peak displacement (mid-flight)
-		wobbleFreq     = 1.8,    -- cycles per sim-second around the velocity axis
-		wobbleVar      = 0.5,    -- ± fractional per-particle amplitude variation (0..1)
-		wobbleFreqVar  = 0.5,   -- ± fractional per-particle frequency variation (0..1)
-		-- cubeNoise* + whiteHotspot*: same uniforms as the shape mode, but
-		-- sampled in quad-UV space (centered + v_seed) instead of object-local
-		-- coords. cubeNoise modulates the textured-core brightness so the
-		-- sprite crackles instead of being a uniform glow; whiteHotspot mixes
-		-- the brightest noise peaks toward white for spark/heat highlights.
-		-- Keep cubeNoise modest on billboards -- the underlying nanoTex already
-		-- has its own falloff structure, so big noise amplitudes look chaotic.
-		cubeNoise            = 1.0,
-		cubeNoiseSpeed       = 30.0,
-		cubeNoiseScale       = 22.0,
-		whiteHotspot          = 6.0,
-		whiteHotspotThreshold = 0.6,
-	},
 	shape = {
 		shape       = "cube",   -- "cube" | "octahedron"
-		drawRadius  = 1.8,        -- shape spans ~2*drawRadius edge-to-edge
-		nanoAlpha   = 40 / 255,   -- match billboard look
+		drawRadius  = 1.5,        -- shape spans ~2*drawRadius edge-to-edge
+		nanoAlpha   = 50 / 255,
 		dirJitter   = 0.10,       -- chunks read better with less spread
 		-- Shapes benefit from visible variation -- they read as discrete chunks.
-		sizeVar     = 0.33,
-		speedVar    = 0.17,
-		alphaVar    = 1.8,
-		-- 3D look: shade faces by view direction so back-facing faces are dimmed
-		-- but visible through the front faces -- gives real volume instead of a
-		-- flat shaded patch. 0 = flat shading, 1 = full view-dependent depth.
+		sizeVar     = 0.3,
+		speedVar    = 0.14,
+		alphaVar    = 2.5,
+		-- View-dependent face shading: 0 = flat, 1 = full 3D depth (back faces visible-but-dimmed).
 		cubeShowInside = 4.0,
-		cubeNoise       = 3.3,
+		cubeNoise       = 6,
 		cubeNoiseSpeed  = 25.0,
 		cubeNoiseScale  = 1.75,
-		-- The geometry shader applies its own per-axis 3D tumble on top of
-		-- rotVal, so the base 2D rotation can be slower and more uniform.
+		whiteHotspot          = 1.5,
+		whiteHotspotThreshold = 0.6,
+		-- GS adds its own per-axis 3D tumble, so base 2D rotation can be slower.
 		rotValBase  = -180, rotValRange = 360,
 		rotVelBase  = -40,  rotVelRange = 80,
 		rotAccBase  = -40,  rotAccRange = 80,
-		glowIntensity = 0.22,
-		glowFalloff = 8.0,
+		glowIntensity = 0.15,
+		glowFalloff = 9.5,
 		glowScale = 11.0,
-		-- Energy enhancement (subset; size pulsation is not wired
-		-- through the shape GS, so omitted here -- halo + jitter + breath +
-		-- core boost is enough to read shapes as energy chunks).
-		coreBoost      = 1.0,    -- multiplies face shading; keep modest so dark faces still read
-		hueJitter      = 0.07,    -- shapes already have face-noise variation, so less hue drift needed
-		glowBreath     = 4.0,    -- halo pulse amplitude (0..1)
-		glowBreathFreq = 3.0,     -- cycles/sec; slightly slower than billboards (chunks are bigger)
-
-		whiteHotspot          = 0.5,
-		whiteHotspotThreshold = 0.7,
-
-		wobbleAmp      = 1.0,
-		wobbleFreq     = 2.0,
-		wobbleVar      = 0.5,    -- ± fractional per-particle amplitude variation (0..1)
-		wobbleFreqVar  = 0.4,   -- ± fractional per-particle frequency variation (0..1)
+		glowBreath     = 4.0,
+		glowBreathFreq = 2.0,
+		glowBreathVar     = 0.5,  -- ± per-particle amplitude variation (0..1 fraction)
+		glowBreathFreqVar = 0.5,  -- ± per-particle frequency variation (0..1 fraction)
+		-- Energy enhancement (sizePulse not wired through GS; halo+jitter+breath suffice).
+		coreBoost      = 0.3,    -- multiplies face shading; modest so dark faces still read
+		hueJitter      = 0.1,
 	},
 }
-local MODE
-local DRAW_RADIUS
 
 -- Fade-out: per-particle end-of-life alpha ramp. The instance attribute
 -- spawnPosAndSize.w carries the per-particle fade window in frames; 0 disables
@@ -258,6 +198,25 @@ local DRAW_RADIUS
 local FADE_FRAMES_REPAIR  = 4   -- gentle polish on outbound repair/capture
 local FADE_FRAMES_RECLAIM = 3    -- no fade -- particles converge fully
 local FADE_FRAMES_DEATH   = 35   -- dissolve when target unit dies or fully repaired
+
+-- Reclaim-completion burst: when a tracked unit finishes being reclaimed by
+-- our builders, spit a one-shot cluster of inverse particles emanating from
+-- random points within the unit's collision volume, distributed across the
+-- builders that actually reclaimed it (= teams that received the metal).
+-- Particle count is logarithmic in the unit's metal cost AND scales with the
+-- number of active reclaimers: each builder contributes its own share, so a
+-- solo reclaimer fires a modest puff while a coordinated swarm fires much more.
+local RECLAIM_BURST_BASE      = 1      -- particles per builder regardless of unit cost (the minimum each builder adds)
+local RECLAIM_BURST_LOG_K     = 40    -- controls how quickly each builder's share grows as units get more expensive.
+                                      -- raise to get more particles on mid/high-cost units; lower to flatten the curve.
+local RECLAIM_BURST_LOG_NORM  = 250   -- the "cheap" threshold: units at or below this metal cost produce close to
+                                      -- RECLAIM_BURST_BASE particles per builder. Units significantly above it start climbing.
+                                      -- raise to shift the ramp toward more expensive units; lower to ramp up sooner.
+local RECLAIM_BURST_BUILDER_EXP = 0.5  -- sub-linear exponent for builder count: total = perBuilder * nb^EXP.
+                                        -- 1.0 = fully linear (4 reclaimers → 4× particles), 0.5 = square-root curve.
+                                        -- 0.7 is a reasonable middle ground.
+local RECLAIM_BURST_MAX       = 1500    -- absolute hard cap on total particles across all builders combined
+local RECLAIM_BURST_VOL_FRAC  = 0.55   -- spawn within this fraction of collvol radius
 
 -- Skip forward-homing registration when the target unit is still being built
 -- (buildProgress < 1). Avoids the visually odd effect of particles chasing a
@@ -276,7 +235,7 @@ local HOMING_SKIP_GRACE_FRAMES = 60   -- ~2s at 30Hz
 -- streams that visibly chase the target far past the builder's actual reach.
 -- Allow up to BUILD_RANGE_MAX_EXTENSION beyond buildDistance, with a linear
 -- emission falloff inside [buildDistance, buildDistance * MAX_EXTENSION].
-local BUILD_RANGE_MAX_EXTENSION = 1.15
+local BUILD_RANGE_MAX_EXTENSION = 1.1
 
 -- Per-visit emission rate is scaled by (buildSpeed * currentBuildPower) /
 -- EMIT_REF_BUILDSPEED. This gives total particles roughly proportional to a
@@ -288,98 +247,87 @@ local BUILD_RANGE_MAX_EXTENSION = 1.15
 -- sub-1.0 rates across visits.
 local EMIT_REF_BUILDSPEED = 100
 
+-- Visibility-feedback floor: if a builder has any active build power but its
+-- proportional rate is so small that the deterministic accumulator hasn't
+-- produced a particle for this many frames, force a single particle so the
+-- player still sees that something is happening (e.g. repair/build progressing
+-- on a tiny fraction of buildpower). The forced emit is debited from the
+-- accumulator so long-term proportionality is preserved.
+local FEEDBACK_EMIT_MIN_GAP = 60   -- ~2s at 30 sim Hz
+
 -- Throttling knobs. These trade a small amount of visual latency for a large
 -- CPU win in builder-heavy games (hundreds of active nanos):
---   * WORKER_TASK_CACHE_FRAMES: skip spGetUnitWorkerTask for a builder we
---     already have a fresh task for. Builder-task transitions are rare on the
---     ~10s timescale a build step takes; 4-frame staleness is invisible.
---   * HOMING_RUN_EVERY: run the per-frame in-place re-aim on every Nth frame
---     instead of every frame. Particle speed is small relative to typical
---     unit movement over 1-2 frames so 2 looks identical.
-local WORKER_TASK_CACHE_FRAMES   = 4
-local BUILD_POWER_CACHE_FRAMES   = 2
-local LOS_CACHE_FRAMES           = 6
-local HOMING_RUN_EVERY           = 3
+--   * HOMING_RUN_EVERY: run per-frame in-place re-aim every Nth frame instead
+--     of every frame. Particle speed is small vs typical unit movement over
+--     1-2 frames so this is visually identical.
+local LOS_CACHE_FRAMES           = 7
+-- When an enemy builder is detected by radar/sonar but not visually visible
+-- (e.g. a submarine), show only this fraction of its particles. Gives a
+-- subtle hint that something is happening there without revealing full detail.
+-- Set to 0 to suppress entirely when only detected, 1.0 to show in full.
+local ENEMY_RADAR_EMIT_SCALE     = 0.20
+local HOMING_RUN_EVERY           = 4
+-- Repair-completion poll cadence (sim frames). At 2Hz, HP/buildProgress polls
+-- are visually indistinguishable from per-pass and cut Spring->C calls by ~80%
+-- in mass-repair scenarios. UnitFinished/UnitDestroyed callins fade
+-- immediately, so this only catches the slow "repaired to full HP" edge.
+local HEALTH_CHECK_EVERY         = 15
 -- Run the per-frame builder scan only every Nth sim frame. Scales with pool
--- saturation: at empty pool we scan every frame (full responsiveness), at
--- full pool we scan once per MAX_SCAN_RUN_EVERY frames (the saturation gate
--- would drop most emissions anyway). Per-builder emit probability is auto-
--- multiplied by the chosen value so total emission rate is preserved.
--- Particle rendering is unaffected (the VS animates per render frame from
--- spawn+vel*elapsed); only the spawn-event cadence is throttled.
+-- saturation: empty -> every frame, full -> every MAX_SCAN_RUN_EVERY frames
+-- (the saturation gate would drop most emissions anyway). Per-builder emit
+-- count is multiplied by the chosen value so total emission rate is preserved.
 local MIN_SCAN_RUN_EVERY         = 1
-local MAX_SCAN_RUN_EVERY         = 2
--- Forward homing: skip per-particle re-aim once the target has been stationary
--- for this many consecutive homing passes. Spawn-time aim is correct as long
--- as the target hasn't moved, so this collapses entire repair-of-static-unit
--- (turret, building, paused com) cases to a near-no-op.
-local STATIONARY_SKIP_AFTER      = 3
--- Off-screen emission throttle. When the builder's spray endpoints are both
--- outside the view frustum, only a fraction of emissions are kept (the rest
--- return cheaply before any spawn / homing register). Frustum visibility is
--- cached per builder for OFFSCREEN_VIS_CACHE_FRAMES, since the camera moves
--- slowly relative to the per-builder emit rate.
---
--- Keep-fraction scales with pool saturation so at low fill we stay responsive
--- (camera might pan and reveal those builders) and at high fill we throttle
--- harder (the saturation gate would drop most emissions anyway): MAX at or
--- below SAT_PIVOT, linearly ramping to MIN at full saturation.
-local OFFSCREEN_EMIT_KEEP_MAX       = 0.5
-local OFFSCREEN_EMIT_KEEP_MIN       = 0.25
+local MAX_SCAN_RUN_EVERY         = 3
+-- Cache lifetime for spGetUnitCurrentBuildPower. Only trusted while bp > 0
+-- (continuous-build steady state where stale samples are harmless). Idle
+-- visits always re-fetch so 0 -> non-zero edges fire on the next visit. The
+-- emit accumulator absorbs the worst-case over-emit on the falling edge.
+local BUILD_POWER_CACHE_FRAMES   = 8
+-- Forward homing: skip per-particle re-aim once a target has been stationary
+-- this many homing passes. Spawn-time aim is correct as long as the target
+-- hasn't moved, collapsing repair-of-static-unit cases to a near-no-op.
+local STATIONARY_SKIP_AFTER      = 4
+-- Off-screen emission throttle. Builders whose spray endpoints are outside
+-- the view frustum keep only this fraction of emissions. Frustum visibility
+-- is cached for OFFSCREEN_VIS_CACHE_FRAMES (camera moves slowly vs emit rate).
+-- Keep-fraction scales with pool saturation: MAX at/below SAT_PIVOT, ramping
+-- linearly to MIN at full saturation.
+local OFFSCREEN_EMIT_KEEP_MAX       = 0.4
+local OFFSCREEN_EMIT_KEEP_MIN       = 0.20
 local OFFSCREEN_EMIT_KEEP_SAT_PIVOT = 0.25
 local OFFSCREEN_EMIT_KEEP_BAND_INV  = 1.0 / (1.0 - OFFSCREEN_EMIT_KEEP_SAT_PIVOT)
 local OFFSCREEN_VIS_CACHE_FRAMES = 6
--- Distance-based emission throttle. Linearly ramps the keep-fraction from
--- 1.0 at DISTANT_EMIT_NEAR_RANGE down to DISTANT_EMIT_KEEP at
--- DISTANT_EMIT_RANGE (and clamped beyond). Composes with the offscreen gate.
--- Two squared-distance compares + a lerp per emission; camera position is
--- sampled once per scan frame.
+-- Distance-based emission throttle. Linear keep-fraction ramp from 1.0 at
+-- DISTANT_EMIT_NEAR_RANGE down to DISTANT_EMIT_KEEP at DISTANT_EMIT_RANGE.
+-- Composes with the offscreen gate. Two squared-distance compares + lerp per
+-- emission; camera position sampled once per scan frame.
 local DISTANT_EMIT_KEEP          = 0.25
 local DISTANT_EMIT_NEAR_RANGE    = 2500    -- elmos: full emission inside this
-local DISTANT_EMIT_RANGE         = 10000    -- elmos: floor reached at this
--- Precomputed (DISTANT_EMIT_* are constants): hoisted out of scanBuilders so
--- the per-call mul/sub/inv chain is paid once at file load instead of every
--- sim frame.
+local DISTANT_EMIT_RANGE         = 9000    -- elmos: floor reached at this
+-- Precomputed at file load (DISTANT_EMIT_* are constants).
 local DISTANT_EMIT_NEAR_SQ  = DISTANT_EMIT_NEAR_RANGE * DISTANT_EMIT_NEAR_RANGE
 local DISTANT_EMIT_FAR_SQ   = DISTANT_EMIT_RANGE      * DISTANT_EMIT_RANGE
 local DISTANT_EMIT_BAND_INV = 1.0 / (DISTANT_EMIT_FAR_SQ - DISTANT_EMIT_NEAR_SQ)
 local DISTANT_EMIT_DROP     = 1.0 - DISTANT_EMIT_KEEP
 
--- Dynamic scan stride: builders are scanned 1/stride per sim frame. emitProb
--- is scaled up by stride so total emission rate is preserved. We grow the
--- stride as the live-particle pool fills up because the saturation gate
--- already drops most emissions in that regime, so scanning every builder
--- every frame just wastes CPU. At full saturation we visit 1/MAX_SCAN_STRIDE
--- of builders per frame; under load this is the dominant scan-cost win.
-local MIN_SCAN_STRIDE = 2
-local MAX_SCAN_STRIDE = 6
+-- Dynamic scan stride: builders are scanned 1/stride per sim frame. Per-builder
+-- emit count is multiplied by stride so total rate is preserved. Grows with
+-- pool saturation (the gate would drop most emissions at high fill anyway).
+local MIN_SCAN_STRIDE = 1
+local MAX_SCAN_STRIDE = 2
 
 -- Engine constants (rts/Sim/Projectiles/ProjectileHandler.cpp)
 local NANO_SPEED      = 4.0	-- engine default: 3.0
-local DIR_JITTER
-local NANO_ALPHA
-local SIZE_VAR
-local SPEED_VAR
-local ALPHA_VAR
-local CUBE_SHOW_INSIDE
-local CUBE_NOISE
-local CUBE_NOISE_SPEED
-local CUBE_NOISE_SCALE
-local GLOW_SCALE
-local GLOW_INTENSITY
-local GLOW_FALLOFF
-local CORE_BOOST
-local HUE_JITTER
-local GLOW_BREATH
-local GLOW_BREATH_FREQ
-local SIZE_PULSE_AMP
-local SIZE_PULSE_FREQ
-local WOBBLE_AMP
-local WOBBLE_FREQ
-local WOBBLE_VAR
-local WOBBLE_FREQ_VAR
-local WHITE_HOTSPOT
-local WHITE_HOTSPOT_THRESHOLD
+
+-- Anti-clump: half-width (elmos) of the symmetric stagger window around the
+-- nanopiece. Particles in a batch are spread along their velocity in
+-- [-MAX_SPREAD_AHEAD_ELMOS, +MAX_SPREAD_AHEAD_ELMOS], so a few sit slightly
+-- behind the emit point (partially occluded by the builder model) and the
+-- rest just ahead. Just enough to break up the visible "blob" without making
+-- particles appear detached from the source. Direction jitter already
+-- provides lateral spread; this only fixes the on-axis pile-up.
+local MAX_SPREAD_AHEAD_ELMOS = 6
+local MAX_SPREAD_AHEAD_FRAMES = MAX_SPREAD_AHEAD_ELMOS / NANO_SPEED
 
 -- Shape selector for cube-mode geometry shader. The GS branches on this and
 -- emits the corresponding polyhedron's faces. All shapes use the same per-face
@@ -389,67 +337,208 @@ local WHITE_HOTSPOT_THRESHOLD
 -- (Larger polyhedra like icosahedron/dodecahedron exceed GS output limits with
 -- our per-vertex component count and so are not supported.)
 local SHAPE_IDS = { cube = 0, octahedron = 1 }
-local SHAPE_ID
 
--- Pack per-particle sizeMult and fadeFrames into a single float for the
--- spawnPosAndSize.w attribute slot (avoids growing the VBO layout). Layout:
---   packed = floor(sizeMult * 256 + 0.5) + fadeFrames * 1024
--- sizeMult expected in [0, 4); fadeFrames integer in [0, ~120].
-local function packSizeFade(sizeMult, fadeFrames)
-	return mathFloor(sizeMult * 256 + 0.5) + (fadeFrames or 0) * 1024
+-- Pack per-particle sizeMult, fadeFrames AND inverse flag into a single float
+-- for the spawnPosAndSize.w attribute slot (avoids growing the VBO layout).
+-- Layout:
+--   magnitude = floor(sizeMult * 256 + 0.5) + fadeFrames * 1024
+--   sign      = negative iff inverse (reclaim)
+-- sizeMult expected in [0, 4); fadeFrames integer in [0, ~120]. Magnitude is
+-- always > 0 since spawnParticle uses sizeMult ~1, so the sign bit is free.
+local function packSizeFade(sizeMult, fadeFrames, inverse)
+	local v = mathFloor(sizeMult * 256 + 0.5) + (fadeFrames or 0) * 1024
+	return inverse and -v or v
 end
 
 -- The engine API takes rotVel in deg/sec and rotAcc in deg/sec^2 and internally
 -- divides by GAME_SPEED to convert to per-frame units. We integrate per-frame in
 -- the shader, so apply the same conversion here.
 local GAME_SPEED     = Game.gameSpeed or 30
-local ROT_VAL_BASE
-local ROT_VEL_BASE
-local ROT_ACC_BASE
-local ROT_VAL_RANGE
-local ROT_VEL_RANGE
-local ROT_ACC_RANGE
 
--- Populate every mode-derived local from MODE_SETTINGS[name]. Called once at
--- file load and again whenever NanoParticleMode changes between billboard (1)
--- and shape (2) so the user can switch modes from the options menu without a
--- gadget reload. Callers are responsible for tearing down / rebuilding the GL
--- objects (cleanupGL4 + initGL4) since the shader pair depends on RENDER_MODE.
+-- All mode-derived constants live on this single table (`U` = "uniforms")
+-- instead of as ~30 separate top-level locals. The 200 active-locals limit on
+-- the main chunk was getting close, and storing per-mode values together also
+-- makes applyRenderMode trivial. Hot-path call sites (spawnParticle, emitNano)
+-- copy the values they need into function-locals at function entry, so per-
+-- particle reads still hit a local rather than a table key.
+local U = {}
+
+-- Optional terrain clamp for particle paths. Disabled by default because it
+-- adds extra ground-height queries in hot paths.
+U.GROUND_CLAMP_ENABLED = true
+U.GROUND_CLAMP_MARGIN  = 11.0
+-- In-flight correction cadence. Enabled mode can periodically reproject active
+-- particles above terrain to prevent straight-line tunneling through cliffs.
+-- 0 means "all active particles each pass".
+U.GROUND_CLAMP_RUN_EVERY    = 6
+U.GROUND_CLAMP_MAX_PER_STEP = 0
+U.GROUND_CLAMP_RECHECK_HIT  = 6
+U.GROUND_CLAMP_RECHECK_MISS = 12
+U.GROUND_CLAMP_USE_WAYPOINT = true
+-- Smart gate: only enable clamp for builders/targets in rough terrain.
+U.GROUND_CLAMP_SMART              = true
+U.GROUND_CLAMP_SMART_DELTA        = 4.0
+U.GROUND_CLAMP_SMART_RADIUS       = 128.0
+U.GROUND_CLAMP_SMART_CACHE_FRAMES = 45
+
+U.GROUND_CACHE_INV_CELL = 1 / 16
+U.GROUND_CACHE_STRIDE = mathFloor(((Game.mapSizeZ or 65536) * U.GROUND_CACHE_INV_CELL) + 0.5) + 1024
+U._groundYCache = {}
+U._groundYStamp = {}
+U._groundClampGateCache = {}
+
+-- Clamp-focused debug stream (lightweight; independent from full DEBUG timers)
+local CLAMP_DEBUG = false
+local clampDbg = {
+	emitChecks = 0,
+	emitEnabled = 0,
+	registered = 0,
+	processed = 0,
+	corrected = 0,
+	dropped = 0,
+	maxSubset = 0,
+}
+
+-- Ground-height cache for clamp hot paths. Quantized keys trade tiny spatial
+-- precision for far fewer Spring.GetGroundHeight calls in dense sprays.
+local function getGroundYMargin(x, z, frame)
+	if frame then
+		local qx = mathFloor(x * U.GROUND_CACHE_INV_CELL + 0.5)
+		local qz = mathFloor(z * U.GROUND_CACHE_INV_CELL + 0.5)
+		local key = qx * U.GROUND_CACHE_STRIDE + qz
+		if U._groundYStamp[key] == frame then
+			return U._groundYCache[key]
+		end
+		local gy = spGetGroundHeight(x, z) + U.GROUND_CLAMP_MARGIN
+		U._groundYStamp[key] = frame
+		U._groundYCache[key] = gy
+		return gy
+	end
+	return spGetGroundHeight(x, z) + U.GROUND_CLAMP_MARGIN
+end
+
+local function clampYAboveGround(x, y, z, frame)
+	if not U.GROUND_CLAMP_ENABLED then return y end
+	local gy = getGroundYMargin(x, z, frame)
+	if y < gy then return gy end
+	return y
+end
+
+local function shouldClampEmit(builderID, sx, sy, sz, ex, ey, ez, frame)
+	if not U.GROUND_CLAMP_ENABLED then return false end
+	if not U.GROUND_CLAMP_SMART then return true end
+	if CLAMP_DEBUG then clampDbg.emitChecks = clampDbg.emitChecks + 1 end
+	local qex = mathFloor(ex * U.GROUND_CACHE_INV_CELL + 0.5)
+	local qez = mathFloor(ez * U.GROUND_CACHE_INV_CELL + 0.5)
+	local targetKey = qex * U.GROUND_CACHE_STRIDE + qez
+	local cached = U._groundClampGateCache[builderID]
+	if cached and cached[3] == targetKey and (frame - cached[1]) < U.GROUND_CLAMP_SMART_CACHE_FRAMES then
+		return cached[2], cached[4], cached[5]
+	end
+	local delta = U.GROUND_CLAMP_SMART_DELTA
+	local guideY = -1e9
+	local peakT = 0.5
+	local dx = ex - sx
+	local dz = ez - sz
+	local dy = ey - sy
+	local maxPen = -1e9
+	local longPath = (dx * dx + dz * dz) > 4096
+	local n = longPath and 8 or 3
+	for i = 1, n do
+		local t
+		if longPath then
+			if i == 1 then t = 0.12
+			elseif i == 2 then t = 0.22
+			elseif i == 3 then t = 0.35
+			elseif i == 4 then t = 0.50
+			elseif i == 5 then t = 0.65
+			elseif i == 6 then t = 0.78
+			elseif i == 7 then t = 0.90
+			else t = 0.96 end
+		else
+			if i == 1 then t = 0.35
+			elseif i == 2 then t = 0.50
+			else t = 0.65 end
+		end
+		local mx = sx + dx * t
+		local mz = sz + dz * t
+		local my = sy + dy * t
+		local gy = getGroundYMargin(mx, mz, frame)
+		if gy > guideY then guideY = gy end
+		local pen = gy - my
+		if pen > maxPen then
+			maxPen = pen
+			peakT = t
+		end
+	end
+	local enable = maxPen > delta
+	if CLAMP_DEBUG and enable then clampDbg.emitEnabled = clampDbg.emitEnabled + 1 end
+	U._groundClampGateCache[builderID] = { frame, enable, targetKey, guideY, peakT }
+	return enable, guideY, peakT
+end
+
+-- Round-robin cursor for bounded global in-flight clamp passes.
+local groundClampCursor = 1
+local groundClampParticles = {}
+local groundClampFree = {}
+
+local function registerGroundClampParticle(id, death, wp, fx, fy, fz, targetID)
+	local nFree = #groundClampFree
+	local entry = groundClampFree[nFree]
+	if entry then
+		groundClampFree[nFree] = nil
+	else
+		entry = {}
+	end
+	entry.id = id
+	entry.death = death
+	entry.wp = wp
+	entry.fx = fx
+	entry.fy = fy
+	entry.fz = fz
+	entry.targetID = targetID
+	entry.next = wp or 0
+	groundClampParticles[#groundClampParticles + 1] = entry
+	if CLAMP_DEBUG then clampDbg.registered = clampDbg.registered + 1 end
+end
+
+-- Populate every mode-derived value from MODE_SETTINGS[name]. Called once at
+-- file load. Kept as a function so future mode additions can re-invoke it
+-- (callers are responsible for tearing down / rebuilding GL objects via
+-- cleanupGL4 + initGL4 since the shader pair depends on RENDER_MODE).
 local function applyRenderMode(name)
-	RENDER_MODE      = name
-	MODE             = MODE_SETTINGS[name] or MODE_SETTINGS.billboard
-	DRAW_RADIUS      = MODE.drawRadius
-	DIR_JITTER       = MODE.dirJitter
-	NANO_ALPHA       = MODE.nanoAlpha
-	SIZE_VAR         = MODE.sizeVar  or 0.0
-	SPEED_VAR        = MODE.speedVar or 0.0
-	ALPHA_VAR        = MODE.alphaVar or 0.0
-	CUBE_SHOW_INSIDE = MODE.cubeShowInside or 0.0
-	CUBE_NOISE       = MODE.cubeNoise       or 0.0
-	CUBE_NOISE_SPEED = MODE.cubeNoiseSpeed  or 0.0
-	CUBE_NOISE_SCALE = MODE.cubeNoiseScale  or 0.5
-	GLOW_SCALE       = MODE.glowScale       or 1.0
-	GLOW_INTENSITY   = MODE.glowIntensity   or 0.0
-	GLOW_FALLOFF     = MODE.glowFalloff     or 2.0
-	CORE_BOOST       = MODE.coreBoost       or 1.0
-	HUE_JITTER       = MODE.hueJitter       or 0.0
-	GLOW_BREATH      = MODE.glowBreath      or 0.0
-	GLOW_BREATH_FREQ = MODE.glowBreathFreq  or 0.0
-	SIZE_PULSE_AMP   = MODE.sizePulseAmp    or 0.0
-	SIZE_PULSE_FREQ  = MODE.sizePulseFreq   or 0.0
-	WOBBLE_AMP       = MODE.wobbleAmp       or 0.0
-	WOBBLE_FREQ      = MODE.wobbleFreq      or 0.0
-	WOBBLE_VAR       = MODE.wobbleVar       or 0.0
-	WOBBLE_FREQ_VAR  = MODE.wobbleFreqVar   or 0.0
-	WHITE_HOTSPOT           = MODE.whiteHotspot          or 0.0
-	WHITE_HOTSPOT_THRESHOLD = MODE.whiteHotspotThreshold or 0.7
-	SHAPE_ID         = SHAPE_IDS[MODE.shape or "cube"] or 0
-	ROT_VAL_BASE     = MODE.rotValBase
-	ROT_VEL_BASE     = MODE.rotVelBase  / GAME_SPEED
-	ROT_ACC_BASE     = MODE.rotAccBase  / (GAME_SPEED * GAME_SPEED)
-	ROT_VAL_RANGE    = MODE.rotValRange
-	ROT_VEL_RANGE    = MODE.rotVelRange / GAME_SPEED
-	ROT_ACC_RANGE    = MODE.rotAccRange / (GAME_SPEED * GAME_SPEED)
+	RENDER_MODE          = name
+	local MODE           = MODE_SETTINGS[name] or MODE_SETTINGS.shape
+	U.DRAW_RADIUS        = MODE.drawRadius
+	U.DIR_JITTER         = MODE.dirJitter
+	U.NANO_ALPHA         = MODE.nanoAlpha
+	U.SIZE_VAR           = MODE.sizeVar  or 0.0
+	U.SPEED_VAR          = MODE.speedVar or 0.0
+	U.ALPHA_VAR          = MODE.alphaVar or 0.0
+	U.CUBE_SHOW_INSIDE   = MODE.cubeShowInside or 0.0
+	U.CUBE_NOISE         = MODE.cubeNoise       or 0.0
+	U.CUBE_NOISE_SPEED   = MODE.cubeNoiseSpeed  or 0.0
+	U.CUBE_NOISE_SCALE   = MODE.cubeNoiseScale  or 0.5
+	U.GLOW_SCALE         = MODE.glowScale       or 1.0
+	U.GLOW_INTENSITY     = MODE.glowIntensity   or 0.0
+	U.GLOW_FALLOFF       = MODE.glowFalloff     or 2.0
+	U.CORE_BOOST         = MODE.coreBoost       or 1.0
+	U.HUE_JITTER         = MODE.hueJitter       or 0.0
+	U.GLOW_BREATH        = MODE.glowBreath      or 0.0
+	U.GLOW_BREATH_FREQ   = MODE.glowBreathFreq  or 0.0
+	U.GLOW_BREATH_VAR      = MODE.glowBreathVar      or 0.0
+	U.GLOW_BREATH_FREQ_VAR = MODE.glowBreathFreqVar  or 0.0
+	U.SIZE_PULSE_AMP     = MODE.sizePulseAmp    or 0.0
+	U.SIZE_PULSE_FREQ    = MODE.sizePulseFreq   or 0.0
+	U.WHITE_HOTSPOT           = MODE.whiteHotspot          or 0.0
+	U.WHITE_HOTSPOT_THRESHOLD = MODE.whiteHotspotThreshold or 0.7
+	U.SHAPE_ID           = SHAPE_IDS[MODE.shape or "cube"] or 0
+	U.ROT_VAL_BASE       = MODE.rotValBase
+	U.ROT_VEL_BASE       = MODE.rotVelBase  / GAME_SPEED
+	U.ROT_ACC_BASE       = MODE.rotAccBase  / (GAME_SPEED * GAME_SPEED)
+	U.ROT_VAL_RANGE      = MODE.rotValRange
+	U.ROT_VEL_RANGE      = MODE.rotVelRange / GAME_SPEED
+	U.ROT_ACC_RANGE      = MODE.rotAccRange / (GAME_SPEED * GAME_SPEED)
 end
 
 applyRenderMode(RENDER_MODE)
@@ -460,7 +549,6 @@ applyRenderMode(RENDER_MODE)
 
 local nanoVBO
 local nanoShader
-local isShapeMode = false        -- set in initGL4 once shader path is decided
 local lastLosUniform = -1       -- cache to skip redundant SetUniform calls
 
 -- Active particle bookkeeping. The InstanceVBOTable instanceID is our handle.
@@ -491,7 +579,7 @@ local trackedBuildersList = {}  -- arrayIndex -> unitID
 local trackUnit
 
 -- Cached visibility state
-local cachedAllyTeamID   = spGetMyAllyTeamID()
+local cachedAllyTeamID   = Spring.GetMyAllyTeamID()
 local cachedSpecFullView = false
 
 -- Debug instrumentation: timers + per-30f Echo. Toggle to true to profile.
@@ -507,21 +595,16 @@ local _dbgTDraw    = 0  -- DrawWorld time (incl. cull)
 local _dbgDraws    = 0
 
 local function refreshSpec()
-	local spec, fullView = spGetSpectatingState()
+	local spec, fullView = Spring.GetSpectatingState()
 	cachedSpecFullView = spec and fullView
-	cachedAllyTeamID   = spGetMyAllyTeamID()
+	cachedAllyTeamID   = Spring.GetMyAllyTeamID()
 end
 
--- High gamespeed throttle. When the engine is running faster than 1x (e.g.
--- client reconnecting to an in-progress game and catching up on queued sim
--- frames) scanBuilders fires many times per render frame and can dominate
--- the Lua budget. Ramp an extra throttle factor from 0 at GAMESPEED_THROTTLE_START
--- to 1 at GAMESPEED_THROTTLE_FULL, and use it at scan time to:
---   * cap effective particle pool to (1 - 0.5 * throttle) * MAX_PARTICLES
---     (i.e. down to 50% at full throttle),
---   * multiply emitProb by (1 - GAMESPEED_EMIT_CUT * throttle) so fewer
---     spawn events happen per visited builder.
--- Refreshed in GameFrame on a 1s cadence; cheap (one Spring.GetGameSpeed call).
+-- High gamespeed throttle. When the engine runs faster than 1x (catchup after
+-- reconnect, or user /speed) scanBuilders fires many times per render frame and
+-- can dominate the Lua budget. Ramps from 0 at *_START to 1 at *_FULL and is
+-- used at scan time to cap effective particle pool and cut emitProb.
+-- Refreshed in GameFrame on a 1s cadence (cheap, one Spring.GetGameSpeed call).
 local GAMESPEED_THROTTLE_START = 1.5   -- below this, no extra throttle
 local GAMESPEED_THROTTLE_FULL  = 5.0   -- at or above this, full throttle
 local GAMESPEED_EMIT_CUT       = 0.66   -- emitProb cut at full throttle (0..1)
@@ -541,318 +624,14 @@ local function refreshSpeedThrottle()
 end
 
 -- Cached infoTex-is-LOS state. Spring.GetMapDrawMode() returns the active
--- mini-map mode ("" / "los" / "height" / "metal" / "path"); when it's not LOS,
--- the engine's $info texture holds that other map data and our LOS smoothstep
--- in the FS would treat most of the map as fogged and discard fragments.
--- Polled on the same 1s GameFrame cadence as the speed throttle -- the user
--- toggles map view modes via hotkeys / gfx menu, so 1s latency is invisible.
+-- mini-map mode (""/"los"/"height"/"metal"/"path"); when not LOS, $info holds
+-- other map data and our LOS smoothstep would discard most of the map.
+-- Also refreshed in DrawWorld so mode toggles apply immediately.
 local cachedInfoIsLos = true
 local function refreshInfoIsLos()
 	local m = Spring.GetMapDrawMode()
 	cachedInfoIsLos = (m == nil or m == "" or m == "los")
 end
-
---------------------------------------------------------------------------------
--- Shaders
---------------------------------------------------------------------------------
-
-local vsSrc = [[
-#version 430 core
-
-// Per-vertex (rect VBO: xy in [-1,1], uv in [0,1])
-layout(location = 0) in vec4 vertexPosUV;
-
-// Per-instance
-layout(location = 1) in vec4 spawnPosAndSize;   // xyz=spawnPos, w=packed(sizeMult,fadeFrames)
-layout(location = 2) in vec4 velAndSpawnFrame;  // xyz=velocity, w=spawnFrame
-layout(location = 3) in vec4 instColor;         // rgba team color
-layout(location = 4) in vec4 rotData;           // x=rotVal0, y=rotVel0, z=rotAcc, w=deathFrame
-
-//__ENGINEUNIFORMBUFFERDEFS__
-
-uniform float drawRadius;
-uniform float glowScale;      // quad expansion factor (1.0 = no glow)
-uniform float glowIntensity;  // peak outer-falloff brightness (0.0 = no glow)
-uniform float sizePulseAmp;   // \u00b1 fractional size oscillation (0 = no pulse)
-uniform float sizePulseFreq;  // size pulse frequency (cycles/sim-second)
-uniform float wobbleAmp;      // peak vortex displacement perpendicular to vel (elmos)
-uniform float wobbleFreq;     // vortex rotation rate around vel (cycles/sim-second)
-uniform float wobbleVar;      // ± fractional per-particle amplitude variation (0..1)
-uniform float wobbleFreqVar;  // ± fractional per-particle frequency variation (0..1)
-
-out vec2 v_uv;
-out vec4 v_color;
-out vec3 v_worldPos;
-out float v_seed;        // stable per-particle seed for FS jitter (radians)
-
-void main() {
-	float currentFrame = timeInfo.x + timeInfo.w; // sub-frame interpolated
-	float spawnFrame   = velAndSpawnFrame.w;
-	float deathFrame   = rotData.w;
-
-	// Cull dead particles by collapsing to a degenerate point off-screen
-	if (currentFrame >= deathFrame) {
-		gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
-		v_uv = vec2(0.0);
-		v_color = vec4(0.0);
-		v_seed = 0.0;
-		return;
-	}
-
-	float t = currentFrame - spawnFrame;
-	if (t < 0.0) t = 0.0;
-
-	// World-space center: pos = spawn + vel * elapsed
-	vec3 worldPos = spawnPosAndSize.xyz + velAndSpawnFrame.xyz * t;
-
-	// Vortex / swirl displacement perpendicular to the velocity axis. Amplitude
-	// is bell-shaped over the particle lifetime (4*p*(1-p), peaks at mid-flight,
-	// zero at endpoints) so spawn point and landing point are unchanged -- the
-	// spray bows out into a curved trail. Per-particle phase / freq scale /
-	// direction sign so adjacent particles aren't in lockstep -- shared wobbleFreq
-	// alone would just rotate them all at the same rate in the same plane.
-	if (wobbleAmp > 0.0001) {
-		float lifetime = max(deathFrame - spawnFrame, 1.0);
-		float p        = clamp(t / lifetime, 0.0, 1.0);
-		float bell     = 4.0 * p * (1.0 - p);
-		vec3  vdir     = velAndSpawnFrame.xyz;
-		float vlen2    = dot(vdir, vdir);
-		if (vlen2 > 1e-6) {
-			vdir /= sqrt(vlen2);
-			// Stable perpendicular basis. Pick world-up unless vel is near vertical.
-			vec3 ref = (abs(vdir.y) < 0.95) ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0);
-			vec3 axA = normalize(cross(vdir, ref));
-			vec3 axB = cross(vdir, axA);
-			// rotData.x and .y are spawn-time random (untouched by homing). Use
-			// hashed fract for stable per-particle freq scale (0.55..1.45) and
-			// direction sign (±1) so half spiral CW and half CCW at varying rates.
-			float phaseOff = radians(rotData.x);
-			float hash     = fract(sin(rotData.x * 12.9898 + rotData.y * 78.233) * 43758.5453);
-			float freqScale = max(0.0, 1.0 + wobbleFreqVar * (2.0 * hash - 1.0));
-			float dirSign  = (fract(hash * 7.31) < 0.5) ? -1.0 : 1.0;
-			float hash2    = fract(hash * 113.7 + 0.317);
-			float ampScale = max(0.0, 1.0 + wobbleVar * (2.0 * hash2 - 1.0));
-			float ph = currentFrame * wobbleFreq * freqScale * dirSign * (6.2831853 / 30.0) + phaseOff;
-			worldPos += (axA * cos(ph) + axB * sin(ph)) * (wobbleAmp * ampScale * bell);
-		}
-	}
-
-	// Decode packed w: floor sizeMult times 256 in low 1024, fadeFrames times 1024 above.
-	float fadeFrames = floor(spawnPosAndSize.w / 1024.0);
-	float sizeMult   = (spawnPosAndSize.w - fadeFrames * 1024.0) / 256.0;
-
-	// End-of-life alpha fade: ramps from 1 to 0 over the last fadeFrames frames.
-	// fadeFrames == 0 disables the fade.
-	float fade = 1.0;
-	if (fadeFrames > 0.5) {
-		fade = clamp((deathFrame - currentFrame) / fadeFrames, 0.0, 1.0);
-	}
-
-	// Engine rotation model: rotVel = rotVel0 + rotAcc*t; rotVal = rotVal0 + rotVel*t
-	float rotVel = rotData.y + rotData.z * t;
-	float rotVal = rotData.x + rotVel  * t;
-	float rotRad = radians(rotVal);
-	float c = cos(rotRad);
-	float s = sin(rotRad);
-
-	// Per-particle stable seed (radians). rotData.x is the per-spawn random
-	// in degrees; converting to radians gives a uniform [-pi, pi] hash that
-	// homing won't perturb (rotData is never rewritten in-place).
-	float seed = radians(rotData.x);
-
-	// Subtle size pulsation. Using absolute currentFrame (not t) keeps the
-	// pulse phase stable across homing rewrites.
-	float pulseScale = 1.0;
-	if (sizePulseAmp > 0.0001) {
-		float ph = currentFrame * sizePulseFreq * (6.2831853 / 30.0) + seed;
-		pulseScale = 1.0 + sizePulseAmp * sin(ph);
-	}
-
-	float size = drawRadius * sizeMult * glowScale * pulseScale * (0.5 + 0.5 * fade);
-	vec3 right = cameraViewInv[0].xyz;
-	vec3 up    = cameraViewInv[1].xyz;
-
-	// Rotate quad corner around camera-forward
-	vec2 corner = vertexPosUV.xy; // in [-1,1]
-	vec2 rotCorner = vec2(c * corner.x - s * corner.y, s * corner.x + c * corner.y);
-
-	vec3 offset = (right * rotCorner.x + up * rotCorner.y) * size;
-
-	gl_Position = cameraViewProj * vec4(worldPos + offset, 1.0);
-
-	v_uv       = vertexPosUV.zw;
-	v_color    = instColor * fade;  // premultiplied-alpha fade (blend = ONE, 1-SRC_ALPHA)
-	v_worldPos = worldPos;
-	v_seed     = seed;
-}
-]]
-
-local fsSrcDebug = [[
-#version 430 core
-
-//__ENGINEUNIFORMBUFFERDEFS__
-
-uniform sampler2D nanoTex;
-uniform sampler2D infoTex;
-uniform float losAlwaysVisible;
-
-in vec2 v_uv;
-in vec4 v_color;
-in vec3 v_worldPos;
-out vec4 fragColor;
-
-void main() {
-	// Solid magenta with the team-color alpha so we can immediately see whether
-	// any particles are being submitted at all. Premultiplied for the ONE,
-	// 1-SRC_ALPHA blend in DrawWorld.
-	float a = 0.5;
-	fragColor = vec4(1.0 * a, 0.0, 1.0 * a, a);
-}
-]]
-
-local fsSrc = [[
-#version 430 core
-
-//__ENGINEUNIFORMBUFFERDEFS__
-
-uniform sampler2D nanoTex;
-uniform sampler2D infoTex;        // engine $info texture (LOS in .rgb)
-uniform float losAlwaysVisible;   // 1.0 for spectator full-view, else 0.0
-uniform float glowScale;          // quad expansion factor; core lives in inner 1/glowScale
-uniform float glowIntensity;      // peak alpha of the outer radial falloff (0.0 = off)
-uniform float glowFalloff;        // falloff exponent: 1.0 linear, 2.0 quadratic (bloomy),
-                                  // 4.0+ sharp initial drop then long faint tail
-uniform float coreBoost;          // brightness multiplier for the textured core (>=1.0)
-uniform float hueJitter;          // \u00b1 per-channel modulation amplitude (0 = off)
-uniform float glowBreath;         // halo intensity oscillation amplitude (0..1)
-uniform float glowBreathFreq;     // halo oscillation frequency (cycles/sim-second)
-uniform float cubeNoise;             // brightness noise on the textured core (0 = off)
-uniform float cubeNoiseSpeed;        // noise time-scroll rate
-uniform float cubeNoiseScale;        // noise spatial frequency (UV space)
-uniform float whiteHotspot;          // peak strength of noise->white mix on the core (0 = off)
-uniform float whiteHotspotThreshold; // noise value where hotspot ramp starts (0..1)
-
-in vec2  v_uv;
-in vec4  v_color;
-in vec3  v_worldPos;
-in float v_seed;
-out vec4 fragColor;
-
-// Cheap 2D value noise -- billboard analog of the cube FS's valueNoise3. Same
-// Hoskins hash + quintic fade; one fewer dimension because billboards have no
-// useful object-local Z. The per-particle v_seed offsets the sample so adjacent
-// sprites don't sparkle in lockstep.
-float hash12(vec2 p) {
-	vec3 p3 = fract(vec3(p.xyx) * 0.1031);
-	p3 += dot(p3, p3.yzx + 31.32);
-	return fract((p3.x + p3.y) * p3.z);
-}
-float valueNoise2(vec2 p) {
-	vec2 i = floor(p);
-	vec2 f = fract(p);
-	f = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
-	float n00 = hash12(i + vec2(0.0, 0.0));
-	float n10 = hash12(i + vec2(1.0, 0.0));
-	float n01 = hash12(i + vec2(0.0, 1.0));
-	float n11 = hash12(i + vec2(1.0, 1.0));
-	vec2 nx = mix(vec2(n00, n01), vec2(n10, n11), f.x);
-	return mix(nx.x, nx.y, f.y);
-}
-
-void main() {
-	// Early LOS discard: test before the nanoTex fetch so fogged fragments skip
-	// the texture bandwidth entirely.
-	float losMul = 1.0;
-	if (losAlwaysVisible < 0.5) {
-		vec2 losUV = clamp(v_worldPos.xz, vec2(0.0), mapSize.xy) / mapSize.zw;
-		float los = dot(vec3(0.3333), texture(infoTex, losUV).rgb);
-		losMul = smoothstep(0.30, 0.50, los);
-		if (losMul < 0.02) discard;
-	}
-
-	// Radial distance from the quad center in [0..1] at the outer edge.
-	vec2  centered = v_uv * 2.0 - 1.0;
-	float rd       = length(centered);
-	if (rd > 1.0) discard;
-
-	// Per-particle hue jitter: cheap pseudo-hue rotation by phase-shifted sin
-	// per channel. Centered on 1.0 so the average tint matches team color.
-	vec3 tint = vec3(1.0);
-	if (hueJitter > 0.0001) {
-		tint = vec3(1.0) + hueJitter * vec3(
-			sin(v_seed),
-			sin(v_seed + 2.094),    // +120 degrees
-			sin(v_seed + 4.188));   // +240 degrees
-	}
-
-	// Core occupies the inner 1/glowScale of the expanded quad. Sample the
-	// nanoTex with uv remapped so the blob covers that inner disc exactly at
-	// its original size (glowScale == 1.0 reproduces the pre-glow look).
-	float coreEdge = 1.0 / max(glowScale, 1.0);
-	float mask     = 0.0;
-	float noiseVal = 0.5;  // neutral default when cubeNoise + whiteHotspot are off
-	if (rd < coreEdge) {
-		vec2 coreUV = centered / coreEdge * 0.5 + 0.5;
-		vec4 tex    = texture(nanoTex, coreUV);
-		mask        = max(dot(tex.rgb, vec3(0.3333)), tex.a) * coreBoost;
-
-		// Per-particle animated value noise on the core, sampled in quad-UV
-		// space (the cube path samples in object-local 3D coords, but billboards
-		// have no useful local Z so we use UV + a per-particle seed offset).
-		if (cubeNoise > 0.001 || whiteHotspot > 0.001) {
-			float tt = (timeInfo.x + timeInfo.w) * cubeNoiseSpeed * (1.0 / 30.0);
-			vec2 samp = centered * cubeNoiseScale + vec2(v_seed * 7.13, v_seed * 3.57)
-			          + vec2(tt, tt * 0.7);
-			noiseVal = valueNoise2(samp);
-			if (cubeNoise > 0.001) {
-				mask *= 1.0 + cubeNoise * (noiseVal * 2.0 - 1.0);
-			}
-		}
-	}
-
-	// Outer radial falloff: smooth ring from coreEdge out to 1.0. The glowFalloff
-	// exponent controls the curve shape: 1.0 = linear (even fade), 2.0 = quadratic
-	// (classic bloomy halo), higher values (4-8) = sharp initial drop with a long
-	// faint tail, reading more as a sharp corona than a soft blob.
-	float glow = 0.0;
-	if (glowIntensity > 0.0 && glowScale > 1.001) {
-		float t = clamp((1.0 - rd) / (1.0 - coreEdge), 0.0, 1.0);
-		float gI = glowIntensity;
-		// Animated halo "breath": small intensity oscillation, per-particle
-		// phase-offset so adjacent halos don't pulse in lockstep.
-		if (glowBreath > 0.0001) {
-			float ph = (timeInfo.x + timeInfo.w) * glowBreathFreq * (6.2831853 / 30.0) + v_seed;
-			gI *= 1.0 + glowBreath * sin(ph);
-		}
-		glow = pow(t, max(glowFalloff, 0.01)) * gI;
-	}
-
-	float combined = (mask + glow);
-	vec3  rgb = v_color.rgb * tint * combined;
-	float a   = v_color.a   * combined;
-
-	// White hotspot overlay on the textured core. Premultiplied-alpha caveat:
-	// rgb here is (team_color * tint * combined), and v_color.a is the per-
-	// emission alpha (small, ~0.04). Mixing rgb toward vec3(a) does almost
-	// nothing because the target is the same low magnitude. Instead we ADD
-	// a white energy spark in premultiplied space: contribution is
-	//     rgbAdd = vec3(mask * v_color.a * hotspot * whiteHotspot)
-	//     aAdd   = mask * v_color.a * hotspot * whiteHotspot
-	// Multiplying by mask confines it to the textured core (no halo
-	// whitening), multiplying by v_color.a keeps it consistent with the rest
-	// of the premultiplied-alpha pipeline, and the noise->smoothstep gate
-	// keeps only the high-noise peaks bright.
-	// boost so the hotspot ramps up at birth too.
-	if (whiteHotspot > 0.0001 && mask > 0.0) {
-		float hotspot = smoothstep(whiteHotspotThreshold, 1.0, noiseVal) * whiteHotspot;
-		float spark   = mask * v_color.a * hotspot;
-		rgb += vec3(spark);
-		a   += spark;
-	}
-
-	fragColor = vec4(rgb, a) * losMul;
-}
-]]
 
 --------------------------------------------------------------------------------
 -- Cube render mode shaders
@@ -873,14 +652,9 @@ layout(location = 0) in vec4 vertexPosUV;
 layout(location = 1) in vec4 spawnPosAndSize;   // xyz=spawnPos, w=packed(sizeMult,fadeFrames)
 layout(location = 2) in vec4 velAndSpawnFrame;  // xyz=velocity, w=spawnFrame
 layout(location = 3) in vec4 instColor;
-layout(location = 4) in vec4 rotData;           // x=rotVal0, y=rotVel0, z=rotAcc, w=deathFrame
+layout(location = 4) in vec4 rotData;           // x=rotVal0, y=rotVel0, z=reserved, w=deathFrame
 
 //__ENGINEUNIFORMBUFFERDEFS__
-
-uniform float wobbleAmp;      // peak vortex displacement perpendicular to vel (elmos)
-uniform float wobbleFreq;     // vortex rotation rate around vel (cycles/sim-second)
-uniform float wobbleVar;      // ± fractional per-particle amplitude variation (0..1)
-uniform float wobbleFreqVar;  // ± fractional per-particle frequency variation (0..1)
 
 out vec3 v_worldPos;
 out vec4 v_color;
@@ -911,39 +685,17 @@ void main() {
 
 	vec3 worldPos = spawnPosAndSize.xyz + velAndSpawnFrame.xyz * t;
 
-	// Vortex / swirl displacement perpendicular to vel. See vsSrc for full notes
-	// on the per-particle freq/direction decoherence scheme.
-	if (wobbleAmp > 0.0001) {
-		float lifetime = max(deathFrame - spawnFrame, 1.0);
-		float p        = clamp(t / lifetime, 0.0, 1.0);
-		float bell     = 4.0 * p * (1.0 - p);
-		vec3  vdir     = velAndSpawnFrame.xyz;
-		float vlen2    = dot(vdir, vdir);
-		if (vlen2 > 1e-6) {
-			vdir /= sqrt(vlen2);
-			vec3 ref = (abs(vdir.y) < 0.95) ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0);
-			vec3 axA = normalize(cross(vdir, ref));
-			vec3 axB = cross(vdir, axA);
-			float phaseOff = radians(rotData.x);
-			float hash     = fract(sin(rotData.x * 12.9898 + rotData.y * 78.233) * 43758.5453);
-			float freqScale = max(0.0, 1.0 + wobbleFreqVar * (2.0 * hash - 1.0));
-			float dirSign  = (fract(hash * 7.31) < 0.5) ? -1.0 : 1.0;
-			float hash2    = fract(hash * 113.7 + 0.317);
-			float ampScale = max(0.0, 1.0 + wobbleVar * (2.0 * hash2 - 1.0));
-			float ph = currentFrame * wobbleFreq * freqScale * dirSign * (6.2831853 / 30.0) + phaseOff;
-			worldPos += (axA * cos(ph) + axB * sin(ph)) * (wobbleAmp * ampScale * bell);
-		}
-	}
-
-	// Decode packed w: sizeMult in low 1024, fadeFrames * 1024 above.
-	float fadeFrames = floor(spawnPosAndSize.w / 1024.0);
-	float sizeMult   = (spawnPosAndSize.w - fadeFrames * 1024.0) / 256.0;
+	// Decode packed w: sizeMult in low 1024, fadeFrames * 1024 above. Sign
+	// is the inverse flag (handled above) -- abs here.
+	float packedW    = abs(spawnPosAndSize.w);
+	float fadeFrames = floor(packedW / 1024.0);
+	float sizeMult   = (packedW - fadeFrames * 1024.0) / 256.0;
 
 	float fade = (fadeFrames > 0.5)
 		? clamp((deathFrame - currentFrame) / fadeFrames, 0.0, 1.0)
 		: 1.0;
 
-	float rotVel = rotData.y + rotData.z * t;
+	float rotVel = rotData.y;
 	float rotVal = rotData.x + rotVel  * t;
 
 	v_worldPos = worldPos;
@@ -954,9 +706,8 @@ void main() {
 	v_rotVal   = rotVal;
 	v_sizeMult = sizeMult * (0.5 + 0.5 * fade);
 	// Stable per-particle seed for cube tumble phase. Homing rewrites spawnPos
-	// every frame, so we hash spawn-time random rotData (untouched by homing)
-	// instead -- otherwise the phase jumps and the cube rotation goes wild.
-	v_phaseSeed = rotData.xyz;
+	// every frame, so derive the seed from spawn-time random rotData.x/.y only.
+	v_phaseSeed = vec3(rotData.x, rotData.y, rotData.x + rotData.y);
 	gl_Position = vec4(worldPos, 1.0);  // GS reads this
 }
 ]]
@@ -968,9 +719,8 @@ layout(triangles) in;
 // 28 = worst case across supported shapes:
 //   cube: 6 quads * 4 verts = 24 + 4 glow billboard verts
 //   octahedron: 8 tris * 3 verts = 24 + 4 glow billboard verts
-// Larger polyhedra (icosahedron, dodecahedron) would exceed
-// MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS (1024 on most GPUs) given our ~22
-// per-vertex output components, so they aren't supported here.
+// Larger polyhedra would exceed MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS given
+// our per-vertex output count.
 layout(triangle_strip, max_vertices = 28) out;
 
 //__ENGINEUNIFORMBUFFERDEFS__
@@ -1152,6 +902,8 @@ uniform float coreBoost;        // brightness multiplier for the lit faces (>=1.
 uniform float hueJitter;        // \u00b1 per-channel modulation amplitude (0 = off)
 uniform float glowBreath;       // halo intensity oscillation amplitude (0..1)
 uniform float glowBreathFreq;   // halo oscillation frequency (cycles/sim-second)
+uniform float glowBreathVar;    // ± per-particle amplitude variation (0..1 fraction of glowBreath)
+uniform float glowBreathFreqVar;// ± per-particle frequency variation (0..1 fraction of glowBreathFreq)
 uniform float whiteHotspot;          // peak strength of noise->white mix on faces (0 = off)
 uniform float whiteHotspotThreshold; // noise value where hotspot ramp starts (0..1)
 
@@ -1165,17 +917,13 @@ in float g_isGlow;
 in float g_seed;
 out vec4 fragColor;
 
-// Cheap 3D value noise: 8 corner hashes + quintic fade. The quintic fade
-// (f*f*f*(f*(f*6-15)+10)) has a continuous second derivative, so integer-cell
-// boundaries don't show as visible creases the way they do with a cubic
-// smoothstep. Combined with the per-particle g_noiseSeed offset, this is
-// sufficient to mask the grid without needing a second fbm octave.
+// Cheap 3D value noise: 8 corner hashes + quintic fade (continuous second
+// derivative so cell boundaries don't show as creases). Per-particle
+// g_noiseSeed offset hides any residual grid structure.
 //
 // hash uses Dave Hoskins' hash-without-sine (https://www.shadertoy.com/view/4djSRW).
-// Avoid the classic IQ hash `fract(p.x*p.y*p.z*(p.x+p.y+p.z))` -- the product
-// collapses to near-zero whenever any component is near zero, producing visible
-// axis-aligned dark planes through the noise volume (shows up as a straight
-// band on the cube faces).
+// The classic IQ hash collapses to near-zero whenever any component is near
+// zero, producing visible axis-aligned dark planes through the noise volume.
 float hash13(vec3 p) {
 	p  = fract(p * 0.1031);
 	p += dot(p, p.zyx + 31.32);
@@ -1228,11 +976,22 @@ void main() {
 		float t = 1.0 - rd;
 		float gI = glowIntensity;
 		if (glowBreath > 0.0001) {
-			float ph = (timeInfo.x + timeInfo.w) * glowBreathFreq * (6.2831853 / 30.0) + g_seed;
-			gI *= 1.0 + glowBreath * sin(ph);
+			// See billboard FS for rationale; two independent sin-hashes.
+			float hAmp  = fract(sin(g_seed * 91.7253 + 17.31) * 43758.5453);
+			float hFreq = fract(sin(g_seed * 33.1117 + 43.93) * 27183.4500);
+			float ampScale  = max(0.0, 1.0 + glowBreathVar     * (2.0 * hAmp  - 1.0));
+			float freqScale = max(0.0, 1.0 + glowBreathFreqVar * (2.0 * hFreq - 1.0));
+			float ph = (timeInfo.x + timeInfo.w) * glowBreathFreq * freqScale * (6.2831853 / 30.0) + g_seed;
+			gI *= 1.0 + glowBreath * ampScale * sin(ph);
 		}
 		float glow = pow(clamp(t, 0.0, 1.0), max(glowFalloff, 0.01)) * gI;
-		fragColor = vec4(g_color.rgb * tint * glow, g_color.a * glow) * losMul;
+		// Saturation-preserving brightness equalization -- see billboard FS.
+		vec3  glowTint = g_color.rgb / max(max(g_color.r, max(g_color.g, g_color.b)), 0.001);
+		float gLuma    = dot(glowTint, vec3(0.2126, 0.7152, 0.0722));
+		const float GLOW_LUMA_TARGET = 0.55;
+		const float GLOW_BOOST_MAX   = 5.0;
+		float glowBoost = min(GLOW_LUMA_TARGET / max(gLuma, 0.001), GLOW_BOOST_MAX);
+		fragColor = vec4(glowTint * tint * (glow * glowBoost), g_color.a * glow) * losMul;
 		return;
 	}
 
@@ -1302,69 +1061,191 @@ local function goodbye(reason)
 end
 
 local function initGL4()
-	local shapeMode = (RENDER_MODE == "shape")
-	if shapeMode and not LuaShader.isGeometryShaderSupported then
-		spEcho("Nano Particles GL4: geometry shader not supported, falling back to billboard mode.")
-		shapeMode = false
-	end
-	isShapeMode = shapeMode
-	local shaderCache = {
-		vsSrc = shapeMode and vsSrcCube or vsSrc,
-		fsSrc = shapeMode and fsSrcCube or (DEBUG_FLAT_FS and fsSrcDebug or fsSrc),
-		gsSrc = shapeMode and gsSrcCube or nil,
-		shaderName = shapeMode and "NanoParticlesGL4_Shape" or "NanoParticlesGL4",
-		uniformInt = shapeMode and { infoTex = 1, u_shape = SHAPE_ID } or { nanoTex = 0, infoTex = 1 },
-		uniformFloat = { losAlwaysVisible = 0, drawRadius = DRAW_RADIUS, cubeShowInside = CUBE_SHOW_INSIDE,
-		                 cubeNoise = CUBE_NOISE, cubeNoiseSpeed = CUBE_NOISE_SPEED, cubeNoiseScale = CUBE_NOISE_SCALE,
-		                 glowScale = GLOW_SCALE, glowIntensity = GLOW_INTENSITY, glowFalloff = GLOW_FALLOFF,
-		                 coreBoost = CORE_BOOST,
-		                 hueJitter = HUE_JITTER, glowBreath = GLOW_BREATH, glowBreathFreq = GLOW_BREATH_FREQ,
-		                 sizePulseAmp = SIZE_PULSE_AMP, sizePulseFreq = SIZE_PULSE_FREQ,
-		                 wobbleAmp = WOBBLE_AMP, wobbleFreq = WOBBLE_FREQ, wobbleVar = WOBBLE_VAR, wobbleFreqVar = WOBBLE_FREQ_VAR,
-		                 whiteHotspot = WHITE_HOTSPOT, whiteHotspotThreshold = WHITE_HOTSPOT_THRESHOLD },
+	local useGeometryShader = true
+
+	local shaderCacheGS = {
+		vsSrc = vsSrcCube,
+		fsSrc = fsSrcCube,
+		gsSrc = gsSrcCube,
+		shaderName = "NanoParticlesGL4_Shape",
+		uniformInt = { infoTex = 1, u_shape = U.SHAPE_ID },
+		uniformFloat = { losAlwaysVisible = 0, drawRadius = U.DRAW_RADIUS, cubeShowInside = U.CUBE_SHOW_INSIDE,
+		                 cubeNoise = U.CUBE_NOISE, cubeNoiseSpeed = U.CUBE_NOISE_SPEED, cubeNoiseScale = U.CUBE_NOISE_SCALE,
+		                 glowScale = U.GLOW_SCALE, glowIntensity = U.GLOW_INTENSITY, glowFalloff = U.GLOW_FALLOFF,
+		                 coreBoost = U.CORE_BOOST,
+		                 hueJitter = U.HUE_JITTER, glowBreath = U.GLOW_BREATH, glowBreathFreq = U.GLOW_BREATH_FREQ,
+		                 glowBreathVar = U.GLOW_BREATH_VAR, glowBreathFreqVar = U.GLOW_BREATH_FREQ_VAR,
+		                 sizePulseAmp = U.SIZE_PULSE_AMP, sizePulseFreq = U.SIZE_PULSE_FREQ,
+		                 whiteHotspot = U.WHITE_HOTSPOT, whiteHotspotThreshold = U.WHITE_HOTSPOT_THRESHOLD },
 		shaderConfig = {},
 		forceupdate = true,
 	}
-	nanoShader = LuaShader.CheckShaderUpdates(shaderCache)
+
+	local shaderCacheNoGS = {
+		vssrcpath = "LuaUI/Shaders/nano_particles_gl4_nogs.vert.glsl",
+		fsSrc = fsSrcCube,
+		shaderName = "NanoParticlesGL4_Shape_NoGS",
+		uniformInt = { infoTex = 1, u_shape = U.SHAPE_ID },
+		uniformFloat = shaderCacheGS.uniformFloat,
+		shaderConfig = {},
+		forceupdate = true,
+	}
+
+	-- AMD GPUs have no native geometry-shader stage. Mesa emulates this GS by translating it
+	-- onto the hardware's real shader stages, emitting every vertex through memory buffers.
+	-- This is slow both to compile (a multi-second GS compile that stalls on the first draw,
+	-- and isn't kept in the disk cache so it recurs) and to run (those memory round-trips
+	-- cost bandwidth every frame). The no-GS path draws the same particles with none of that.
+	-- AMD-on-Linux is always Mesa.
+	local preferNoGS = (Platform ~= nil and Platform.gpuVendor == "AMD" and Platform.osFamily == "Linux")
+
+	-- Try the geometry-shader path first (unless we already know to skip it); only
+	-- fall back if compile actually fails. LuaShader.isGeometryShaderSupported can
+	-- report false negatives on some drivers (e.g. AMD/Mesa), so we don't trust it
+	-- alone.
+	useGeometryShader = not preferNoGS
+	nanoShader = useGeometryShader and LuaShader.CheckShaderUpdates(shaderCacheGS) or nil
+	if not nanoShader then
+		if useGeometryShader then
+			spEcho("Nano Particles GL4: geometry shader compile failed; trying no-GS fallback.")
+		end
+		useGeometryShader = false
+		nanoShader = LuaShader.CheckShaderUpdates(shaderCacheNoGS)
+	end
 	if not nanoShader then
 		goodbye("Failed to compile shader")
 		return false
 	end
 
-	-- Quad: xy in [-1,1] (corner), uv in [0,1]
-	local quadVBO, numVertices = InstanceVBOTable.makeRectVBO(
-		-1, -1, 1, 1,
-		0, 0, 1, 1,
-		"nanoQuadVBO"
-	)
-	local indexVBO
-	if shapeMode then
+	if useGeometryShader then
+		-- Quad: xy in [-1,1] (corner), uv in [0,1]
+		local quadVBO, numVertices = InstanceVBOTable.makeRectVBO(
+			-1, -1, 1, 1,
+			0, 0, 1, 1,
+			"nanoQuadVBO"
+		)
 		-- Shape GS only needs ONE triangle per instance; using the rect's 2-tri
 		-- index buffer would invoke the GS twice per particle. A 3-index VBO
 		-- (the rect's first triangle: bl,tl,tr) cuts GS work in half.
-		indexVBO = gl.GetVBO(GL.ELEMENT_ARRAY_BUFFER, false)
+		local indexVBO = gl.GetVBO(GL.ELEMENT_ARRAY_BUFFER, false)
 		indexVBO:Define(3)
 		indexVBO:Upload({0, 1, 2})
-	else
-		indexVBO = InstanceVBOTable.makeRectIndexVBO("nanoQuadIndexVBO")
-	end
 
-	local layout = {
-		{ id = 1, name = "spawnPosAndSize",  size = 4 },
-		{ id = 2, name = "velAndSpawnFrame", size = 4 },
-		{ id = 3, name = "instColor",        size = 4 },
-		{ id = 4, name = "rotData",          size = 4 },
-	}
-	nanoVBO = InstanceVBOTable.makeInstanceVBOTable(layout, MAX_PARTICLES_VBO, "nanoParticleVBO")
-	if not nanoVBO then
-		goodbye("Failed to create instance VBO")
-		return false
+		local layout = {
+			{ id = 1, name = "spawnPosAndSize",  size = 4 },
+			{ id = 2, name = "velAndSpawnFrame", size = 4 },
+			{ id = 3, name = "instColor",        size = 4 },
+			{ id = 4, name = "rotData",          size = 4 },
+		}
+		nanoVBO = InstanceVBOTable.makeInstanceVBOTable(layout, MAX_PARTICLES_VBO, "nanoParticleVBO")
+		if not nanoVBO then
+			goodbye("Failed to create instance VBO")
+			return false
+		end
+		nanoVBO.numVertices = numVertices
+		nanoVBO.vertexVBO   = quadVBO
+		nanoVBO.indexVBO    = indexVBO
+		nanoVBO.VAO         = nanoVBO:makeVAOandAttach(quadVBO, nanoVBO.instanceVBO, indexVBO)
+		nanoVBO.primitiveType = GL.TRIANGLES
+	else
+		-- No-GS fallback: build a template indexed mesh with one vertex per
+		-- geometry-shader emitted vertex.  Default cube: 6 quads * 4 verts = 24 verts.
+		-- Octahedron: 8 tris * 3 verts = 24 verts.  Plus a 4-vert glow billboard
+		-- quad.  We use independent triangles, so each template vertex is emitted
+		-- exactly once and indexed in GL order.
+		local NUM_SHAPE_VERTS = 24
+		local NUM_GLOW_VERTS  = 4
+		local NUM_VERTS = NUM_SHAPE_VERTS + NUM_GLOW_VERTS
+		local isOcta = (U.SHAPE_ID == 1)
+
+		local templateVBO = gl.GetVBO(GL.ARRAY_BUFFER, false)
+		templateVBO:Define(NUM_VERTS, {{ id = 0, name = "vertexSlot", size = 1 }}) -- float slot, cast to int in VS
+		local vertexData = {}
+		for i = 0, NUM_VERTS - 1 do
+			vertexData[#vertexData + 1] = i
+		end
+		templateVBO:Upload(vertexData)
+
+		-- Build indices matching the order the no-GS VS emits the template:
+		-- cube quads are split into two triangles (0,1,2 and 0,2,3);
+		-- octahedron triangles are a single tri (0,1,2); glow quad likewise.
+		local indexData = {}
+		if isOcta then
+			for shapeTri = 0, NUM_SHAPE_VERTS / 3 - 1 do
+				local base = shapeTri * 3
+				indexData[#indexData + 1] = base + 0
+				indexData[#indexData + 1] = base + 1
+				indexData[#indexData + 1] = base + 2
+			end
+		else
+			for quad = 0, NUM_SHAPE_VERTS / 4 - 1 do
+				local base = quad * 4
+				indexData[#indexData + 1] = base + 0
+				indexData[#indexData + 1] = base + 1
+				indexData[#indexData + 1] = base + 2
+				indexData[#indexData + 1] = base + 0
+				indexData[#indexData + 1] = base + 2
+				indexData[#indexData + 1] = base + 3
+			end
+		end
+		local glowBase = NUM_SHAPE_VERTS
+		indexData[#indexData + 1] = glowBase + 0
+		indexData[#indexData + 1] = glowBase + 1
+		indexData[#indexData + 1] = glowBase + 2
+		indexData[#indexData + 1] = glowBase + 0
+		indexData[#indexData + 1] = glowBase + 2
+		indexData[#indexData + 1] = glowBase + 3
+
+		local indexVBO = gl.GetVBO(GL.ELEMENT_ARRAY_BUFFER, false)
+		indexVBO:Define(#indexData)
+		indexVBO:Upload(indexData)
+
+		local layout = {
+			{ id = 1, name = "spawnPosAndSize",  size = 4 },
+			{ id = 2, name = "velAndSpawnFrame", size = 4 },
+			{ id = 3, name = "instColor",        size = 4 },
+			{ id = 4, name = "rotData",          size = 4 },
+		}
+		nanoVBO = InstanceVBOTable.makeInstanceVBOTable(layout, MAX_PARTICLES_VBO, "nanoParticleVBO_NoGS")
+		if not nanoVBO then
+			goodbye("Failed to create instance VBO")
+			return false
+		end
+
+		local realVAO = nanoVBO:makeVAOandAttach(templateVBO, nanoVBO.instanceVBO, indexVBO)
+		if not realVAO then
+			goodbye("Failed to create no-GS VAO")
+			return false
+		end
+
+		-- Anchor the template and index VBOs to the VBO table so the Lua GC
+		-- cannot collect them while the VAO is alive.  OpenGL owns the buffer
+		-- objects via the VAO, but Lua does not know that; without a strong Lua
+		-- reference the GC can finalize the userdata and delete the GL buffers
+		-- (fixed in commit 2b51f6e863 for DrawPrimitiveAtUnit).
+		nanoVBO.nogsTemplateVBO = templateVBO
+		nanoVBO.nogsIndexVBO    = indexVBO
+
+		local indexCount = #indexData
+		nanoVBO.VAO = {
+			realVAO = realVAO,
+			indexCount = indexCount,
+			DrawArrays = function(self, _primitiveType, instanceCount)
+				if instanceCount and instanceCount > 0 then
+					self.realVAO:DrawElements(GL.TRIANGLES, self.indexCount, 0, instanceCount)
+				end
+			end,
+			DrawElements = function(self, _primitiveType, _numVertices, _startIndex, instanceCount, _drawIndex)
+				if instanceCount and instanceCount > 0 then
+					self.realVAO:DrawElements(GL.TRIANGLES, self.indexCount, 0, instanceCount)
+				end
+			end,
+			Delete = function(self)
+				self.realVAO:Delete()
+			end,
+		}
+		nanoVBO.primitiveType = GL.TRIANGLES
 	end
-	nanoVBO.numVertices = numVertices
-	nanoVBO.vertexVBO   = quadVBO
-	nanoVBO.indexVBO    = indexVBO
-	nanoVBO.VAO         = nanoVBO:makeVAOandAttach(quadVBO, nanoVBO.instanceVBO, indexVBO)
-	nanoVBO.primitiveType = GL.TRIANGLES
 
 	return true
 end
@@ -1386,9 +1267,13 @@ local nonBuilderDefs = {}
 -- that can actually be in the "crashing" aircraftState. Saves the engine call
 -- for every ground/sea repair target.
 local isAirUnitDef = {}
+local isMobileUnitDef = {}
 for udid, def in pairs(UnitDefs) do
 	if def.canFly then
 		isAirUnitDef[udid] = true
+	end
+	if ((def.maxVelocity or def.speed or 0) > 0) and (not def.isFactory) then
+		isMobileUnitDef[udid] = true
 	end
 end
 
@@ -1398,10 +1283,31 @@ end
 -- into the per-builder info entries via builderCacheByTeam[team] = {info, ...}.
 local teamColorCache    = {}
 local builderCacheByTeam = {}  -- teamID -> array of info tables (for color propagation)
+
+local function equalizeColor(r, g, b)
+	local eq = NanoParticleColorEqualize or 0.0
+	if eq <= 0.0 or not (r and g and b) then return r, g, b end
+	local luma = 0.2126 * r + 0.7152 * g + 0.0722 * b
+	if luma < 0.001 then return r, g, b end
+	local scale = (0.55 / luma) ^ eq
+	local nr, ng, nb = r * scale, g * scale, b * scale
+	-- If any channel would clip past 1.0, dampen the whole vector so we keep
+	-- the original hue (uniform desaturation toward white would shift hue).
+	local m = nr
+	if ng > m then m = ng end
+	if nb > m then m = nb end
+	if m > 1.0 then
+		local k = 1.0 / m
+		nr, ng, nb = nr * k, ng * k, nb * k
+	end
+	return nr, ng, nb
+end
+
 local function getTeamColor(team)
 	local c = teamColorCache[team]
 	if c then return c[1], c[2], c[3] end
 	local r, g, b = spGetTeamColor(team)
+	r, g, b = equalizeColor(r, g, b)
 	teamColorCache[team] = { r, g, b }
 	return r, g, b
 end
@@ -1424,18 +1330,57 @@ local function refreshTeamColors()
 	end
 
 	for team, c in pairs(teamColorCache) do
-		local r, g, b = spGetTeamColor(team)
-		if r and (r ~= c[1] or g ~= c[2] or b ~= c[3]) then
-			c[1], c[2], c[3] = r, g, b
-			local infos = builderCacheByTeam[team]
-			if infos then
-				for i = 1, #infos do
-					local info = infos[i]
-					info.r = r; info.g = g; info.b = b
+		if team ~= "__lastEqualize" then
+			local r, g, b = spGetTeamColor(team)
+			r, g, b = equalizeColor(r, g, b)
+			if r and (r ~= c[1] or g ~= c[2] or b ~= c[3]) then
+				c[1], c[2], c[3] = r, g, b
+				local lr, lg, lb = r, g, b
+				if r and g and b then
+					local luma = 0.2126 * r + 0.7152 * g + 0.0722 * b
+					if luma >= 0.001 then
+						local scale = 0.55 / luma
+						lr, lg, lb = r * scale, g * scale, b * scale
+						local m = lr
+						if lg > m then m = lg end
+						if lb > m then m = lb end
+						if m > 1.0 then
+							local k = 1.0 / m
+							lr, lg, lb = lr * k, lg * k, lb * k
+						end
+					end
+				end
+				local infos = builderCacheByTeam[team]
+				if infos then
+					for i = 1, #infos do
+						local info = infos[i]
+						info.r = r; info.g = g; info.b = b
+						info.lr = lr; info.lg = lg; info.lb = lb
+					end
 				end
 			end
 		end
 	end
+end
+
+-- If the equalize global was changed (by console / another widget), drop the
+-- cached per-team colors so the next refreshTeamColors() pass recomputes them
+-- with the new equalize value and propagates into every active builder.
+-- Previous value tracked on teamColorCache itself (string key) instead of an
+-- upvalue local -- this file is at the 200 active locals limit.
+teamColorCache.__lastEqualize = NanoParticleColorEqualize
+local function refreshColorEqualize()
+	local v = NanoParticleColorEqualize or 0.0
+	if type(v) ~= "number" then v = 0.0 end
+	if v < 0.0 then v = 0.0 end
+	if v > 1.0 then v = 1.0 end
+	NanoParticleColorEqualize = v
+	if v == teamColorCache.__lastEqualize then return false end
+	teamColorCache.__lastEqualize = v
+	for team in pairs(teamColorCache) do
+		if team ~= "__lastEqualize" then teamColorCache[team] = nil end
+	end
+	return true
 end
 
 -- Per-frame piece-position cache: spGetUnitPiecePosDir is the single most
@@ -1453,38 +1398,98 @@ local piecePosEpoch = 0
 -- by GetUnitWorkerTask (so feature IDs naturally don't collide with units).
 local emitTargetPosCache = {}
 
--- Reclaim/homing particles: in-flight inverse particles (those travelling
--- back toward a builder) need to bend toward the builder's CURRENT piece
--- position when the builder moves, otherwise the spray converges on a stale
--- spawn-time location. Each frame we re-aim each particle's velocity so that
--- it still arrives at its death frame, but at the new piece position. The
--- particle position formula is `pos = spawn + vel * (frame - spawnFrame)`,
--- so we rewrite spawn to the current pos, vel to (newTarget-currentPos)/
--- remaining, and spawnFrame to the current frame. Death stays the same.
+-- Reverse lookup for factory-assisted builds: when a mobile builder assists a
+-- factory, GetUnitWorkerTask typically resolves to the buildee unit. For nano
+-- visuals we want those particles to keep converging on the factory pad, not
+-- start chasing the finished unit as it rolls out. Cache one scan-frame worth
+-- of buildee -> factory anchor resolution so assist groups share the lookup.
+local factoryBuildTargetCache = {}
+local recentFactoryBuildTargetCache = {}
+
+-- Reclaim/homing particles: in-flight inverse particles (those travelling back
+-- toward a builder) re-aim each frame to follow the builder's CURRENT piece
+-- position. Particle position formula is `pos = spawn + vel * (frame - spawnFrame)`,
+-- so we rewrite spawn = current pos, vel = (newTarget - currentPos)/remaining,
+-- spawnFrame = current frame. Death stays the same.
 --   homingByBuilder[builderID] = { {id=, pieceIdx=, death=}, ... }
 local homingByBuilder = {}
 local HOMING_MAX_PER_BUILDER = 96   -- safety cap; oldest entries drop off
 
 -- Forward homing: outbound particles aimed at a UNIT target (repair, capture)
--- need to bend toward the target's CURRENT mid-position when the target moves
--- mid-flight. Same rewrite trick as inverse: keep death frame, rewrite spawn
--- to current pos, vel toward new target, spawnFrame to current frame.
+-- bend toward the target's CURRENT mid-position. Same rewrite trick as inverse.
+-- Keyed by target so each target's position resolves once per frame.
 --   homingFwdByTarget[targetUnitID] = { {id=, death=}, ... }
--- Keyed by target so we resolve each target's position once per frame.
 local homingFwdByTarget = {}
 local targetPosCache    = {}    -- unitID -> [epoch, x, y, z]
 local targetIncompleteCache = {} -- unitID -> [epoch, isBeingBuilt]
 local HOMING_FWD_MAX_PER_TARGET = 192   -- safety cap per repaired/captured unit
 
--- Forward-emission particles aimed at an UNFINISHED unit are deliberately NOT
--- registered in homingFwdByTarget (HOMING_SKIP_INCOMPLETE early-returns), so
--- they don't curve toward a moving factory exit. We still want the same
--- per-particle death fade if that unit dies / is cancelled mid-build, so we
--- track them here in a fade-only list (same {id, death} layout). Cleared on
--- UnitFinished (also faded then so trailing spray dissolves cleanly) and on
--- UnitDestroyed (also faded so cancelled construction doesn't pop).
+-- Reclaim-completion burst tracking. While a tracked unit is being reclaimed
+-- by one or more of our builders, we record the builder set so that on
+-- UnitDestroyed we can fire a one-shot particle burst FROM the unit center
+-- TOWARD only those builders (whose teams actually got the metal). Cleared
+-- when the target dies, when builders disengage (their cmdID/targetID change
+-- away from this target), or when the builder itself dies.
+--   reclaimedTargets[targetUnitID] = { [builderID] = true, ... }
+local reclaimedTargets = {}
+-- Cached build progress of reclaim targets (0..1, or nil for fully built).
+-- Updated in the scan loop while the unit is alive so UnitDestroyed can read
+-- it after the unit is already gone (Spring.GetUnitIsBeingBuilt returns nil
+-- for dead units in unsynced context).
+--   reclaimTargetBuildProgress[unitID] = number (0..1)  -- only present while isBeingBuilt
+local reclaimTargetBuildProgress = {}
+
+-- Forward emissions aimed at an UNFINISHED unit are NOT registered in
+-- homingFwdByTarget (HOMING_SKIP_INCOMPLETE early-returns) so they don't curve
+-- toward a moving factory exit. We still track them here in a fade-only list
+-- (same {id, death} layout) for the per-particle death fade if that unit dies
+-- or is cancelled mid-build. Cleared on UnitFinished and UnitDestroyed (both
+-- also fade so trailing spray dissolves cleanly).
 local fadeFwdByTarget = {}
 local FADE_FWD_MAX_PER_TARGET = HOMING_FWD_MAX_PER_TARGET
+
+local function getFactoryBuildAnchor(targetUnitID)
+	local cached = factoryBuildTargetCache[targetUnitID]
+	if cached and cached[1] == piecePosEpoch then
+		if cached[2] then
+			return cached[2], cached[3], cached[4], cached[5], cached[6]
+		end
+		return nil
+	end
+
+	local list = trackedBuildersList
+	for i = 1, #list do
+		local factoryID = list[i]
+		local finfo = builderCache[factoryID]
+		local isFactory = finfo and finfo.isFactory
+		if isFactory == nil then
+			local factoryDefID = spGetUnitDefID(factoryID)
+			isFactory = factoryDefID and UnitDefs[factoryDefID] and UnitDefs[factoryDefID].isFactory or false
+		end
+		if isFactory and spGetUnitIsBuilding(factoryID) == targetUnitID then
+			local _, _, _, mx, my, mz = spGetUnitPosition(factoryID, true)
+			if mx then
+				local radius = spGetUnitRadius(factoryID) or 0
+				factoryBuildTargetCache[targetUnitID] = { piecePosEpoch, factoryID, mx, my, mz, radius }
+				return factoryID, mx, my, mz, radius
+			end
+			break
+		end
+	end
+
+	local recent = recentFactoryBuildTargetCache[targetUnitID]
+	if recent then
+		local recentFrame = recent[1]
+		if recentFrame and (Spring.GetGameFrame() - recentFrame) < HOMING_SKIP_GRACE_FRAMES then
+			factoryBuildTargetCache[targetUnitID] = { piecePosEpoch, recent[2], recent[3], recent[4], recent[5], recent[6] }
+			return recent[2], recent[3], recent[4], recent[5], recent[6]
+		end
+		recentFactoryBuildTargetCache[targetUnitID] = nil
+	end
+
+	factoryBuildTargetCache[targetUnitID] = { piecePosEpoch, false }
+	return nil
+end
 
 local function getBuilderInfo(builderID)
 	local cached = builderCache[builderID]
@@ -1504,6 +1509,21 @@ local function getBuilderInfo(builderID)
 	if not team then return nil end -- transient (e.g. during creation), retry next frame
 
 	local r, g, b = getTeamColor(team)
+	local lr, lg, lb = r, g, b
+	if r and g and b then
+		local luma = 0.2126 * r + 0.7152 * g + 0.0722 * b
+		if luma >= 0.001 then
+			local scale = 0.55 / luma
+			lr, lg, lb = r * scale, g * scale, b * scale
+			local m = lr
+			if lg > m then m = lg end
+			if lb > m then m = lb end
+			if m > 1.0 then
+				local k = 1.0 / m
+				lr, lg, lb = lr * k, lg * k, lb * k
+			end
+		end
+	end
 	local ud = UnitDefs[udid]
 	-- buildDistance is used to gate emissions on fast-moving targets (planes
 	-- etc.) that fly out of the builder's reach mid-build. Factories do not
@@ -1516,9 +1536,11 @@ local function getBuilderInfo(builderID)
 		pieces        = pieces,
 		nPieces       = #pieces,
 		r = r, g = g, b = b,
+		lr = lr, lg = lg, lb = lb,
 		team          = team,
 		allyTeam      = spGetUnitAllyTeam(builderID),
 		isFactory     = ud and ud.isFactory or false,
+		isMobile      = isMobileUnitDef[udid] and true or false,
 		buildDistance = buildDistance,
 		buildSpeed    = (ud and ud.buildSpeed) or 0,
 		emitAccum     = 0,
@@ -1535,10 +1557,9 @@ end
 
 -- Round-robin piece selection: each scan visit advances a per-builder cursor
 -- so all nano pieces emit in turn. Random pick (engine behaviour) statistically
--- leaves some pieces unselected for many consecutive visits when the visit
--- cadence is throttled (heavy saturation -> stride 6, runEvery 2 = ~2.5 visits/s),
--- which makes multi-piece units (factories, big reclaim turrets) look like only
--- some emitters are active. Round-robin guarantees equal coverage.
+-- leaves some pieces unselected for many consecutive throttled visits, which
+-- makes multi-piece units (factories, big reclaim turrets) look like only some
+-- emitters are active.
 local function pickNanoPiece(info)
 	local n = info.nPieces
 	if n == 1 then return info.pieces[1] end
@@ -1552,29 +1573,32 @@ end
 -- Emission
 --------------------------------------------------------------------------------
 
-local function spawnParticle(px, py, pz, vx, vy, vz, lifetime, r, g, b, frame, fadeFrames)
+local function spawnParticle(px, py, pz, vx, vy, vz, lifetime, r, g, b, frame, fadeFrames, inverse)
 	if not nanoVBO then return end
 
 	local death = frame + lifetime
 
-	local rotVal = ROT_VAL_BASE + ROT_VAL_RANGE * (mathRandom() * 2 - 1)
-	local rotVel = ROT_VEL_BASE + ROT_VEL_RANGE * (mathRandom() * 2 - 1)
-	local rotAcc = ROT_ACC_BASE + ROT_ACC_RANGE * (mathRandom() * 2 - 1)
+	local rotVal = U.ROT_VAL_BASE + U.ROT_VAL_RANGE * (mathRandom() * 2 - 1)
+	local rotVel = U.ROT_VEL_BASE + U.ROT_VEL_RANGE * (mathRandom() * 2 - 1)
+	local rotAcc = U.ROT_ACC_BASE + U.ROT_ACC_RANGE * (mathRandom() * 2 - 1)
 
 	-- Per-particle size and alpha jitter. Size is packed into w alongside
 	-- fadeFrames; alpha replaces the flat NANO_ALPHA in the color attribute.
-	local sizeMult = (SIZE_VAR > 0) and (1.0 + SIZE_VAR * (mathRandom() * 2 - 1)) or 1.0
-	local alpha    = (ALPHA_VAR > 0) and (NANO_ALPHA * (1.0 + ALPHA_VAR * (mathRandom() * 2 - 1))) or NANO_ALPHA
+	local sizeVar  = U.SIZE_VAR
+	local nanoAlpha = U.NANO_ALPHA
+	local alphaVar = U.ALPHA_VAR
+	local sizeMult = (sizeVar  > 0) and (1.0 + sizeVar  * (mathRandom() * 2 - 1)) or 1.0
+	local alpha    = (alphaVar > 0) and (nanoAlpha * (1.0 + alphaVar * (mathRandom() * 2 - 1))) or nanoAlpha
 	if alpha < 0 then alpha = 0 end
 
 	local id = nextID
 	nextID = nextID + 1
 
 	local s = instanceScratch
-	s[1]=px; s[2]=py; s[3]=pz;  s[4]=packSizeFade(sizeMult, fadeFrames)
+	s[1]=px; s[2]=py; s[3]=pz;  s[4]=packSizeFade(sizeMult, fadeFrames, inverse)
 	s[5]=vx; s[6]=vy; s[7]=vz;  s[8]=frame
 	s[9]=r;  s[10]=g; s[11]=b;  s[12]=alpha
-	s[13]=rotVal; s[14]=rotVel; s[15]=rotAcc; s[16]=death
+	s[13]=rotVal; s[14]=rotVel; s[15]=frame; s[16]=death
 
 	if pushElementInstance(nanoVBO, s, id, false, true, nil) then
 		local bucket = deathBuckets[death]
@@ -1588,13 +1612,33 @@ local function spawnParticle(px, py, pz, vx, vy, vz, lifetime, r, g, b, frame, f
 	end
 end
 
-local function emitNano(builderID, info, endX, endY, endZ, inverse, jitterRadius, frame, targetUnitID, pieceIdx)
+-- Multi-emit form: count >= 1 spawns that many particles in a single call,
+-- amortising piece-pos lookup, sqrt, range gate, normalize, jitter scale, LOS
+-- gate selection and colour/fade lookup across the batch. Per-particle work
+-- is only jitter rejection sampling, optional speed variance, spawnParticle
+-- and homing register. Used by scanBuilders' single-piece path and by the
+-- multi-piece round-robin (one batched call per piece).
+--
+-- spreadFrames: when > 0, stagger the batch's spawn times across this many
+-- frames so a high-stride visit doesn't dump a clumped blob at the
+-- nanopiece. Each particle is advanced along its velocity by a per-particle
+-- time offset, simulating continuous emission since the last visit. The
+-- caller bounds this to ~one steady-state visit interval (stride * runEvery)
+-- so particles only get nudged a small distance ahead of the source -- they
+-- must NOT be placed partway to the target. Defaults to 0 (legacy
+-- simultaneous spawn) when omitted.
+local function emitNano(builderID, info, endX, endY, endZ, inverse, jitterRadius, frame, targetUnitID, pieceIdx, count, spreadFrames)
+	count = count or 1
+	spreadFrames = spreadFrames or 0
 	pieceIdx = pieceIdx or pickNanoPiece(info)
+	local clampThisEmit = false
+	local clampGuideY
+	local clampPeakT
 
-	-- Spring.GetUnitPiecePosDir is the hot Spring->C call here. Within a single
-	-- scan frame the same builder/piece often emits multiple particles (resurrect
-	-- dual-emit, factories, multi-piece cycling) -- cache by (unitID, pieceIdx)
-	-- and invalidate via per-frame epoch bump.
+	-- Spring.GetUnitPiecePosDir is the hot Spring->C call here. Cached by
+	-- (unitID, pieceIdx) for the duration of one scan frame, invalidated by
+	-- per-frame epoch bump. Same builder/piece often emits multiple particles
+	-- per frame (resurrect dual-emit, multi-piece cycling).
 	local key = builderID * 256 + pieceIdx
 	local entry = piecePosCache[key]
 	local sx, sy, sz
@@ -1611,169 +1655,428 @@ local function emitNano(builderID, info, endX, endY, endZ, inverse, jitterRadius
 		end
 	end
 
+	if U.GROUND_CLAMP_ENABLED and (not info.isFactory) then
+		clampThisEmit, clampGuideY, clampPeakT = shouldClampEmit(builderID, sx, sy, sz, endX, endY, endZ, frame)
+		if clampThisEmit then
+			endY = clampYAboveGround(endX, endY, endZ, frame)
+		end
+	end
+
 	local dx, dy, dz = endX - sx, endY - sy, endZ - sz
 	local lenSq = dx*dx + dy*dy + dz*dz
 	if lenSq < 1.0 then return end
 	local len = mathSqrt(lenSq)
 
-	-- Range gate for moving-unit targets. The engine ostensibly stops the build
-	-- step once a target leaves buildDistance, but the worker-task lookup is
-	-- cached on our side and a fast target (plane, jumpjet) can fly well past
-	-- the builder before we re-check. Drop emissions beyond MAX_EXTENSION and
-	-- linearly fade between [buildDistance, buildDistance * MAX_EXTENSION].
-	if targetUnitID and info.buildDistance then
-		local bd = info.buildDistance
-		local maxLen = bd * BUILD_RANGE_MAX_EXTENSION
-		if len > maxLen then return end
-		if len > bd then
-			local keep = (maxLen - len) / (bd * (BUILD_RANGE_MAX_EXTENSION - 1.0))
-			if mathRandom() > keep then return end
+	-- Range gate for moving-unit targets. Engine reach is (buildDistance +
+	-- target radius); buildDistance alone under-counts heavily for large
+	-- buildees. effectiveBD precomputed on meta at resolveTarget time. Hard
+	-- cull is one compare; fade-band keep is rolled per-particle inside the loop.
+	-- IMPORTANT: engine buildDistance is a horizontal cylinder (XZ only), not a
+	-- sphere. A builder on a cliff has extra vertical distance but the same XZ
+	-- reach, so we must compare effectiveBD against horizontal distance only.
+	local fadeBandKeep
+	if targetUnitID then
+		local effectiveBD = info.targetMeta and info.targetMeta.effectiveBD
+		if effectiveBD then
+			local horzLen = mathSqrt(dx*dx + dz*dz)
+			local maxLen = effectiveBD * BUILD_RANGE_MAX_EXTENSION
+			if horzLen > maxLen then return end
+			if horzLen > effectiveBD then
+				fadeBandKeep = (maxLen - horzLen) / (effectiveBD * (BUILD_RANGE_MAX_EXTENSION - 1.0))
+			end
 		end
 	end
 
 	local invLen = 1.0 / len
-	dx, dy, dz = dx * invLen, dy * invLen, dz * invLen
+	local ndx, ndy, ndz = dx * invLen, dy * invLen, dz * invLen
 
 	-- Engine: dif += guRNG.NextVector() * jitterScale, where NextVector() is
 	-- rejection-sampled inside the unit sphere (GlobalRNG.h). Builders pass a
-	-- per-task radius and the jitter scale is (radius / len); factories use a
-	-- fixed 0.15. (See ProjectileHandler::AddNanoParticle overloads.)
-	local jitterScale = jitterRadius and (jitterRadius * invLen) or DIR_JITTER
-	local jx, jy, jz
-	repeat
-		jx = mathRandom() * 2 - 1
-		jy = mathRandom() * 2 - 1
-		jz = mathRandom() * 2 - 1
-	until (jx*jx + jy*jy + jz*jz) <= 1.0
-	dx = dx + jx * jitterScale
-	dy = dy + jy * jitterScale
-	dz = dz + jz * jitterScale
+	-- per-task radius (jitterScale = radius/len); factories use a fixed 0.15.
+	local jitterScale = jitterRadius and (jitterRadius * invLen) or U.DIR_JITTER
 
-	local speed = NANO_SPEED
-	if SPEED_VAR > 0 then
-		speed = NANO_SPEED * (1.0 + SPEED_VAR * (mathRandom() * 2 - 1))
-		if speed < 0.1 then speed = 0.1 end
+	local r, g, b = info.r, info.g, info.b
+	local fadeFrames = inverse and FADE_FRAMES_RECLAIM or FADE_FRAMES_REPAIR
+
+	-- LOS check needed at all? Per-particle result is still cached on info
+	-- because position varies for inverse emissions, but most visits skip the
+	-- gate entirely (full view, ally builder, or LOS filter disabled).
+	local needLosCheck = LOS_FILTER and (not cachedSpecFullView) and (info.allyTeam ~= cachedAllyTeamID)
+
+	-- Three-tier enemy-builder visibility filter, evaluated once per emitNano
+	-- call and cached for LOS_CACHE_FRAMES frames:
+	--   tier 2 (IsUnitVisible true): fully seen -- full emission rate.
+	--   tier 1 (INRADAR bit set, not visually seen): radar/sonar contact only
+	--     (e.g. detected submarine) -- ENEMY_RADAR_EMIT_SCALE fraction of
+	--     particles as a faint hint; per-particle IsPosInLos cull is skipped
+	--     because the nanopiece/target position may be underwater.
+	--   tier 0 (not detected at all): no particles.
+	local builderVisTier = 2  -- default: fully visible (only matters when needLosCheck)
+	if needLosCheck then
+		local visFrame = info.visCheckFrame
+		if visFrame and (frame - visFrame) < LOS_CACHE_FRAMES then
+			builderVisTier = info.builderVisTier
+		else
+			if spIsUnitVisible(builderID, cachedAllyTeamID) then
+				builderVisTier = 2
+			else
+				local losBits = Spring.GetUnitLosState(builderID, cachedAllyTeamID, true) or 0
+				-- INRADAR bitmask bit = 2 (bit 1). losBits % 4 >= 2 isolates bit 1
+				-- regardless of higher bits (PREVLOS = 4, CONTRADAR = 8).
+				builderVisTier = (losBits % 4 >= 2) and 1 or 0
+			end
+			info.visCheckFrame  = frame
+			info.builderVisTier = builderVisTier
+		end
+		if builderVisTier == 0 then return end
 	end
-	local vx, vy, vz = dx * speed, dy * speed, dz * speed
-	local lifetime = mathFloor(len / speed)
-	if lifetime < 1 then return end
 
-	-- Engine (ProjectileHandler::AddNanoParticle, inverse branch):
-	--   pos   = startPos + dif * len    (dif is normalized+jitter)
-	--   speed = -dif * 3.0
-	-- This makes the particle converge exactly on startPos (the builder).
-	-- Spawning at the raw endPos would carry the jitter offset all the way
-	-- through and the spray would diverge instead of converge.
-	local px, py, pz
-	if inverse then
-		px = sx + dx * len
-		py = sy + dy * len
-		pz = sz + dz * len
-		vx, vy, vz = -vx, -vy, -vz
+	-- Stagger denominator: divide the symmetric spread window
+	-- [-spreadFrames, +spreadFrames] across `count` slots so particles are
+	-- evenly spaced in time (with sub-slot RNG jitter to avoid visible banding
+	-- when count is small). spreadInv == 0 disables staggering.
+	local spreadInv = (spreadFrames > 0 and count > 0) and (2 * spreadFrames / count) or 0
+	local spreadBase = -spreadFrames
+
+	-- `repeat ... until true` with `break` is Lua 5.1's idiom for `continue`:
+	-- skip individual particles (fade-band drop, LOS hidden, lifetime
+	-- underflow, HOMING_SKIP_INCOMPLETE branches) without aborting the batch.
+	for i = 1, count do
+		repeat
+			if fadeBandKeep and mathRandom() > fadeBandKeep then break end
+			-- Radar/sonar-only builder: stochastically drop most particles so
+			-- only a faint ghost-spray hints at the undetected unit's activity.
+			if builderVisTier == 1 and mathRandom() > ENEMY_RADAR_EMIT_SCALE then break end
+
+			-- jitter rejection sampling (~1.91 random calls on average)
+			local jx, jy, jz
+			repeat
+				jx = mathRandom() * 2 - 1
+				jy = mathRandom() * 2 - 1
+				jz = mathRandom() * 2 - 1
+			until (jx*jx + jy*jy + jz*jz) <= 1.0
+			local fdx = ndx + jx * jitterScale
+			local fdy = ndy + jy * jitterScale
+			local fdz = ndz + jz * jitterScale
+
+			local speed = NANO_SPEED
+			local speedVar = U.SPEED_VAR
+			if speedVar > 0 then
+				speed = NANO_SPEED * (1.0 + speedVar * (mathRandom() * 2 - 1))
+				if speed < 0.1 then speed = 0.1 end
+			end
+			local lifetime = mathCeil(len / speed)
+			if lifetime < 1 then break end
+			local vx, vy, vz = fdx * speed, fdy * speed, fdz * speed
+
+			-- Engine (ProjectileHandler::AddNanoParticle, inverse branch):
+			--   pos   = startPos + dif * len    (dif is normalized+jitter)
+			--   speed = -dif * 3.0
+			-- This makes the particle converge exactly on startPos (the
+			-- builder). Spawning at the raw endPos would carry the jitter
+			-- offset all the way through and the spray would diverge instead.
+			local px, py, pz
+			if inverse then
+				px = sx + fdx * len
+				py = sy + fdy * len
+				pz = sz + fdz * len
+				vx, vy, vz = -vx, -vy, -vz
+			else
+				px, py, pz = sx, sy, sz
+			end
+			if clampThisEmit and inverse then
+				py = clampYAboveGround(px, py, pz, frame)
+			end
+
+			-- Stagger this particle's spawn along its velocity by `tOff` frames,
+			-- where tOff is in [-spreadFrames, +spreadFrames]. Negative offsets
+			-- place the particle slightly behind the nanopiece (partially
+			-- occluded by the builder model); positive offsets place it
+			-- slightly ahead. Lifetime is adjusted so total travel time to the
+			-- target remains constant. If the bounded window would somehow
+			-- exhaust the lifetime (very-close target), skip the particle.
+			if spreadInv > 0 then
+				local tOff = spreadBase + ((i - 1) + mathRandom()) * spreadInv
+				local newLifetime = lifetime - mathFloor(tOff)
+				if newLifetime < 1 then break end
+				px = px + vx * tOff
+				py = py + vy * tOff
+				pz = pz + vz * tOff
+				lifetime = newLifetime
+			end
+
+			-- LOS filter: enemy emissions hidden when not in our LOS / not full
+			-- view. Throttled per builder -- LOS at the builder location changes
+			-- slowly relative to emit rate. Skipped for tier-1 (radar/sonar
+			-- contact) builders: their nanopiece / target may be underwater and
+			-- IsPosInLos would drop all remaining particles incorrectly.
+			if needLosCheck and builderVisTier == 2 then
+				local losFrame = info.losFrame
+				local visible
+				if losFrame and (frame - losFrame) < LOS_CACHE_FRAMES then
+					visible = info.losVisible
+				else
+					visible = Spring.IsPosInLos(px, py, pz, cachedAllyTeamID) and true or false
+					info.losFrame   = frame
+					info.losVisible = visible
+				end
+				if not visible then break end
+			end
+
+			local wpFrame, finalX, finalY, finalZ
+			local useWaypoint = clampThisEmit and U.GROUND_CLAMP_USE_WAYPOINT and clampGuideY and (not inverse)
+			if useWaypoint then
+				finalX = px + vx * lifetime
+				finalY = py + vy * lifetime
+				finalZ = pz + vz * lifetime
+				local peak = clampPeakT or 0.5
+				if peak < 0.15 then peak = 0.15 elseif peak > 0.85 then peak = 0.85 end
+				local leg1 = mathFloor(lifetime * peak)
+				if leg1 < 1 then leg1 = 1 end
+				if leg1 < lifetime then
+					local wpX = px + (finalX - px) * peak
+					local wpY = py + (finalY - py) * peak
+					local wpZ = pz + (finalZ - pz) * peak
+					if clampGuideY > wpY then wpY = clampGuideY end
+					local invLeg1 = 1.0 / leg1
+					vx = (wpX - px) * invLeg1
+					vy = (wpY - py) * invLeg1
+					vz = (wpZ - pz) * invLeg1
+					wpFrame = frame + leg1
+				end
+			end
+
+			local pid = spawnParticle(px, py, pz, vx, vy, vz, lifetime, r, g, b, frame, fadeFrames, inverse)
+			if pid and clampThisEmit then
+				if useWaypoint then
+					if wpFrame then
+						registerGroundClampParticle(pid, frame + lifetime, wpFrame, finalX, finalY, finalZ, targetUnitID)
+					end
+				else
+					registerGroundClampParticle(pid, frame + lifetime)
+				end
+			end
+			if pid then
+				local nl = deathBuckets.__nanoLight
+				if nl and nl.enabled and nl.bridgeReady then
+					local lightLifetime = mathFloor(lifetime * (nl.lifeMult or 2.2) + 0.5)
+					local minLifetime = nl.minLifetime or 14
+					local maxLifetime = nl.maxLifetime or 96
+					if lightLifetime < minLifetime then lightLifetime = minLifetime end
+					if lightLifetime > maxLifetime then lightLifetime = maxLifetime end
+					if lightLifetime > 1 then
+						local sustain = mathFloor(lightLifetime * (nl.sustainFrac or 0.7) + 0.5)
+						if sustain < 1 then sustain = 1 end
+						if sustain > lightLifetime then sustain = lightLifetime end
+						local lightID = "NANOP_" .. pid
+						Script.LuaUI.EnvNanoBallisticLightSpawn(
+							lightID,
+							px, py, pz,
+							vx, vy, vz,
+							nl.spawnRadius or 25,
+							info.lr or r, info.lg or g, info.lb or b, nl.alpha,
+							lightLifetime,
+							sustain,
+							0.35, 0.15, 0.20, 0.0,
+							frame
+						)
+						nl.active[pid] = frame
+						nl.activeCount = nl.activeCount + 1
+					end
+				end
+			end
+
+			-- Inverse particles converge on the builder. If the builder moves
+			-- before the particle dies, the original straight-line trajectory
+			-- ends at a stale location. Track so applyHoming() can re-aim.
+			if inverse and pid then
+				local list = homingByBuilder[builderID]
+				if not list then
+					list = {}
+					homingByBuilder[builderID] = list
+				end
+				local nL = #list
+				if nL >= HOMING_MAX_PER_BUILDER then
+					for i = 1, nL - 1 do list[i] = list[i + 1] end
+					list[nL] = { id = pid, pieceIdx = pieceIdx, death = frame + lifetime, gc = clampThisEmit, lc = info.isMobile }
+				else
+					list[nL + 1] = { id = pid, pieceIdx = pieceIdx, death = frame + lifetime, gc = clampThisEmit, lc = info.isMobile }
+				end
+			elseif (not inverse) and pid and targetUnitID then
+				-- Forward emission aimed at a moving unit (repair/capture).
+				-- Track so applyForwardHoming() can curve the particle toward
+				-- the target's new position when it moves.
+				if HOMING_SKIP_INCOMPLETE then
+					local ient = targetIncompleteCache[targetUnitID]
+					local beingBuilt
+					if ient and ient[1] == piecePosEpoch then
+						beingBuilt = ient[2]
+					else
+						beingBuilt = spGetUnitIsBeingBuilt(targetUnitID) and true or false
+						if ient then
+							ient[1] = piecePosEpoch; ient[2] = beingBuilt
+							if beingBuilt then ient[3] = frame end
+						else
+							targetIncompleteCache[targetUnitID] = { piecePosEpoch, beingBuilt, beingBuilt and frame or -1 }
+						end
+					end
+					if beingBuilt then
+						-- Track for death-fade: if the unfinished target dies or
+						-- the build is cancelled, UnitDestroyed fades these so the
+						-- trailing spray dissolves instead of popping.
+						local flist = fadeFwdByTarget[targetUnitID]
+						if not flist then
+							flist = {}
+							fadeFwdByTarget[targetUnitID] = flist
+						end
+						local fn = #flist
+						if fn >= FADE_FWD_MAX_PER_TARGET then
+							for i = 1, fn - 1 do flist[i] = flist[i + 1] end
+							flist[fn] = { id = pid, death = frame + lifetime, gc = clampThisEmit }
+						else
+							flist[fn + 1] = { id = pid, death = frame + lifetime, gc = clampThisEmit }
+						end
+						break
+					end
+					-- Grace window: still skip for a short time after
+					-- completion so the last particles don't chase the unit out.
+					local lastIncompleteFrame = ient and ient[3] or -1
+					if lastIncompleteFrame >= 0 and (frame - lastIncompleteFrame) < HOMING_SKIP_GRACE_FRAMES then
+						break
+					end
+				end
+				-- Per-particle landing offset (jitter encodes a unique end-point)
+				-- so spray spread is preserved at the destination as the target moves.
+				local landingX = sx + fdx * len
+				local landingY = sy + fdy * len
+				local landingZ = sz + fdz * len
+				local offX = landingX - endX
+				local offY = landingY - endY
+				local offZ = landingZ - endZ
+				local list = homingFwdByTarget[targetUnitID]
+				if not list then
+					list = {}
+					homingFwdByTarget[targetUnitID] = list
+				end
+				local maxRangeSq
+				local effectiveBD = info.targetMeta and info.targetMeta.effectiveBD
+				if effectiveBD then
+					local maxRange = effectiveBD * BUILD_RANGE_MAX_EXTENSION
+					maxRangeSq = maxRange * maxRange
+				end
+				local nL = #list
+				if nL >= HOMING_FWD_MAX_PER_TARGET then
+					for i = 1, nL - 1 do list[i] = list[i + 1] end
+					list[nL] = { id = pid, death = frame + lifetime, ox = offX, oy = offY, oz = offZ, gc = clampThisEmit, builderID = builderID, pieceIdx = pieceIdx, maxRangeSq = maxRangeSq, lc = info.targetMeta and info.targetMeta.isMobileUnit }
+				else
+					list[nL + 1] = { id = pid, death = frame + lifetime, ox = offX, oy = offY, oz = offZ, gc = clampThisEmit, builderID = builderID, pieceIdx = pieceIdx, maxRangeSq = maxRangeSq, lc = info.targetMeta and info.targetMeta.isMobileUnit }
+				end
+			end
+		until true
+	end
+end
+
+--------------------------------------------------------------------------------
+-- Reclaim-completion burst: one-shot cluster of inverse particles emanating
+-- from random points within the destroyed unit's collision volume, distributed
+-- across the builders that were actively reclaiming it. Builders are filtered
+-- by the reclaimedTargets tracker (populated in the scan loop), so only
+-- builders whose teams actually got the metal contribute -- enemy or
+-- third-party builders never see the burst.
+--------------------------------------------------------------------------------
+
+local function fireReclaimBurst(targetUnitID, targetUnitDefID, attackerTeam, buildProgress, frame)
+	local set = reclaimedTargets[targetUnitID]
+	if not set then return end
+	reclaimedTargets[targetUnitID] = nil
+
+	-- Collect the builders that are still alive AND belong to the team that
+	-- actually received the metal (attackerTeam). Builders from other teams
+	-- that were also reclaiming don't get the burst -- they got nothing.
+	local builders = {}
+	local nb = 0
+	for builderID in pairs(set) do
+		local info = builderCache[builderID]
+		if info and spValidUnitID(builderID) and spGetUnitTeam(builderID) == attackerTeam then
+			-- Clear the back-reference so the builder doesn't keep a stale
+			-- reclaimTarget pointing at a dead unit (would cause a spurious
+			-- removal attempt next scan).
+			if info.reclaimTarget == targetUnitID then
+				info.reclaimTarget = nil
+			end
+			nb = nb + 1
+			builders[nb] = { id = builderID, info = info }
+		end
+	end
+	if nb == 0 then return end
+
+	-- Particle count: per-builder share follows a log curve in metal cost, then
+	-- scaled by nb^BUILDER_EXP so more reclaimers always add more particles but
+	-- with diminishing returns (e.g. 4 reclaimers → ~2.6× not 4× at EXP=0.7).
+	-- buildProgress scales metalCost so a half-built unit contributes half as many
+	-- particles as a fully-built one (it's only worth half the metal).
+	local ud = targetUnitDefID and UnitDefs[targetUnitDefID] or nil
+	local metalCost = ((ud and ud.metalCost) or 0) * (buildProgress or 1.0)
+	local perBuilder = RECLAIM_BURST_BASE + mathFloor(RECLAIM_BURST_LOG_K * mathLog(1 + metalCost / RECLAIM_BURST_LOG_NORM) + 0.5)
+	if perBuilder < 1 then perBuilder = 1 end
+	local total = mathFloor(perBuilder * (nb ^ RECLAIM_BURST_BUILDER_EXP) + 0.5)
+	if total > RECLAIM_BURST_MAX then total = RECLAIM_BURST_MAX end
+	if total < 1 then return end
+
+	-- Burst origin: collision volume center if available, else mid-position.
+	-- GetUnitCollisionVolumeData returns scale, offset, type, axis, disabled.
+	local cx, cy, cz, radius
+	local _, _, _, mx, my, mz = spGetUnitPosition(targetUnitID, true)
+	cx, cy, cz = mx, my, mz
+	local sx, sy, sz, ox, oy, oz = spGetUnitCollisionVolumeData(targetUnitID)
+	if sx and ox then
+		-- Offset is in unit-local space; for the symmetric majority of units
+		-- (and certainly close enough for a particle effect) treat it as a
+		-- world-space delta from mid-pos. Acceptable visual approximation
+		-- given the random spread we apply on top.
+		cx = (mx or 0) + ox
+		cy = (my or 0) + oy
+		cz = (mz or 0) + oz
+		-- Use the smallest axis as the spawn radius so we stay inside thin
+		-- volumes (e.g. flat factories) instead of poking through.
+		local r = sx
+		if sy and sy < r then r = sy end
+		if sz and sz < r then r = sz end
+		radius = (r or 0) * 0.5 * RECLAIM_BURST_VOL_FRAC
 	else
-		px, py, pz = sx, sy, sz
+		radius = (spGetUnitRadius(targetUnitID) or 32) * RECLAIM_BURST_VOL_FRAC
 	end
+	if not cx or radius <= 0 then return end
 
-	-- LOS filter: enemy emissions hidden when not in our LOS / not full view.
-	-- Throttled per builder: LOS at the builder location changes slowly relative
-	-- to the emit rate; one IsPosInLos per builder per LOS_CACHE_FRAMES is plenty.
-	if LOS_FILTER and not cachedSpecFullView then
-		if info.allyTeam ~= cachedAllyTeamID then
-			local losFrame = info.losFrame
-			local visible
-			if losFrame and (frame - losFrame) < LOS_CACHE_FRAMES then
-				visible = info.losVisible
-			else
-				visible = spIsPosInLos(px, py, pz, cachedAllyTeamID) and true or false
-				info.losFrame   = frame
-				info.losVisible = visible
+	-- Distribute particles round-robin across contributing builders. Each
+	-- particle gets its own random spawn point inside the volume sphere
+	-- (rejection-sampled), so the cluster is spatially varied even though all
+	-- particles converge back to one builder per slot.
+	local base = mathFloor(total / nb)
+	local rem  = total - base * nb
+	for bi = 1, nb do
+		local b = builders[bi]
+		local cnt = base + (bi <= rem and 1 or 0)
+		if cnt > 0 then
+			-- emitNano handles LOS/distance/offscreen gating, piecePos lookup,
+			-- velocity composition and inverse-spawn placement. Calling it
+			-- once per particle (count=1) so each gets a distinct random
+			-- spawn point within the volume.
+			for _ = 1, cnt do
+				local jx, jy, jz
+				repeat
+					jx = mathRandom() * 2 - 1
+					jy = mathRandom() * 2 - 1
+					jz = mathRandom() * 2 - 1
+				until (jx*jx + jy*jy + jz*jz) <= 1.0
+				local ex = cx + jx * radius
+				local ey = cy + jy * radius
+				local ez = cz + jz * radius
+				-- Pass jitterRadius=nil so emitNano's per-particle direction
+				-- jitter stays at the small DIR_JITTER default; the spatial
+				-- spread already comes from the random spawn point.
+				emitNano(b.id, b.info, ex, ey, ez, true, nil, frame, nil, nil, 1, 0)
 			end
-			if not visible then return end
-		end
-	end
-
-	local pid = spawnParticle(px, py, pz, vx, vy, vz, lifetime, info.r, info.g, info.b, frame,
-		inverse and FADE_FRAMES_RECLAIM or FADE_FRAMES_REPAIR)
-
-	-- Inverse particles converge on the builder. If the builder moves before
-	-- the particle dies, the original straight-line trajectory ends at a stale
-	-- location. Track the particle so applyHoming() can re-aim it each frame.
-	if inverse and pid then
-		local list = homingByBuilder[builderID]
-		if not list then
-			list = {}
-			homingByBuilder[builderID] = list
-		end
-		local n = #list
-		if n >= HOMING_MAX_PER_BUILDER then
-			-- Drop oldest by sliding (rare; only triggers on heavy reclaimers).
-			for i = 1, n - 1 do list[i] = list[i + 1] end
-			list[n] = { id = pid, pieceIdx = pieceIdx, death = frame + lifetime }
-		else
-			list[n + 1] = { id = pid, pieceIdx = pieceIdx, death = frame + lifetime }
-		end
-	elseif (not inverse) and pid and targetUnitID then
-		-- Forward emission aimed at a moving unit (repair/capture). Track so
-		-- applyForwardHoming() can curve the particle toward the target's new
-		-- position when it moves. Store the per-particle landing offset (the
-		-- engine's jitter encodes a unique end-point per particle) so the spray
-		-- spread is preserved at the destination as the target moves.
-		if HOMING_SKIP_INCOMPLETE then
-			local entry = targetIncompleteCache[targetUnitID]
-			local beingBuilt
-			if entry and entry[1] == piecePosEpoch then
-				beingBuilt = entry[2]
-			else
-				beingBuilt = spGetUnitIsBeingBuilt(targetUnitID) and true or false
-				if entry then
-					entry[1] = piecePosEpoch; entry[2] = beingBuilt
-					if beingBuilt then entry[3] = frame end
-				else
-					targetIncompleteCache[targetUnitID] = { piecePosEpoch, beingBuilt, beingBuilt and frame or -1 }
-				end
-			end
-			if beingBuilt then
-				-- Track for death-fade: if the unfinished target dies / build
-				-- gets cancelled before completion, UnitDestroyed will fade
-				-- these so the trailing spray dissolves instead of popping.
-				local flist = fadeFwdByTarget[targetUnitID]
-				if not flist then
-					flist = {}
-					fadeFwdByTarget[targetUnitID] = flist
-				end
-				local fn = #flist
-				if fn >= FADE_FWD_MAX_PER_TARGET then
-					for i = 1, fn - 1 do flist[i] = flist[i + 1] end
-					flist[fn] = { id = pid, death = frame + lifetime }
-				else
-					flist[fn + 1] = { id = pid, death = frame + lifetime }
-				end
-				return
-			end
-			-- Grace window: still skip for a short time after completion so the
-			-- last particles don't chase the unit as it rolls out.
-			local lastIncompleteFrame = entry and entry[3] or -1
-			if lastIncompleteFrame >= 0 and (frame - lastIncompleteFrame) < HOMING_SKIP_GRACE_FRAMES then
-				return
-			end
-		end
-		local landingX = sx + dx * len
-		local landingY = sy + dy * len
-		local landingZ = sz + dz * len
-		local offX = landingX - endX
-		local offY = landingY - endY
-		local offZ = landingZ - endZ
-		local list = homingFwdByTarget[targetUnitID]
-		if not list then
-			list = {}
-			homingFwdByTarget[targetUnitID] = list
-		end
-		local n = #list
-		if n >= HOMING_FWD_MAX_PER_TARGET then
-			for i = 1, n - 1 do list[i] = list[i + 1] end
-			list[n] = { id = pid, death = frame + lifetime, ox = offX, oy = offY, oz = offZ }
-		else
-			list[n + 1] = { id = pid, death = frame + lifetime, ox = offX, oy = offY, oz = offZ }
 		end
 	end
 end
@@ -1818,7 +2121,7 @@ local function resolveTarget(info, cmdID, targetID)
 		elseif cmdID == CMD_CAPTURE then
 			accept, factor = isUnit, 0.7
 		elseif cmdID < 0 or cmdID == CMD_REPAIR then
-			accept, factor = isUnit, 0.5
+			accept, factor = ((cmdID == CMD_REPAIR) and (isUnit or isFeature) or isUnit), 0.5
 		end
 		if not accept then
 			info.targetMeta = nil
@@ -1827,37 +2130,59 @@ local function resolveTarget(info, cmdID, targetID)
 
 		local radius = isUnit and spGetUnitRadius(resolvedID) or spGetFeatureRadius(resolvedID)
 		local jitterRadius = (radius and radius > 0) and (radius * factor) or nil
+		if isReclaim and isUnit and jitterRadius then
+			jitterRadius = jitterRadius * RECLAIM_UNIT_JITTER_SCALE
+		end
 
 		meta = {
 			cmdID        = cmdID,
 			targetID     = targetID,    -- raw value from GetUnitWorkerTask (for cache key)
 			resolvedID   = resolvedID,  -- engine ID (with MaxUnits offset stripped)
 			isFeature    = isFeature or false,
+			isMobileUnit = isUnit and isMobileUnitDef[spGetUnitDefID(resolvedID)] and true or false,
 			jitterRadius = jitterRadius,
+			targetRadius = radius or 0, -- raw radius for build-range gate (engine reach is buildDistance + target radius)
+			effectiveBD  = info.buildDistance and (info.buildDistance + (radius or 0)) or nil,
 			isReclaim    = isReclaim,
 			isResurrect  = isResurrect,
 		}
+		if isUnit and (not info.isFactory) and spGetUnitIsBeingBuilt(resolvedID) then
+			local factoryID, fx, fy, fz, factoryRadius = getFactoryBuildAnchor(resolvedID)
+			if factoryID and fx then
+				meta.assistFactoryID = factoryID
+				meta.anchorX = fx
+				meta.anchorY = fy
+				meta.anchorZ = fz
+				meta.jitterRadius = (factoryRadius and factoryRadius > 0) and (factoryRadius * factor) or nil
+				meta.targetRadius = factoryRadius or 0
+				meta.effectiveBD = info.buildDistance and (info.buildDistance + (factoryRadius or 0)) or nil
+			end
+		end
 		info.targetMeta = meta
 	end
 
 	local px, py, pz
-	local cached = emitTargetPosCache[meta.targetID]
-	if cached and cached[1] == piecePosEpoch then
-		px, py, pz = cached[2], cached[3], cached[4]
+	if meta.assistFactoryID then
+		px, py, pz = meta.anchorX, meta.anchorY, meta.anchorZ
 	else
-		if meta.isFeature then
-			px, py, pz = spGetFeaturePosition(meta.resolvedID)
+		local cached = emitTargetPosCache[meta.targetID]
+		if cached and cached[1] == piecePosEpoch then
+			px, py, pz = cached[2], cached[3], cached[4]
 		else
-			-- spGetUnitPosition(uid, true) returns 6 values: base + mid. We want mid.
-			local _, _, _, mx, my, mz = spGetUnitPosition(meta.resolvedID, true)
-			px, py, pz = mx, my, mz
-		end
-		if px then
-			if cached then
-				cached[1] = piecePosEpoch
-				cached[2] = px; cached[3] = py; cached[4] = pz
+			if meta.isFeature then
+				px, py, pz = spGetFeaturePosition(meta.resolvedID)
 			else
-				emitTargetPosCache[meta.targetID] = { piecePosEpoch, px, py, pz }
+				-- spGetUnitPosition(uid, true) returns 6 values: base + mid. We want mid.
+				local _, _, _, mx, my, mz = spGetUnitPosition(meta.resolvedID, true)
+				px, py, pz = mx, my, mz
+			end
+			if px then
+				if cached then
+					cached[1] = piecePosEpoch
+					cached[2] = px; cached[3] = py; cached[4] = pz
+				else
+					emitTargetPosCache[meta.targetID] = { piecePosEpoch, px, py, pz }
+				end
 			end
 		end
 	end
@@ -1877,7 +2202,7 @@ local function resolveTarget(info, cmdID, targetID)
 	else
 		inverse = false
 	end
-	return px, py, pz, inverse, meta.jitterRadius, isResurrect, (not meta.isFeature) and meta.resolvedID or nil
+	return px, py, pz, inverse, meta.jitterRadius, isResurrect, (not meta.isFeature) and (not meta.assistFactoryID) and meta.resolvedID or nil
 end
 
 --------------------------------------------------------------------------------
@@ -1904,6 +2229,10 @@ local function applyHoming(frame, dirtyMin, dirtyMax)
 			-- Hoist the high half of the piecePosCache key out of the per-particle
 			-- loop. Hot path: ~thousands of particles per scan in heavy reclaim.
 			local builderKeyHi = builderID * 256
+			local clampDelta = U.GROUND_CLAMP_SMART_DELTA
+			local piecePosByKey = {}
+			local pieceMovingByKey = {}
+			local pieceGroundYByKey = {}
 			for i = 1, #list do
 				local p = list[i]
 				local remaining = p.death - frame
@@ -1912,23 +2241,62 @@ local function applyHoming(frame, dirtyMin, dirtyMax)
 					-- Resolve current piece position via the per-frame cache.
 					local pieceIdx = p.pieceIdx
 					local key = builderKeyHi + pieceIdx
-					local entry = piecePosCache[key]
+					local pos = piecePosByKey[key]
+					local pieceMoving = pieceMovingByKey[key]
 					local nx, ny, nz
-					if entry and entry[1] == piecePosEpoch then
-						nx, ny, nz = entry[2], entry[3], entry[4]
+					if pos then
+						nx, ny, nz = pos[1], pos[2], pos[3]
 					else
-						nx, ny, nz = spGetUnitPiecePosDir(builderID, pieceIdx)
-						if nx then
-							if entry then
-								entry[1] = piecePosEpoch
-								entry[2] = nx; entry[3] = ny; entry[4] = nz
-							else
-								piecePosCache[key] = { piecePosEpoch, nx, ny, nz }
+						local entry = piecePosCache[key]
+						if entry and entry[1] == piecePosEpoch then
+							nx, ny, nz = entry[2], entry[3], entry[4]
+							if pieceMoving == nil then
+								local px, py, pz = entry[5], entry[6], entry[7]
+								if px then
+									local mdx = nx - px
+									local mdy = ny - py
+									local mdz = nz - pz
+									pieceMoving = (mdx*mdx + mdy*mdy + mdz*mdz) >= 1.0
+								else
+									pieceMoving = true
+								end
+								pieceMovingByKey[key] = pieceMoving
 							end
+						else
+							local ox, oy, oz
+							if entry then ox, oy, oz = entry[2], entry[3], entry[4] end
+							nx, ny, nz = spGetUnitPiecePosDir(builderID, pieceIdx)
+							if nx then
+								if entry then
+									entry[1] = piecePosEpoch
+									entry[2] = nx; entry[3] = ny; entry[4] = nz
+									entry[5] = ox or nx; entry[6] = oy or ny; entry[7] = oz or nz
+								else
+									piecePosCache[key] = { piecePosEpoch, nx, ny, nz, nx, ny, nz }
+								end
+								if pieceMoving == nil then
+									if ox then
+										local mdx = nx - ox
+										local mdy = ny - oy
+										local mdz = nz - oz
+										pieceMoving = (mdx*mdx + mdy*mdy + mdz*mdz) >= 1.0
+									else
+										pieceMoving = true
+									end
+									pieceMovingByKey[key] = pieceMoving
+								end
+							end
+						end
+						if nx then
+							piecePosByKey[key] = { nx, ny, nz }
 						end
 					end
 
 					if nx then
+						if pieceMoving == false and (not p.gc) then
+							writeIdx = writeIdx + 1
+							list[writeIdx] = p
+						else
 						local base = (slot - 1) * step
 						local sx, sy, sz   = data[base+1], data[base+2], data[base+3]
 						local vx, vy, vz   = data[base+5], data[base+6], data[base+7]
@@ -1937,6 +2305,23 @@ local function applyHoming(frame, dirtyMin, dirtyMax)
 						local cpx = sx + vx * elapsed
 						local cpy = sy + vy * elapsed
 						local cpz = sz + vz * elapsed
+						local aimY = ny
+						if p.gc then
+							-- For reclaim on high-to-low terrain, keep particles above current
+							-- ground during homing updates so they travel along the upper
+							-- surface before descending at the cliff break.
+							local gyCur = getGroundYMargin(cpx, cpz, frame)
+							if cpy < gyCur then cpy = gyCur end
+							local gyDst = pieceGroundYByKey[key]
+							if gyDst == nil then
+								gyDst = getGroundYMargin(nx, nz, frame)
+								pieceGroundYByKey[key] = gyDst
+							end
+							if aimY < gyDst then aimY = gyDst end
+							if gyCur > (aimY + clampDelta) then
+								aimY = gyCur
+							end
+						end
 						-- Inverse particles all converge on the builder piece (engine
 						-- behaviour: speed = -dif*3 makes pos arrive at startPos exactly).
 						-- Visual spread comes from staggered spawn positions, not from
@@ -1944,14 +2329,24 @@ local function applyHoming(frame, dirtyMin, dirtyMax)
 						local invR = 1.0 / remaining
 						data[base+1] = cpx;            data[base+2] = cpy;            data[base+3] = cpz
 						data[base+5] = (nx - cpx) * invR
-						data[base+6] = (ny - cpy) * invR
+						data[base+6] = (aimY - cpy) * invR
 						data[base+7] = (nz - cpz) * invR
 						data[base+8] = frame
+						local nl = deathBuckets.__nanoLight
+						if p.lc and nl and nl.bridgeReady then
+							local lastFix = nl.active[p.id]
+							local minFrames = nl.correctEvery or 10
+							if lastFix and (frame - lastFix) >= minFrames then
+								nl.active[p.id] = frame
+								Script.LuaUI.EnvNanoBallisticLightCorrect("NANOP_" .. p.id, cpx, cpy, cpz, (nx - cpx) * invR, (aimY - cpy) * invR, (nz - cpz) * invR, frame)
+							end
+						end
 						local s0 = slot - 1
 						if s0 < dirtyMin     then dirtyMin = s0     end
 						if s0 + 1 > dirtyMax then dirtyMax = s0 + 1 end
 						writeIdx = writeIdx + 1
 						list[writeIdx] = p
+						end
 					end
 				end
 			end
@@ -1983,6 +2378,26 @@ local function applyForwardHoming(frame, dirtyMin, dirtyMax)
 	local data       = nanoVBO.instanceData
 	local idtoIndex  = nanoVBO.instanceIDtoIndex
 	local step       = nanoVBO.instanceStep
+	local function fadeParticle(slot, p)
+		local remaining = p.death - frame
+		if remaining <= 0 then return false end
+		local fadeFrames = mathFloor(FADE_FRAMES_DEATH * (0.4 + mathRandom()))
+		if fadeFrames < 1 then fadeFrames = 1 end
+		if fadeFrames > remaining then fadeFrames = remaining end
+		local newDeath = frame + fadeFrames
+		local base = (slot - 1) * step
+		data[base+16] = newDeath
+		local packed = data[base+4]
+		local absPacked = packed < 0 and -packed or packed
+		local oldFade = mathFloor(absPacked / 1024)
+		local sizeBits = absPacked - oldFade * 1024
+		local newPacked = sizeBits + fadeFrames * 1024
+		data[base+4] = packed < 0 and -newPacked or newPacked
+		local s0 = slot - 1
+		if s0 < dirtyMin then dirtyMin = s0 end
+		if s0 + 1 > dirtyMax then dirtyMax = s0 + 1 end
+		return true
+	end
 
 	targetPosEpoch = targetPosEpoch + 1
 
@@ -1990,31 +2405,34 @@ local function applyForwardHoming(frame, dirtyMin, dirtyMax)
 		if not spValidUnitID(targetID) then
 			homingFwdByTarget[targetID] = nil
 		else
-			-- Detect "work complete" (full HP and buildProgress >= 1) -- this fires
-			-- when a repair finishes or a unit is just-built. Trigger the same
-			-- per-particle death fade as UnitDestroyed so the trailing spray
-			-- dissolves instead of getting yanked off when the builder moves on.
-			-- Checked every applyForwardHoming pass (per HOMING_RUN_EVERY) for
-			-- every active target -- one spGetUnitHealth per target is cheap and
-			-- the previous per-target stagger meant in-flight particles closest
-			-- to the unit could land + die naturally before the staggered check
-			-- fired, popping without a fade.
+			-- Detect work-complete (full HP, buildProgress >= 1) and trigger the
+			-- per-particle death fade so the trailing spray dissolves instead of
+			-- snapping off. Throttled to HEALTH_CHECK_EVERY -- HP changes on the
+			-- order of seconds and natural particle lifetime (~0.5s) hides any
+			-- missed edge. Last-check stamp is hashed onto the list itself so it
+			-- GCs with the list (no separate cleanup table needed).
 			local fadedOut = false
-			do
+			local lastH = list._lastHealthCheck
+			if not lastH or (frame - lastH) >= HEALTH_CHECK_EVERY then
+				list._lastHealthCheck = frame
 				local h, maxH, _, _, bp = spGetUnitHealth(targetID)
 				if h and maxH and h >= maxH and (bp == nil or bp >= 1.0) then
-					fadeOutHomingFwd(targetID)
-					homingFwdByTarget[targetID] = nil
-					targetPosCache[targetID]    = nil
-					fadedOut = true
+					if not list._fadingOut then
+						fadeOutHomingFwd(targetID)
+						list._fadingOut = true
+					end
 				else
-					-- Crashing aircraft: treat as already-dead. The unit still
-					-- exists (UnitDestroyed hasn't fired yet) and is moving fast
-					-- and predictably downward, so left untreated the spray
-					-- would chase the wreck all the way to the ground.
-					-- Only call spGetUnitMoveTypeData on actual air units --
-					-- ground/sea targets can never be in the "crashing" state.
-					if isAirUnitDef[spGetUnitDefID(targetID)] then
+					-- Crashing aircraft: treat as dead. The unit still exists
+					-- (UnitDestroyed hasn't fired) but is moving fast and
+					-- predictably down -- left untreated, the spray would chase
+					-- the wreck to the ground. Cache air-defID lookup on the list
+					-- to skip spGetUnitDefID on every poll.
+					local isAir = list._isAir
+					if isAir == nil then
+						isAir = isAirUnitDef[spGetUnitDefID(targetID)] and true or false
+						list._isAir = isAir
+					end
+					if isAir then
 						local mt = spGetUnitMoveTypeData(targetID)
 						if mt and mt.aircraftState == "crashing" then
 							fadeOutHomingFwd(targetID)
@@ -2026,6 +2444,13 @@ local function applyForwardHoming(frame, dirtyMin, dirtyMax)
 				end
 			end
 			if not fadedOut then
+			local isAir = list._isAir
+			if isAir == nil then
+				isAir = isAirUnitDef[spGetUnitDefID(targetID)] and true or false
+				list._isAir = isAir
+			end
+				local maxSpeed = NANO_SPEED * (isAir and 1.35 or 2.0)
+			local maxSpeedSq = maxSpeed * maxSpeed
 			-- Cache layout per target: { epoch, tx, ty, tz, lastTx, lastTy, lastTz, stationaryStreak }
 			-- stationaryStreak counts consecutive homing passes the target has
 			-- not moved. Once it crosses STATIONARY_SKIP_AFTER, we skip the
@@ -2043,8 +2468,9 @@ local function applyForwardHoming(frame, dirtyMin, dirtyMax)
 					if entry then
 						entry[1] = targetPosEpoch
 						entry[2] = tx; entry[3] = ty; entry[4] = tz
+						entry[9] = frame
 					else
-						entry = { targetPosEpoch, tx, ty, tz, tx, ty, tz, 0 }
+						entry = { targetPosEpoch, tx, ty, tz, tx, ty, tz, 0, frame }
 						targetPosCache[targetID] = entry
 					end
 				end
@@ -2055,7 +2481,7 @@ local function applyForwardHoming(frame, dirtyMin, dirtyMax)
 				targetPosCache[targetID]    = nil
 			else
 				-- Stationary detection: compare current pos to last-seen pos.
-				-- Threshold is generous (1 elmo) -- builders sub-elmo wobble doesn't
+				-- Threshold is generous (1 elmo) -- builders sub-elmo drift doesn't
 				-- count as movement. Streak resets on any movement.
 				local moved = true
 				if entry[5] then
@@ -2090,11 +2516,49 @@ local function applyForwardHoming(frame, dirtyMin, dirtyMax)
 					end
 				else
 				local writeIdx = 0
+				local piecePosByKey = {}
 				for i = 1, #list do
 					local p = list[i]
 					local remaining = p.death - frame
 					local slot = (remaining >= 1) and idtoIndex[p.id] or nil
 					if slot then
+						local fadeParticleOut = false
+						local maxRangeSq = p.maxRangeSq
+						if maxRangeSq and p.builderID and p.pieceIdx then
+							local key = p.builderID * 256 + p.pieceIdx
+							local pos = piecePosByKey[key]
+							local bx, bz
+							if pos then
+								bx, bz = pos[1], pos[2]
+							else
+								local pent = piecePosCache[key]
+								if pent and pent[1] == piecePosEpoch then
+									bx, bz = pent[2], pent[4]
+								else
+									local px, py, pz = spGetUnitPiecePosDir(p.builderID, p.pieceIdx)
+									if px then
+										if pent then
+											pent[1] = piecePosEpoch
+											pent[2] = px; pent[3] = py; pent[4] = pz
+										else
+											piecePosCache[key] = { piecePosEpoch, px, py, pz }
+										end
+										bx, bz = px, pz
+									end
+								end
+								if bx then
+									piecePosByKey[key] = { bx, bz }
+								end
+							end
+							if bx then
+								local rdx = tx - bx
+								local rdz = tz - bz
+								if (rdx * rdx + rdz * rdz) > maxRangeSq then
+									fadeParticleOut = fadeParticle(slot, p)
+								end
+							end
+						end
+						if not fadeParticleOut then
 						local base = (slot - 1) * step
 						local sx, sy, sz   = data[base+1], data[base+2], data[base+3]
 						local vx, vy, vz   = data[base+5], data[base+6], data[base+7]
@@ -2108,19 +2572,39 @@ local function applyForwardHoming(frame, dirtyMin, dirtyMax)
 						-- so the spray width at the destination is preserved as the
 						-- target moves.
 						local aimX = tx + p.ox
-						local aimY = ty + p.oy
 						local aimZ = tz + p.oz
+						local aimY = ty + p.oy
+						local dvx = aimX - cpx
+						local dvy = aimY - cpy
+						local dvz = aimZ - cpz
 						local invR = 1.0 / remaining
-						data[base+1] = cpx;            data[base+2] = cpy;            data[base+3] = cpz
-						data[base+5] = (aimX - cpx) * invR
-						data[base+6] = (aimY - cpy) * invR
-						data[base+7] = (aimZ - cpz) * invR
-						data[base+8] = frame
-						local s0 = slot - 1
-						if s0 < dirtyMin     then dirtyMin = s0     end
-						if s0 + 1 > dirtyMax then dirtyMax = s0 + 1 end
-						writeIdx = writeIdx + 1
-						list[writeIdx] = p
+						local needSpeedSq = (dvx*dvx + dvy*dvy + dvz*dvz) * (invR * invR)
+						if needSpeedSq > maxSpeedSq then
+							fadeParticleOut = fadeParticle(slot, p)
+						else
+							data[base+1] = cpx;            data[base+2] = cpy;            data[base+3] = cpz
+							data[base+5] = dvx * invR
+							data[base+6] = dvy * invR
+							data[base+7] = dvz * invR
+							data[base+8] = frame
+							local nl = deathBuckets.__nanoLight
+							if p.lc and nl and nl.bridgeReady then
+								local lastFix = nl.active[p.id]
+								local minFrames = nl.correctEvery or 10
+								if lastFix and (frame - lastFix) >= minFrames then
+									nl.active[p.id] = frame
+									Script.LuaUI.EnvNanoBallisticLightCorrect("NANOP_" .. p.id, cpx, cpy, cpz, dvx * invR, dvy * invR, dvz * invR, frame)
+								end
+							end
+							local s0 = slot - 1
+							if s0 < dirtyMin     then dirtyMin = s0     end
+							if s0 + 1 > dirtyMax then dirtyMax = s0 + 1 end
+						end
+						end
+						if not fadeParticleOut then
+							writeIdx = writeIdx + 1
+							list[writeIdx] = p
+						end
 					end
 				end
 				for j = #list, writeIdx + 1, -1 do list[j] = nil end
@@ -2137,64 +2621,191 @@ local function applyForwardHoming(frame, dirtyMin, dirtyMax)
 end
 
 --------------------------------------------------------------------------------
+-- Optional global in-flight terrain clamp. Reprojects current particle position
+-- (and destination inferred from remaining velocity) above ground+margin.
+-- This addresses straight-line tunneling through cliffs for non-homed particles.
+--------------------------------------------------------------------------------
+
+local function applyGroundClamp(frame, dirtyMin, dirtyMax)
+	if not U.GROUND_CLAMP_ENABLED then return dirtyMin, dirtyMax end
+	if not nanoVBO then return dirtyMin, dirtyMax end
+	local runEvery = U.GROUND_CLAMP_RUN_EVERY or 1
+	if runEvery < 1 then runEvery = 1 end
+	if (frame % runEvery) ~= 0 then return dirtyMin, dirtyMax end
+
+	local total = #groundClampParticles
+	if CLAMP_DEBUG and total > clampDbg.maxSubset then clampDbg.maxSubset = total end
+	if total == 0 then
+		groundClampCursor = 1
+		return dirtyMin, dirtyMax
+	end
+
+	local maxPer = U.GROUND_CLAMP_MAX_PER_STEP or 0
+	if maxPer < 1 or maxPer > total then maxPer = total end
+
+	local data = nanoVBO.instanceData
+	local step = nanoVBO.instanceStep
+	local idtoIndex = nanoVBO.instanceIDtoIndex
+	local recheckHit = U.GROUND_CLAMP_RECHECK_HIT or 2
+	local recheckMiss = U.GROUND_CLAMP_RECHECK_MISS or 4
+	local idx = groundClampCursor
+	if idx < 1 or idx > total then idx = 1 end
+
+	local processed = 0
+	local checked = 0
+	local maxChecks = total + maxPer
+	local n = total
+	while processed < maxPer and checked < maxChecks do
+		if n == 0 then
+			idx = 1
+			break
+		end
+		if idx > n then idx = 1 end
+		local entry = groundClampParticles[idx]
+		local slot = idtoIndex[entry.id]
+		if (not slot) or entry.death <= frame + 1 then
+			local removed = entry
+			groundClampParticles[idx] = groundClampParticles[n]
+			groundClampParticles[n] = nil
+			n = n - 1
+			groundClampFree[#groundClampFree + 1] = removed
+			if CLAMP_DEBUG then clampDbg.dropped = clampDbg.dropped + 1 end
+		elseif entry.next and frame < entry.next then
+			idx = idx + 1
+		elseif entry.wp then
+			local base = (slot - 1) * step
+			local rem = entry.death - frame
+			if rem > 1 and entry.fx then
+				local fx, fy, fz = entry.fx, entry.fy, entry.fz
+				if entry.targetID and not recentFactoryBuildTargetCache[entry.targetID] then
+					local _, _, _, mx, my, mz = spGetUnitPosition(entry.targetID, true)
+					if mx then
+						fx, fy, fz = mx, my, mz
+					end
+				end
+				local sx, sy, sz = data[base + 1], data[base + 2], data[base + 3]
+				local vx, vy, vz = data[base + 5], data[base + 6], data[base + 7]
+				local spawnF = data[base + 8]
+				local elapsed = frame - spawnF
+				local cpx = sx + vx * elapsed
+				local cpy = sy + vy * elapsed
+				local cpz = sz + vz * elapsed
+				local invR = 1.0 / rem
+				data[base + 1] = cpx
+				data[base + 2] = cpy
+				data[base + 3] = cpz
+				data[base + 5] = (fx - cpx) * invR
+				data[base + 6] = (fy - cpy) * invR
+				data[base + 7] = (fz - cpz) * invR
+				data[base + 8] = frame
+				local s0 = slot - 1
+				if s0 < dirtyMin then dirtyMin = s0 end
+				if s0 + 1 > dirtyMax then dirtyMax = s0 + 1 end
+				if CLAMP_DEBUG then clampDbg.corrected = clampDbg.corrected + 1 end
+			end
+			local removed = entry
+			groundClampParticles[idx] = groundClampParticles[n]
+			groundClampParticles[n] = nil
+			n = n - 1
+			groundClampFree[#groundClampFree + 1] = removed
+			processed = processed + 1
+			if CLAMP_DEBUG then clampDbg.processed = clampDbg.processed + 1 end
+		else
+			local base = (slot - 1) * step
+			local remaining = entry.death - frame
+			local sx, sy, sz = data[base + 1], data[base + 2], data[base + 3]
+			local vx, vy, vz = data[base + 5], data[base + 6], data[base + 7]
+			local spawnF = data[base + 8]
+			local elapsed = frame - spawnF
+			local cpx = sx + vx * elapsed
+			local cpy = sy + vy * elapsed
+			local cpz = sz + vz * elapsed
+			local clampedCpy = clampYAboveGround(cpx, cpy, cpz, frame)
+
+			if clampedCpy ~= cpy then
+				local aimX = cpx + vx * remaining
+				local aimY = cpy + vy * remaining
+				local aimZ = cpz + vz * remaining
+				local invR = 1.0 / remaining
+				data[base + 1] = cpx
+				data[base + 2] = clampedCpy
+				data[base + 3] = cpz
+				data[base + 5] = (aimX - cpx) * invR
+				data[base + 6] = (aimY - clampedCpy) * invR
+				data[base + 7] = (aimZ - cpz) * invR
+				data[base + 8] = frame
+				local s0 = slot - 1
+				if s0 < dirtyMin then dirtyMin = s0 end
+				if s0 + 1 > dirtyMax then dirtyMax = s0 + 1 end
+				if CLAMP_DEBUG then clampDbg.corrected = clampDbg.corrected + 1 end
+				entry.next = frame + recheckHit
+			else
+				entry.next = frame + recheckMiss
+			end
+
+			processed = processed + 1
+			if CLAMP_DEBUG then clampDbg.processed = clampDbg.processed + 1 end
+			idx = idx + 1
+		end
+		checked = checked + 1
+	end
+
+	groundClampCursor = idx
+	return dirtyMin, dirtyMax
+end
+
+--------------------------------------------------------------------------------
 -- Per-frame builder scan
 --------------------------------------------------------------------------------
 
 local function scanBuilders(frame)
 	-- Engine emits nano particles for every active builder regardless of camera
 	-- frustum. Iterate the tracked builder set; LOS filtering happens in emitNano.
-
-	-- Bump the per-frame epoch so cached piece positions from previous frames
-	-- are implicitly invalidated without clearing the table.
+	-- Per-frame epoch bump implicitly invalidates piecePosCache / targetPosCache
+	-- without clearing the tables.
 	piecePosEpoch = piecePosEpoch + 1
 
-	-- Snapshot pre-scan tail so we can do ONE upload covering all spawns
-	-- pushed this frame. Pushes use noUpload=true; we upload the [first..last]
-	-- contiguous range here (spawns always append, so the new range is
-	-- guaranteed contiguous at the tail).
+	-- Snapshot pre-scan tail so we can do ONE upload covering all spawns this
+	-- frame. Pushes use noUpload=true; we upload [first..last] here (spawns
+	-- always append, so the new range is contiguous at the tail).
 	local preUsed = nanoVBO and nanoVBO.usedElements or 0
 
 	-- Engine-style saturation gate evaluated per-emission. Pre-computed once so
-	-- we can skip the per-builder math (GetUnitPiecePosDir, sqrt, RNG, target
-	-- resolution) for the majority of dropped emissions when at capacity.
-	-- Under a high-gamespeed catchup, shrink the effective cap so saturation
-	-- ramps up faster and the existing stride/runEvery math does more work
-	-- per scan (fewer per-builder calls even at nominal pool fill).
+	-- we skip per-builder math (GetUnitPiecePosDir, sqrt, RNG, target resolution)
+	-- for the majority of dropped emissions when at capacity. Under high-gamespeed
+	-- catchup, shrink the effective cap so saturation ramps up faster.
 	local effectiveMax = MAX_PARTICLES
 	if speedThrottle > 0.0 then
 		effectiveMax = MAX_PARTICLES * (1.0 - GAMESPEED_MAX_CUT * speedThrottle)
 	end
 	local saturation = liveCount / effectiveMax
-	if saturation >= 1.0 then return end
+	-- NOTE: don't early-return on saturation or scan-skip here -- the
+	-- per-frame homing pass at the bottom must still run, otherwise long-lived
+	-- particles aimed at far/moving targets (which are the ones that saturate
+	-- the pool in the first place) fly on their stale spawn-time trajectory
+	-- and never curve toward the target. Instead, skip just the per-builder
+	-- emission loop below.
+	local skipEmit = saturation >= 1.0
 
-	-- Dynamic scan-frame skip: at empty pool we run every sim frame (full
-	-- responsiveness), at saturated pool we run once per MAX_SCAN_RUN_EVERY
-	-- frames (the saturation gate would drop most emissions anyway). emitProb
-	-- scales by runEvery so total emission rate is preserved across the ramp.
+	-- Dynamic scan-frame skip: empty pool -> every frame, saturated -> every
+	-- MAX_SCAN_RUN_EVERY frames. emitProb scales by runEvery so total emission
+	-- rate is preserved.
 	local runEvery = MIN_SCAN_RUN_EVERY + math.floor(saturation * (MAX_SCAN_RUN_EVERY - MIN_SCAN_RUN_EVERY) + 0.5)
 	if runEvery < 1 then runEvery = 1 end
-	if (frame % runEvery) ~= 0 then return end
+	if (frame % runEvery) ~= 0 then skipEmit = true end
 
-	-- Camera position for the per-emit distance throttle. One call per scan.
-	-- The squared-distance band constants (near/far/inv/drop) live at module
-	-- scope -- DISTANT_EMIT_* never change at runtime so there's no point
-	-- recomputing them per call.
-	local camX, camY, camZ = spGetCameraPosition()
+  if not skipEmit then
+	-- Camera position for the per-emit distance throttle. One call per scan;
+	-- DISTANT_EMIT_* squared bands live at module scope.
+	local camX, camY, camZ = Spring.GetCameraPosition()
 
-	-- Dynamic stride: linearly grow with saturation. Empty pool -> stride 1
-	-- (full fidelity); near full -> MAX_SCAN_STRIDE (skip most builders, since
-	-- the gate would drop them anyway). emitProb is scaled by stride so the
-	-- total per-builder emission rate is preserved.
+	-- Dynamic stride: empty pool -> 1 (full fidelity), near full -> MAX_SCAN_STRIDE.
+	-- Per-builder elapsed-frames-based emit count compensates so total rate is constant.
 	local stride = MIN_SCAN_STRIDE + math.floor(saturation * (MAX_SCAN_STRIDE - MIN_SCAN_STRIDE) + 0.5)
 	if stride < 1 then stride = 1 end
-	local emitProb = (1.0 - saturation) * stride * runEvery
-	if speedThrottle > 0.0 then
-		emitProb = emitProb * (1.0 - GAMESPEED_EMIT_CUT * speedThrottle)
-	end
 
-	-- Pool-saturation-driven offscreen keep-fraction. Cheap (one branch + one
-	-- lerp), recomputed once per scan so all per-emit checks below use the
-	-- same value.
+	-- Pool-saturation-driven offscreen keep-fraction. Recomputed once per scan
+	-- so all per-emit checks below use the same value.
 	local offscreenKeep
 	if saturation <= OFFSCREEN_EMIT_KEEP_SAT_PIVOT then
 		offscreenKeep = OFFSCREEN_EMIT_KEEP_MAX
@@ -2202,46 +2813,107 @@ local function scanBuilders(frame)
 		local t = (saturation - OFFSCREEN_EMIT_KEEP_SAT_PIVOT) * OFFSCREEN_EMIT_KEEP_BAND_INV
 		offscreenKeep = OFFSCREEN_EMIT_KEEP_MAX + t * (OFFSCREEN_EMIT_KEEP_MIN - OFFSCREEN_EMIT_KEEP_MAX)
 	end
-	if emitProb > 1.0 then emitProb = 1.0 end
 
 	local list = trackedBuildersList
 	local n    = #list
-	-- Use the scan-call counter (frame / runEvery) for the stride offset
-	-- rather than the raw frame. Otherwise runEvery=2 + stride=2 means frame
-	-- is always even, frame%stride is always 0, and even-indexed builders
-	-- are never visited.
+	-- Use scan-call counter (frame/runEvery) for the stride offset rather than
+	-- raw frame: otherwise runEvery=2 + stride=2 makes frame always even,
+	-- frame%stride always 0, and even-indexed builders never visited.
 	local scanTick = mathFloor(frame / runEvery)
 	local start = (scanTick % stride) + 1
-	for i = start, n, stride do
-		if emitProb >= 1.0 or mathRandom() < emitProb then
+	-- Iterate this scan's stride-coset (indices start, start+stride, ..., <= n)
+	-- starting from a per-scan rotating offset rather than always ascending.
+	-- The mid-scan saturation early-out otherwise consistently starves the
+	-- highest-indexed builders within each coset -- highly visible at large
+	-- stride where each visit emits a big batch and the cap is hit early.
+	-- Rotating the start position spreads the "tail position" evenly across
+	-- coset members over successive scans.
+	local cosetCount = mathFloor((n - start) / stride) + 1
+	local rotation = (cosetCount > 0) and (scanTick % cosetCount) or 0
+	for k = 0, cosetCount - 1 do
+		-- Mid-scan saturation early-out: emissions from earlier builders may push
+		-- liveCount over effectiveMax. Bail rather than do per-builder work for
+		-- emissions the gate would drop. Skipped builders catch up next tick via
+		-- the elapsed-frames-based emit rate.
+		if liveCount >= effectiveMax then break end
+		local cosetIdx = (k + rotation) % cosetCount
+		local i = start + cosetIdx * stride
+		do
 			local unitID = list[i]
 			-- Cheap idle filter: a builder with no current build power is not
-			-- emitting nano particles this frame (walking, queued, blocked,
-			-- paused, or simply has no orders). Skipping these saves the
-			-- builder-cache lookup AND the worker-task lookup, which together
-			-- dominate per-builder cost when most builders sit idle.
-			-- Throttled: cache result on the per-builder info table for a few
-			-- frames (transitions to/from idle are slower than this).
+			-- emitting (walking, queued, blocked, paused, no orders). Skipping
+			-- saves the worker-task lookup, which together with this dominates
+			-- per-builder cost when most builders sit idle. bp is cached for a
+			-- few frames but ONLY while non-zero -- see BUILD_POWER_CACHE_FRAMES.
 			local info = getBuilderInfo(unitID)
 			if info then
 				local bp
-				local bpFrame = info.bpFrame
-				if bpFrame and (frame - bpFrame) < BUILD_POWER_CACHE_FRAMES then
-					bp = info.bp
+				local bpRefetched = false
+				local bpCacheUntil = info.bpCacheUntil
+				if bpCacheUntil and frame < bpCacheUntil then
+					bp = info.bpCached
 				else
 					bp = spGetUnitCurrentBuildPower(unitID)
-					info.bpFrame = frame
-					info.bp      = bp
+					bpRefetched = true
+					if bp and bp > 0 then
+						info.bpCached     = bp
+						info.bpCacheUntil = frame + BUILD_POWER_CACHE_FRAMES
+					else
+						info.bpCacheUntil = nil
+					end
+				end
+				if not (bp and bp > 0) then
+					-- Resurrectors refilling a wreck's metal before the actual
+					-- resurrect step can still be actively working while reporting
+					-- zero current build power. GetUnitWorkerTask still exposes the
+					-- CMD_RESURRECT feature target, and the feature's resurrect
+					-- progress advances in that phase, so treat it as active with a
+					-- conservative fallback multiplier instead of dropping emission.
+					local fallbackCmdID, fallbackTargetID = spGetUnitWorkerTask(unitID)
+					if fallbackCmdID == CMD_RESURRECT and fallbackTargetID then
+						local featureID = fallbackTargetID
+						if featureID >= MAX_UNITS then
+							featureID = featureID - MAX_UNITS
+						end
+						if spValidFeatureID(featureID) then
+							local featureMetal, featureMaxMetal = spGetFeatureResources(featureID)
+							local _, _, resurrectProgress = spGetFeatureHealth(featureID)
+							local isRefilling = featureMetal and featureMaxMetal and featureMaxMetal > 0 and featureMetal < featureMaxMetal
+							local isResurrecting = resurrectProgress and resurrectProgress > 0 and resurrectProgress < 1
+							if isRefilling or isResurrecting then
+								bp = 1
+								bpRefetched = true
+								info.cmdID = fallbackCmdID
+								info.targetID = fallbackTargetID
+							end
+						end
+					end
+				end
+				if not (bp and bp > 0) then
+					-- Idle visit: clear lastVisitFrame so the next bp>0 visit
+					-- doesn't credit the idle gap as build time and dump a burst.
+					info.lastVisitFrame = nil
+					-- Drop the builder from any reclaim tracking -- it's no longer
+					-- contributing, so the burst shouldn't travel to it.
+					local prev = info.reclaimTarget
+					if prev then
+						local prevSet = reclaimedTargets[prev]
+						if prevSet then
+							prevSet[unitID] = nil
+							if next(prevSet) == nil then reclaimedTargets[prev] = nil end
+						end
+						info.reclaimTarget = nil
+					end
 				end
 				if bp and bp > 0 then
 					if DEBUG then _dbgBuilders = _dbgBuilders + 1 end
-					-- Lazy nano-piece refresh: factories cheated in via /give (or
-					-- otherwise instantiated) often have an incomplete nanopiece
-					-- list at UnitCreated time because the COB script hasn't fully
-					-- registered them yet. Re-fetch on first activity, and once
-					-- more after a short delay in case the script registers
-					-- additional pieces lazily on first build (e.g. some scripts
-					-- only set pieces inside QueryNanoPiece). Adopt the larger set.
+					-- Lazy nano-piece refresh: the COB/LUS script may not have
+					-- registered all nano pieces by the time getBuilderInfo is first
+					-- called (lazy, on first active scan). Re-fetch on first activity
+					-- (stage 0→1) and once more ~3s later (stage 1→2) to catch
+					-- scripts that register pieces inside QueryNanoPiece. Applies to
+					-- ALL builders, not just factories -- constructors with multiple
+					-- arms can also return a partial list on the first scan.
 					local refreshStage = info.piecesRefreshStage or 0
 					if refreshStage < 2 then
 						local refreshAt = info.piecesRefreshAt
@@ -2260,38 +2932,73 @@ local function scanBuilders(frame)
 							end
 						end
 					end
-					-- Throttled worker-task lookup. spGetUnitWorkerTask is the
-					-- single most expensive engine call in this scan when many
-					-- builders are active. Builder-task transitions happen on a
-					-- timescale of seconds; caching for a few frames is invisible.
-					local cmdID, targetID
-					local taskFrame = info.taskFrame
-					if taskFrame and (frame - taskFrame) < WORKER_TASK_CACHE_FRAMES then
-						cmdID, targetID = info.cmdID, info.targetID
-					else
+					-- Worker-task lookup. Cached in lockstep with bp -- the
+					-- (cmdID, targetID) pair is even more stable during a continuous
+					-- build. Mid-build changes are handled out-of-band: UnitFinished
+					-- clears info.cmdID/targetID/targetMeta on every dependent builder
+					-- (queue advance picked up next visit), and manual order changes
+					-- are rare (worst case = BUILD_POWER_CACHE_FRAMES of stale aim).
+					local cmdID, targetID = info.cmdID, info.targetID
+					if bpRefetched or not cmdID then
 						cmdID, targetID = spGetUnitWorkerTask(unitID)
-						info.taskFrame = frame
-						info.cmdID     = cmdID
-						info.targetID  = targetID
+						info.cmdID    = cmdID
+						info.targetID = targetID
 					end
 					if cmdID then
 						if DEBUG then _dbgWithTask = _dbgWithTask + 1 end
 						local ex, ey, ez, inverse, jitterRadius, isResurrect, targetUnitID = resolveTarget(info, cmdID, targetID)
+						-- Record this builder as actively reclaiming `targetUnitID`
+						-- so the UnitDestroyed callin can fire a finishing burst
+						-- only from builders that contributed (= teams that got
+						-- the metal). Tracked even when this scan's emission gets
+						-- throttled away, so the burst still fires off-screen.
+						-- If the builder switched targets (or away from reclaim),
+						-- drop its membership in the previous target's set so a
+						-- later reclaim of that earlier unit doesn't credit a
+						-- builder that long-since moved on.
+						local nowReclaiming = (targetUnitID and inverse and info.targetMeta and info.targetMeta.isReclaim) and targetUnitID or nil
+						local prevReclaiming = info.reclaimTarget
+						if prevReclaiming ~= nowReclaiming then
+							if prevReclaiming then
+								local prevSet = reclaimedTargets[prevReclaiming]
+								if prevSet then
+									prevSet[unitID] = nil
+									if next(prevSet) == nil then
+										reclaimedTargets[prevReclaiming] = nil
+									end
+								end
+							end
+							info.reclaimTarget = nowReclaiming
+						end
+						if nowReclaiming then
+							local set = reclaimedTargets[nowReclaiming]
+							if set then
+								set[unitID] = true
+							else
+								reclaimedTargets[nowReclaiming] = { [unitID] = true }
+							end
+							-- Keep build-progress fresh so UnitDestroyed can scale
+							-- the burst even though the unit is already dead then.
+							local isBuilt, bp = spGetUnitIsBeingBuilt(nowReclaiming)
+							if isBuilt and bp then
+								reclaimTargetBuildProgress[nowReclaiming] = bp
+							else
+								reclaimTargetBuildProgress[nowReclaiming] = nil
+							end
+						end
 						if ex then
 							-- Off-screen throttle. Test view-frustum at the target
 							-- endpoint (covers the whole spray for a builder near its
-							-- target -- the typical case). Cached on targetMeta and
-							-- invalidated by piecePosEpoch so each builder pays at most
-							-- one IsSphereInView per scan frame, and the dropped
-							-- emissions skip emitNano entirely (no piece pos, no
-							-- jitter RNG, no homing register).
+							-- target). Cached on targetMeta + invalidated by
+							-- piecePosEpoch -> at most one IsSphereInView per builder
+							-- per scan, dropped emissions skip emitNano entirely.
 							if offscreenKeep < 1.0 then
 								local meta = info.targetMeta
 								local visible
 								if meta and meta.visEpoch == piecePosEpoch then
 									visible = meta.visible
 								else
-									visible = spIsSphereInView(ex, ey, ez, 64) and true or false
+									visible = Spring.IsSphereInView(ex, ey, ez, 64) and true or false
 									if meta then
 										meta.visEpoch = piecePosEpoch
 										meta.visible  = visible
@@ -2302,9 +3009,9 @@ local function scanBuilders(frame)
 								end
 							end
 							-- Distance throttle. Below near-range we keep all; in the
-							-- ramp band we lerp keep-fraction (in squared-distance,
-							-- which biases more aggressive culling toward the far end);
-							-- beyond far-range we clamp to DISTANT_EMIT_KEEP.
+							-- ramp band we lerp keep-fraction in squared distance
+							-- (more aggressive culling at the far end); beyond far-range
+							-- we clamp to DISTANT_EMIT_KEEP.
 							if ex and DISTANT_EMIT_KEEP < 1.0 then
 								local ddx = ex - camX
 								local ddy = ey - camY
@@ -2329,96 +3036,127 @@ local function scanBuilders(frame)
 							-- Factories always use the engine's fixed 0.15 jitter regardless of buildee size.
 							if info.isFactory then jitterRadius = nil end
 							-- Per-visit emission count scales with actual buildpower
-							-- throughput (buildSpeed * bp), not nanopiece count, so a
-							-- multi-arm low-buildpower factory doesn't out-spam a
-							-- single-arm high-buildpower constructor.
-							-- Fractional rate is carried in emitAccum across visits.
-							local rate = info.buildSpeed * bp / EMIT_REF_BUILDSPEED
-							if rate < 1.0 then rate = 1.0 end
-							local n = info.nPieces
-							if n == 1 then
-								-- Single-piece builders (commanders, most constructors)
-								-- need to respect `rate` too -- a commander has
-								-- buildSpeed=300, so rate=3 at full BP and it should
-								-- emit ~3 particles per visit, not 1. Without this,
-								-- single-piece builders were under-emitting by ~3x
-								-- relative to factories / the engine's own spray.
-								-- Floor + Bernoulli on the fractional remainder.
-								local whole = mathFloor(rate)
-								local frac  = rate - whole
-								local emits = whole
-								if frac > 0 and mathRandom() < frac then
-									emits = emits + 1
+							-- throughput (buildSpeed * bp), so a 100-BP commander
+							-- assisting a 3000-BP factory emits ~1/30th as many
+							-- particles -- not the same number, which would visually
+							-- erase its contribution. Integrated over real elapsed
+							-- frames since this builder's last visit so the count is
+							-- proportional regardless of stride/runEvery throttling
+							-- and per-builder visit-skip RNG.
+							info.lastVisitFrame = frame
+							-- Always emit only this frame's share. No catch-up burst
+							-- when a builder was skipped due to pool saturation.
+							local elapsed = 1
+							local rate = (info.buildSpeed * bp / EMIT_REF_BUILDSPEED) * elapsed * (NanoParticleRate or 1.0)
+							-- Deterministic accumulator: carries the fractional
+							-- remainder across visits. Eliminates the Bernoulli jitter
+							-- / "guaranteed at least 1" floors that previously
+							-- equalised low-BP and high-BP builders working the same target.
+							local accum = (info.emitAccum or 0) + rate
+							local emits = mathFloor(accum)
+							info.emitAccum = accum - emits
+							-- Feedback floor: ensure low-BP builders still spit a
+							-- particle every FEEDBACK_EMIT_MIN_GAP frames so the
+							-- player sees that work is happening. Debit the forced
+							-- emit from the accumulator (allowed to go negative) so
+							-- the long-run rate stays proportional to bp.
+							if emits == 0 and bp > 0 then
+								local lastEmit = info.lastEmitFrame or 0
+								if frame - lastEmit >= FEEDBACK_EMIT_MIN_GAP then
+									emits = 1
+									info.emitAccum = info.emitAccum - 1
 								end
-								for e = 1, emits do
-									emitNano(unitID, info, ex, ey, ez, inverse, jitterRadius, frame, targetUnitID)
+							end
+							if emits > 0 then
+								info.lastEmitFrame = frame
+							end
+							-- Spread window (half-width in frames) for the in-batch
+							-- stagger inside emitNano. Particles end up in
+							-- [-spreadWindow, +spreadWindow] frames of velocity
+							-- around the nanopiece -- a few slightly behind (model
+							-- occlusion) and a few slightly ahead. Hard-capped at
+							-- MAX_SPREAD_AHEAD_FRAMES so the cluster stays close to
+							-- the source, never partway to the target. Direction
+							-- jitter already provides lateral spread -- this just
+							-- breaks the on-axis pile-up of a multi-particle batch.
+							-- Count compensation still uses full `elapsed`, so total
+							-- emission rate is preserved.
+							local spreadWindow = math.min(MAX_SPREAD_AHEAD_FRAMES, elapsed)
+							local resurrectEmits = isResurrect and takeScaledEmitCount(info, "resurrectEmitAccum", emits, NanoParticleResurrectExtraRate) or emits
+							if resurrectEmits > 0 then
+								local n = info.nPieces
+								if n == 1 then
+									-- Single-piece batched: amortise piece-pos
+									-- lookup, sqrt, range gate, normalize, jitter
+									-- scale across all particles in this emission.
+									local p1 = info.pieces[1]
+									emitNano(unitID, info, ex, ey, ez, inverse, jitterRadius, frame, targetUnitID, p1, resurrectEmits, spreadWindow)
 									if isResurrect then
-										emitNano(unitID, info, ex, ey, ez, true, jitterRadius, frame, nil)
+										emitNano(unitID, info, ex, ey, ez, true, jitterRadius, frame, nil, p1, resurrectEmits, spreadWindow)
 									end
-								end
-							else
-								-- Multi-piece: each piece fires with probability rate/n
-								-- so all bays statistically participate every visit
-								-- instead of slow-cycling 2-3 at a time. Total
-								-- per-visit emissions still average ~rate (capped at n).
-								-- Round-robin start ensures even short visits hit
-								-- different pieces over time.
-								local pPiece = rate / n
-								if pPiece > 1.0 then pPiece = 1.0 end
-								local pieces  = info.pieces
-								local cursor  = info.pieceCursor or 0
-								local emitted = 0
-								for i = 1, n do
-									cursor = cursor + 1
-									if cursor > n then cursor = 1 end
-									if mathRandom() < pPiece then
-										local pIdx = pieces[cursor]
-										emitNano(unitID, info, ex, ey, ez, inverse, jitterRadius, frame, targetUnitID, pIdx)
-										if isResurrect then
-											emitNano(unitID, info, ex, ey, ez, true, jitterRadius, frame, nil, pIdx)
+								else
+									-- Multi-piece: distribute `emits` across all nano
+									-- pieces in round-robin from the saved cursor, then
+									-- ONE batched emitNano per piece. The naive
+									-- one-per-iteration loop missed the piecePosCache
+									-- on every call (different pieceIdx -> different
+									-- key) so each particle paid full piece-pos /
+									-- sqrt / range / normalize cost.
+									local pieces = info.pieces
+									local startCursor = info.pieceCursor or 0
+									local base = mathFloor(resurrectEmits / n)
+									local rem  = resurrectEmits - base * n
+									for i = 1, n do
+										local cnt = base
+										if i <= rem then cnt = cnt + 1 end
+										if cnt > 0 then
+											local cursor = startCursor + i
+											if cursor > n then cursor = cursor - n end
+											local pIdx = pieces[cursor]
+											emitNano(unitID, info, ex, ey, ez, inverse, jitterRadius, frame, targetUnitID, pIdx, cnt, spreadWindow)
+											if isResurrect then
+												emitNano(unitID, info, ex, ey, ez, true, jitterRadius, frame, nil, pIdx, cnt, spreadWindow)
+											end
 										end
-										emitted = emitted + 1
 									end
-								end
-								info.pieceCursor = cursor
-								-- Guarantee at least one emission per visit so a
-								-- working builder is never silent (low rate +
-								-- unlucky RNG could produce zero emits).
-								if emitted == 0 then
-									cursor = cursor + 1
-									if cursor > n then cursor = 1 end
-									local pIdx = pieces[cursor]
-									emitNano(unitID, info, ex, ey, ez, inverse, jitterRadius, frame, targetUnitID, pIdx)
-									if isResurrect then
-										emitNano(unitID, info, ex, ey, ez, true, jitterRadius, frame, nil, pIdx)
-									end
-									info.pieceCursor = cursor
+									local newCursor = startCursor + resurrectEmits
+									while newCursor > n do newCursor = newCursor - n end
+									info.pieceCursor = newCursor
 								end
 							end
 						end
 					elseif info.targetMeta then
 						info.targetMeta = nil  -- builder went idle; drop stale cache
+						info.lastVisitFrame = nil  -- prevent burst on resume
+						local prev = info.reclaimTarget
+						if prev then
+							local prevSet = reclaimedTargets[prev]
+							if prevSet then
+								prevSet[unitID] = nil
+								if next(prevSet) == nil then reclaimedTargets[prev] = nil end
+							end
+							info.reclaimTarget = nil
+						end
 					end
 				end
 			end
 		end
 	end
+  end -- if not skipEmit
 
 	-- Flush all spawns AND in-place homing rewrites in a single upload. Spawns
-	-- are always at the tail [preUsed .. postUsed); homing rewrites can touch
-	-- arbitrary slots. Take the union and upload once. (uploadElementRange uses
-	-- 0-based start, exclusive-end form -- compare uploadAllElements which
-	-- passes usedElements directly as the end argument.)
+	-- are at the tail [preUsed..postUsed); homing rewrites can touch arbitrary
+	-- slots. Take the union and upload once.
 	if nanoVBO then
 		local dirtyMin, dirtyMax = math.huge, -1
-		-- Run the in-place re-aim passes on a slower cadence than the scan.
-		-- They rewrite per-particle pos/vel for every live homed particle
-		-- (potentially thousands) and only need to keep up with target
-		-- movement, which is slow vs particle speed.
+		-- Re-aim runs on a slower cadence than the scan: it rewrites per-particle
+		-- pos/vel for every live homed particle (potentially thousands) and only
+		-- needs to keep up with target movement.
 		if (frame % HOMING_RUN_EVERY) == 0 then
 			dirtyMin, dirtyMax = applyHoming(frame, dirtyMin, dirtyMax)
 			dirtyMin, dirtyMax = applyForwardHoming(frame, dirtyMin, dirtyMax)
 		end
+		dirtyMin, dirtyMax = applyGroundClamp(frame, dirtyMin, dirtyMax)
 		local postUsed = nanoVBO.usedElements
 		if postUsed > preUsed then
 			if preUsed  < dirtyMin then dirtyMin = preUsed  end
@@ -2438,12 +3176,40 @@ end
 local function cullDead(frame)
 	local bucket = deathBuckets[frame]
 	if not bucket then return end
+	local nl = deathBuckets.__nanoLight
+	local canRemove = Script.LuaUI("EnvNanoBallisticLightRemove")
 	local nb = #bucket
-	-- Per-pop upload: each call uploads only the one swapped slot's range
-	-- (~64B). Tried batching with uploadAllElements but that re-marshals the
-	-- entire instanceData Lua table (~8000*16 numbers) and was much slower.
+	if not nanoVBO then
+		if nl and nl.active then
+			for i = 1, nb do
+				local id = bucket[i]
+				if nl.active[id] then
+					nl.active[id] = nil
+					nl.activeCount = nl.activeCount - 1
+					if canRemove then
+						Script.LuaUI.EnvNanoBallisticLightRemove("NANOP_" .. id)
+					end
+				end
+			end
+		end
+		liveCount = liveCount - nb
+		deathBuckets[frame] = nil
+		return
+	end
+	-- Per-pop upload (~64B/swap). Tried batching with one uploadElementRange
+	-- at the end and cull jumped from ~2-4ms to ~15-18ms in factory-heavy
+	-- scenes -- per-element marshalling cost in uploadElementRange dominates
+	-- the GL submit savings when slots are scattered.
 	for i = 1, nb do
-		popElementInstance(nanoVBO, bucket[i], false)
+		local id = bucket[i]
+		popElementInstance(nanoVBO, id, false)
+		if nl and nl.active and nl.active[id] then
+			nl.active[id] = nil
+			nl.activeCount = nl.activeCount - 1
+			if canRemove then
+				Script.LuaUI.EnvNanoBallisticLightRemove("NANOP_" .. id)
+			end
+		end
 	end
 	liveCount = liveCount - nb
 	deathBuckets[frame] = nil
@@ -2453,13 +3219,24 @@ end
 -- Callins
 --------------------------------------------------------------------------------
 
--- Switch to a new NanoParticleMode (0 engine / 1 billboards / 2 shapes).
--- Tears down GL resources when leaving 1/2, rebuilds them with the right
--- shader pair when entering 1/2, and keeps the engine's MaxNanoParticles
--- budget in sync so we never double-spray.
+-- Switch to a new NanoParticleMode (0 engine / 1 shapes).
+-- Tears down GL resources when leaving 1, rebuilds them when entering 1,
+-- and keeps the engine's MaxNanoParticles budget in sync so we never
+-- double-spray.
 local function applyParticleMode(newMode, force)
 	if (not force) and newMode == NANO_PARTICLE_MODE and nanoVBO ~= nil then return end
 	if (not force) and newMode == NANO_PARTICLE_MODE and newMode == 0 then return end
+	local nl = deathBuckets.__nanoLight
+	if nl and nl.active then
+		local canRemove = Script.LuaUI("EnvNanoBallisticLightRemove")
+		for pid in pairs(nl.active) do
+			if canRemove then
+				Script.LuaUI.EnvNanoBallisticLightRemove("NANOP_" .. pid)
+			end
+			nl.active[pid] = nil
+		end
+		nl.activeCount = 0
+	end
 
 	NANO_PARTICLE_MODE = newMode
 
@@ -2470,6 +3247,7 @@ local function applyParticleMode(newMode, force)
 	for k in pairs(fadeFwdByTarget)     do fadeFwdByTarget[k]     = nil end
 	for k in pairs(targetPosCache)      do targetPosCache[k]      = nil end
 	for k in pairs(targetIncompleteCache) do targetIncompleteCache[k] = nil end
+	for k in pairs(reclaimTargetBuildProgress) do reclaimTargetBuildProgress[k] = nil end
 	for k in pairs(deathBuckets)        do deathBuckets[k]        = nil end
 	liveCount = 0
 
@@ -2481,9 +3259,9 @@ local function applyParticleMode(newMode, force)
 		return
 	end
 
-	-- Modes 1/2: silence the engine spray, swap to the matching shader pair.
+	-- Mode 1: silence the engine spray, swap to the shape shader pair.
 	Spring.SetConfigInt("MaxNanoParticles", 0)
-	applyRenderMode((newMode == 1) and "billboard" or "shape")
+	applyRenderMode("shape")
 	if not initGL4() then
 		spEcho("Nano Particles GL4: GL init failed; falling back to engine spray.")
 		NANO_PARTICLE_MODE = 0
@@ -2494,7 +3272,7 @@ end
 function gadget:Initialize()
 	-- The gadget always stays loaded so it can observe live NanoParticleMode
 	-- changes from the gfx options menu. Mode 0 = engine spray: we just leave
-	-- nanoVBO unset and skip emission/draw; switching to 1/2 lazy-inits GL.
+	-- nanoVBO unset and skip emission/draw; switching to 1 lazy-inits GL.
 	applyParticleMode(NANO_PARTICLE_MODE, true)
 	refreshSpec()
 	-- Seed tracked builder set with units that already exist (handles
@@ -2509,6 +3287,17 @@ function gadget:Initialize()
 end
 
 function gadget:Shutdown()
+	local nl = deathBuckets.__nanoLight
+	if nl and nl.active then
+		local canRemove = Script.LuaUI("EnvNanoBallisticLightRemove")
+		for pid in pairs(nl.active) do
+			if canRemove then
+				Script.LuaUI.EnvNanoBallisticLightRemove("NANOP_" .. pid)
+			end
+			nl.active[pid] = nil
+		end
+		nl.activeCount = 0
+	end
 	cleanupGL4()
 end
 
@@ -2519,6 +3308,7 @@ function gadget:PlayerChanged()
 	refreshTeamColors()
 end
 
+
 -- Emission once per gameframe (matches the engine's per-frame AddNanoParticle
 -- cadence for an active builder).
 function gadget:GameFrame(n)
@@ -2527,7 +3317,40 @@ function gadget:GameFrame(n)
 	-- Cheap (one GetConfigInt) and 1s latency on a settings-menu toggle is
 	-- imperceptible.
 	if n % 30 == 0 then
-		local mode = Spring.GetConfigInt("NanoParticleMode", 2)
+		-- Optional deferred nano lights (off by default):
+		--  NanoParticleLights = 0/1 enables bridge to deferred lights widget.
+		local nl = deathBuckets.__nanoLight
+		if not nl then
+			nl = {activeCount = 0, active = {} }
+			deathBuckets.__nanoLight = nl
+		end
+		nl.enabled = (Spring.GetConfigInt("NanoParticleLights", 1) == 1)
+		if nl.enabled then
+			nl.spawnRadius = 33
+			nl.alpha = 0.05
+			nl.correctEvery = 20
+			nl.lifeMult = 2.2
+			nl.minLifetime = 14
+			nl.maxLifetime = 96
+			nl.sustainFrac = 0.7
+			nl.bridgeReady = Script.LuaUI("EnvNanoBallisticLightSpawn")
+				and Script.LuaUI("EnvNanoBallisticLightCorrect")
+				and Script.LuaUI("EnvNanoBallisticLightRemove")
+		else
+			if nl.activeCount > 0 then
+				local canRemove = Script.LuaUI("EnvNanoBallisticLightRemove")
+				for pid in pairs(nl.active) do
+					if canRemove then
+						Script.LuaUI.EnvNanoBallisticLightRemove("NANOP_" .. pid)
+					end
+					nl.active[pid] = nil
+				end
+				nl.activeCount = 0
+			end
+			nl.bridgeReady = false
+		end
+
+		local mode = Spring.GetConfigInt("NanoParticleMode", 1)
 		if mode ~= NANO_PARTICLE_MODE then
 			applyParticleMode(mode, false)
 		elseif NANO_PARTICLE_MODE ~= 0 then
@@ -2538,11 +3361,28 @@ function gadget:GameFrame(n)
 				Spring.SetConfigInt("MaxNanoParticles", 0)
 			end
 		end
-		-- Refresh high-gamespeed throttle (reconnect catchup, user /speed) and
-		-- the cached map-draw-mode (heightmap / metalmap / pathmap views).
+		-- Refresh high-gamespeed throttle (reconnect catchup, user /speed).
+		-- Map-draw-mode is also refreshed in DrawWorld for immediate overlay
+		-- transitions.
 		refreshSpeedThrottle()
 		refreshInfoIsLos()
 		refreshMaxParticles()
+		-- Color equalization slider: cheap poll; if changed, force a full
+		-- team-color refresh now so the new value takes effect within ~1s.
+		if refreshColorEqualize() then
+			refreshTeamColors()
+		end
+		-- Global particle amount multiplier: clamp into [0..4] in case it was
+		-- set out of range from a console / widget. No cache invalidation
+		-- needed -- the value is read directly each visit when computing emit
+		-- rate.
+		do
+			local a = NanoParticleRate or 1.0
+			if type(a) ~= "number" then a = 1.0 end
+			if a < 0.0 then a = 0.0 end
+			if a > 1.0 then a = 1.0 end
+			NanoParticleRate = a
+		end
 	end
 
 	-- Mode 0 = engine renders the spray; we just track builders for a quick
@@ -2562,7 +3402,7 @@ function gadget:GameFrame(n)
 	-- every 10 seconds is plenty for the safety net.
 	if n % 300 == 0 then
 		if DEBUG then
-			local t0 = spGetTimer()
+			local t0 = Spring.GetTimer()
 			local all = spGetAllUnits()
 			if all then
 				for i = 1, #all do
@@ -2572,7 +3412,7 @@ function gadget:GameFrame(n)
 					end
 				end
 			end
-			_dbgTRescan = _dbgTRescan + spDiffTimers(spGetTimer(), t0)
+			_dbgTRescan = _dbgTRescan + Spring.DiffTimers(Spring.GetTimer(), t0)
 		else
 			local all = spGetAllUnits()
 			if all then
@@ -2587,13 +3427,13 @@ function gadget:GameFrame(n)
 	end
 
 	if DEBUG then
-		local t0 = spGetTimer()
+		local t0 = Spring.GetTimer()
 		scanBuilders(n)
-		_dbgTScan = _dbgTScan + spDiffTimers(spGetTimer(), t0)
+		_dbgTScan = _dbgTScan + Spring.DiffTimers(Spring.GetTimer(), t0)
 
-		local tc0 = spGetTimer()
+		local tc0 = Spring.GetTimer()
 		cullDead(n)
-		_dbgTCull = _dbgTCull + spDiffTimers(spGetTimer(), tc0)
+		_dbgTCull = _dbgTCull + Spring.DiffTimers(Spring.GetTimer(), tc0)
 
 		_dbgFrame = _dbgFrame + 1
 		if _dbgFrame % 30 == 0 then
@@ -2609,6 +3449,31 @@ function gadget:GameFrame(n)
 	else
 		scanBuilders(n)
 		cullDead(n)
+	end
+
+	if CLAMP_DEBUG and (n % 90 == 0) then
+		local checks = clampDbg.emitChecks
+		local enabledPct = (checks > 0) and (100.0 * clampDbg.emitEnabled / checks) or 0.0
+		spEcho(string.format(
+			"[NanoGL4 ClampDbg] f=%d checks=%d enabled=%d(%.1f%%) reg=%d subsetNow=%d subsetMax=%d proc=%d corr=%d drop=%d",
+			n,
+			checks,
+			clampDbg.emitEnabled,
+			enabledPct,
+			clampDbg.registered,
+			#groundClampParticles,
+			clampDbg.maxSubset,
+			clampDbg.processed,
+			clampDbg.corrected,
+			clampDbg.dropped
+		))
+		clampDbg.emitChecks = 0
+		clampDbg.emitEnabled = 0
+		clampDbg.registered = 0
+		clampDbg.processed = 0
+		clampDbg.corrected = 0
+		clampDbg.dropped = 0
+		clampDbg.maxSubset = 0
 	end
 end
 
@@ -2656,6 +3521,45 @@ function gadget:UnitFinished(unitID, unitDefID)
 	homingFwdByTarget[unitID] = nil
 	fadeFwdByTarget[unitID]   = nil
 	targetPosCache[unitID]    = nil
+	local completionFactoryID, completionX, completionY, completionZ, completionRadius
+	-- Keep a completion timestamp so HOMING_SKIP_GRACE_FRAMES still applies
+	-- after UnitFinished; clearing this here made fresh emissions immediately
+	-- re-enter forward homing and chase units as they roll out of factories.
+	targetIncompleteCache[unitID] = { piecePosEpoch, false, Spring.GetGameFrame() }
+	-- Invalidate cached target state on any builder that was working on this
+	-- just-completed unit. info.targetMeta caches frustum visibility and the
+	-- resolved engine ID across visits keyed by targetID; the worker-task
+	-- itself is no longer cached so cmdID/targetID will refresh next visit.
+	local n = #trackedBuildersList
+	for i = 1, n do
+		local bid = trackedBuildersList[i]
+		local info = builderCache[bid]
+		if info and info.targetID == unitID then
+			if info.isFactory and not completionFactoryID then
+				local _, _, _, mx, my, mz = spGetUnitPosition(bid, true)
+				if mx then
+					completionFactoryID = bid
+					completionX, completionY, completionZ = mx, my, mz
+					completionRadius = spGetUnitRadius(bid) or 0
+				end
+			end
+			info.cmdID      = nil
+			info.targetID   = nil
+			info.targetMeta = nil
+		end
+	end
+	if completionFactoryID then
+		local frame = Spring.GetGameFrame()
+		recentFactoryBuildTargetCache[unitID] = {
+			frame,
+			completionFactoryID,
+			completionX,
+			completionY,
+			completionZ,
+			completionRadius,
+		}
+		factoryBuildTargetCache[unitID] = { piecePosEpoch, completionFactoryID, completionX, completionY, completionZ, completionRadius }
+	end
 	trackUnit(unitID, unitDefID)
 end
 
@@ -2683,19 +3587,54 @@ function gadget:UnitTaken(unitID, unitDefID)
 	trackUnit(unitID, unitDefID)
 end
 
--- Builder cache invalidation
--- Fade out forward-homing particles aimed at a unit that just died: shorten
--- their deathFrame so the shader's end-of-life alpha ramp kicks in, and zero
--- their velocity so they hang in place instead of chasing through the corpse.
--- Slot reclamation still happens at the original death frame (we don't touch
--- deathBuckets), the shader simply renders nothing in the gap.
+-- Fade out inverse-homing (reclaim) particles travelling toward a builder that
+-- just died. Mirrors fadeOutHomingFwd: shorten deathFrame and bake in a fade
+-- window so the particles dissolve rather than snapping out. The builder is
+-- already dead so applyHoming will nil the list on the next pass; we only need
+-- to touch the VBO data here.
+local function fadeOutHomingInverse(builderID)
+	if not nanoVBO then return end
+	local list = homingByBuilder[builderID]
+	if not list then return end
+	local data      = nanoVBO.instanceData
+	local idtoIndex = nanoVBO.instanceIDtoIndex
+	local step      = nanoVBO.instanceStep
+	local frame     = Spring.GetGameFrame()
+	local dirtyMin, dirtyMax = math.huge, -1
+	for i = 1, #list do
+		local p = list[i]
+		local slot = idtoIndex[p.id]
+		if slot then
+			local remaining = p.death - frame
+			if remaining > 0 then
+				local fadeFrames = mathFloor(FADE_FRAMES_DEATH * (0.4 + mathRandom()))
+				if fadeFrames < 1 then fadeFrames = 1 end
+				if fadeFrames > remaining then fadeFrames = remaining end
+				local newDeath = frame + fadeFrames
+				local base = (slot - 1) * step
+				data[base+16] = newDeath
+				local packed    = data[base+4]
+				local absPacked = packed < 0 and -packed or packed
+				local oldFade   = mathFloor(absPacked / 1024)
+				local sizeBits  = absPacked - oldFade * 1024
+				local newPacked = sizeBits + fadeFrames * 1024
+				data[base+4]    = packed < 0 and -newPacked or newPacked
+				local s0 = slot - 1
+				if s0 < dirtyMin     then dirtyMin = s0     end
+				if s0 + 1 > dirtyMax then dirtyMax = s0 + 1 end
+			end
+		end
+	end
+	if dirtyMax > dirtyMin then
+		uploadElementRange(nanoVBO, dirtyMin, dirtyMax)
+	end
+end
+
 -- Fade out forward-homing particles aimed at a unit that just died: shorten
 -- their deathFrame so the shader's end-of-life alpha ramp kicks in. Velocity
 -- and spawn are left untouched so they keep coasting along their last
--- trajectory (toward where the target was) while fading out, instead of
--- abruptly freezing in mid-air.
--- Slot reclamation still happens at the original death frame (we don't touch
--- deathBuckets), the shader simply renders nothing in the gap.
+-- trajectory while fading out. Slot reclamation still happens at the original
+-- death frame (deathBuckets is untouched); the shader renders nothing in the gap.
 fadeOutHomingFwd = function(unitID, includeSkipList)
 	if not nanoVBO then return end
 	local list  = homingFwdByTarget[unitID]
@@ -2704,10 +3643,9 @@ fadeOutHomingFwd = function(unitID, includeSkipList)
 	local data      = nanoVBO.instanceData
 	local idtoIndex = nanoVBO.instanceIDtoIndex
 	local step      = nanoVBO.instanceStep
-	local frame     = spGetGameFrame()
+	local frame     = Spring.GetGameFrame()
 	-- Per-particle fade duration: FADE_FRAMES_DEATH * (0.4..1.6). Staggers the
-	-- dissolve across the spray so particles don't all wink out on the same
-	-- frame -- looks more like a soft cloud breaking up.
+	-- dissolve so particles don't all wink out on the same frame.
 	local dirtyMin, dirtyMax = math.huge, -1
 	local function fadeList(plist)
 		if not plist then return end
@@ -2720,20 +3658,22 @@ fadeOutHomingFwd = function(unitID, includeSkipList)
 					local fadeFrames = mathFloor(FADE_FRAMES_DEATH * (0.4 + mathRandom()))
 					if fadeFrames < 1 then fadeFrames = 1 end
 					-- Clamp to remaining lifetime: never extend a particle's life,
-					-- only shorten/replace it. Particles already close to the target
-					-- (small remaining) get a proportionally shorter fade so they
-					-- still dissolve instead of converging cleanly into the unit.
+					-- only shorten/replace it.
 					if fadeFrames > remaining then fadeFrames = remaining end
 					local newDeath = frame + fadeFrames
 					local base = (slot - 1) * step
 					data[base+16] = newDeath
-					-- Force per-particle fade window so even reclaim-style (fadeFrames=0)
-					-- particles dissolve when the target dies. w is packed: preserve the
-					-- low (sizeMult) bits and replace only the fadeFrames portion.
+					-- Force per-particle fade window so reclaim-style (fadeFrames=0)
+					-- particles also dissolve. w is packed: preserve sizeMult bits,
+					-- replace only the fadeFrames portion.
+					-- NOTE: inverse (reclaim) particles store a negative value; use
+					-- abs before bit-manipulation and restore the sign afterward.
 					local packed   = data[base+4]
-					local oldFade  = mathFloor(packed / 1024)
-					local sizeBits = packed - oldFade * 1024
-					data[base+4]   = sizeBits + fadeFrames * 1024
+					local absPacked = packed < 0 and -packed or packed
+					local oldFade  = mathFloor(absPacked / 1024)
+					local sizeBits = absPacked - oldFade * 1024
+					local newPacked = sizeBits + fadeFrames * 1024
+					data[base+4]   = packed < 0 and -newPacked or newPacked
 					local s0 = slot - 1
 					if s0 < dirtyMin     then dirtyMin = s0     end
 					if s0 + 1 > dirtyMax then dirtyMax = s0 + 1 end
@@ -2748,8 +3688,26 @@ fadeOutHomingFwd = function(unitID, includeSkipList)
 	end
 end
 
-function gadget:UnitDestroyed(unitID)
+function gadget:UnitDestroyed(unitID, unitDefID, unitTeam, attackerID, attackerDefID, attackerTeam, weaponDefID)
+	-- Reclaim-completion burst: in unsynced UnitDestroyed, when a unit is
+	-- removed by reclaim the engine populates attacker* with the reclaiming
+	-- builder (it's the agent that "killed" the unit, with no weaponDefID).
+	-- Combined with our own per-builder tracker (which holds ALL contributing
+	-- reclaimers, not just the one that landed the final tick), this is the
+	-- trigger: attackerID present + no weapon + we tracked reclaimers => fire
+	-- the burst, then distribute particles across every tracked contributor.
+	if attackerID and (not weaponDefID or weaponDefID < 0) and reclaimedTargets[unitID] then
+		-- Read cached build progress (set by the scan loop while the unit was alive).
+		-- spGetUnitIsBeingBuilt returns nil for dead units in unsynced context.
+		local bp = reclaimTargetBuildProgress[unitID] or 1.0
+		reclaimTargetBuildProgress[unitID] = nil
+		fireReclaimBurst(unitID, unitDefID, attackerTeam, bp, Spring.GetGameFrame())
+	else
+		reclaimedTargets[unitID] = nil
+		reclaimTargetBuildProgress[unitID] = nil
+	end
 	fadeOutHomingFwd(unitID, true)
+	fadeOutHomingInverse(unitID)
 	clearPiecePosCache(unitID)
 	builderCache[unitID] = nil
 	homingByBuilder[unitID] = nil
@@ -2760,7 +3718,12 @@ function gadget:UnitDestroyed(unitID)
 	untrackUnit(unitID)
 end
 function gadget:RenderUnitDestroyed(unitID)
+	-- RenderUnitDestroyed has no attacker arg; rely on whatever UnitDestroyed
+	-- already decided. If the burst ran (or skipped), the entry is gone.
+	reclaimedTargets[unitID] = nil
+	reclaimTargetBuildProgress[unitID] = nil
 	fadeOutHomingFwd(unitID, true)
+	fadeOutHomingInverse(unitID)
 	clearPiecePosCache(unitID)
 	builderCache[unitID] = nil
 	homingByBuilder[unitID] = nil
@@ -2775,44 +3738,91 @@ function gadget:DrawWorld()
 	if not nanoVBO or nanoVBO.usedElements == 0 then return end
 
 	local t0
-	if DEBUG then t0 = spGetTimer() end
+	if DEBUG then t0 = Spring.GetTimer() end
 
-	glDepthTest(true)
-	glDepthMask(false)
-	glCulling(false)
-	-- Engine uses premultiplied alpha for the alpha particle pass:
-	--   BlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
-	glBlending(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
+	-- Defensive GL state setup. DrawWorld is a shared pass -- other widgets/
+	-- gadgets (placement preview, ghost overlays, range rings, command UI) can
+	-- leak alpha test, polygon mode, vertex color or depth func and silently
+	-- kill our pass. Force every state bit our shader relies on.
+	-- (Inlined gl.* calls instead of upvalue locals -- file is at the 200
+	-- local-variable limit.)
+	--
+	-- Symptom we are guarding against: while a player is positioning a
+	-- building, nano particles can briefly vanish on Twitch streams. Root
+	-- causes seen / suspected:
+	--   * ColorMask left with one or more channels disabled by a prior pass
+	--     (post-processing, screenshot helpers, minimap stencils).
+	--   * Scissor left enabled with a tiny rect (UI clipping leak).
+	--   * PolygonOffset left enabled, shifting our particle depth so the
+	--     placement-ghost depth values reject every fragment.
+	--   * AlphaTest left enabled with a func that rejects our 20/255 alpha.
+	--   * StencilTest already enabled with a stale func that rejects
+	--     everywhere before we re-program it.
+	-- All cheap to enforce per-frame; cost is dwarfed by the VBO draw.
+	gl.DepthTest(GL.LEQUAL)
+	gl.DepthMask(false)
+	gl.Culling(false)
+	gl.AlphaTest(false)
+	gl.Color(1, 1, 1, 1)
+	gl.ColorMask(true, true, true, true)
+	gl.Scissor(false)
+	gl.PolygonOffset(false)
+	gl.PolygonMode(GL.FRONT_AND_BACK, GL.FILL)
+	-- Disable stencil first so the func/mask/op programming below cannot be
+	-- short-circuited by a leftover test that rejects every fragment before
+	-- we re-enable with the right state.
+	gl.StencilTest(false)
+	-- Engine premultiplied-alpha pass: BlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA).
+	gl.Blending(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
 
 	-- Shape shader has no nanoTex sampler -- skip the bind entirely.
-	if not isShapeMode then
-		glTexture(0, NANO_TEXTURE)
-	end
-	glTexture(1, "$info")
+	gl.Texture(1, "$info")
 	nanoShader:Activate()
-	-- losAlwaysVisible: bypass the LOS/infoTex sample either when the player
-	-- has full visibility (spectator full-view) or when the engine's $info
-	-- texture isn't currently rendering LOS (heightmap / metalmap / pathmap
-	-- minimap modes -- $info holds that other map data instead of LOS, and
-	-- our smoothstep would discard most fragments). cachedInfoIsLos is
-	-- refreshed on the 1s GameFrame poll instead of polled per render frame.
+	-- Keep map-draw-mode state fresh per render frame so toggling metal/height/
+	-- path overlays does not spend up to 1s using stale LOS sampling state.
+	refreshInfoIsLos()
+	-- losAlwaysVisible: bypass the LOS/infoTex sample either with full view
+	-- (spectator) or when $info isn't currently rendering LOS (heightmap /
+	-- metalmap / pathmap modes hold other map data).
 	local losU = (cachedSpecFullView or not cachedInfoIsLos) and 1 or 0
 	if losU ~= lastLosUniform then
 		nanoShader:SetUniform("losAlwaysVisible", losU)
 		lastLosUniform = losU
 	end
-	nanoVBO:Draw()
-	nanoShader:Deactivate()
-	if not isShapeMode then
-		glTexture(0, false)
-	end
-	glTexture(1, false)
 
-	glBlending(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-	glDepthMask(true)
+	-- Two-pass stencil-aware draw so particles overlapping a ghost shape
+	-- (drawn earlier by gfx_DrawUnitShape_GL4.lua, which marks bit 0x40)
+	-- shine through the ghost's depth values, while particles outside ghost
+	-- areas keep regular depth-tested behavior so they're correctly hidden
+	-- by world geometry / units / cliffs / etc.
+	--   Pass 1 (stencil bit clear): normal LEQUAL depth test.
+	--   Pass 2 (stencil bit set):   depth test off, draw on top of ghost.
+	-- Bit value must match GHOST_STENCIL_BIT in gfx_DrawUnitShape_GL4.lua.
+	local GHOST_STENCIL_BIT = 0x40
+	gl.StencilTest(true)
+	gl.StencilMask(0)                                                    -- never write stencil
+	gl.StencilOp(GL.KEEP, GL.KEEP, GL.KEEP)
+	-- Pass 1.
+	gl.StencilFunc(GL.NOTEQUAL, GHOST_STENCIL_BIT, GHOST_STENCIL_BIT)
+	nanoVBO:Draw()
+	-- Pass 2.
+	gl.StencilFunc(GL.EQUAL, GHOST_STENCIL_BIT, GHOST_STENCIL_BIT)
+	gl.DepthTest(false)
+	nanoVBO:Draw()
+	-- Restore.
+	gl.DepthTest(GL.LEQUAL)
+	gl.StencilFunc(GL.ALWAYS, 0, 0xFF)
+	gl.StencilMask(0xFF)
+	gl.StencilTest(false)
+
+	nanoShader:Deactivate()
+	gl.Texture(1, false)
+
+	gl.Blending(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+	gl.DepthMask(true)
 
 	if DEBUG then
-		_dbgTDraw = _dbgTDraw + spDiffTimers(spGetTimer(), t0)
+		_dbgTDraw = _dbgTDraw + Spring.DiffTimers(Spring.GetTimer(), t0)
 		_dbgDraws = _dbgDraws + 1
 	end
 end

@@ -31,6 +31,8 @@ local getMiniMapFlipped = VFS.Include("luaui/Include/minimap_utils.lua").getMini
 
 local SQUARE_SIZE = 1024
 local SQUARE_ALPHA = 0.2
+local HEIGHT_OPACITY_CONFIG_KEY = "territorial_domination_height_opacity"
+local DEFAULT_CAMERA_HEIGHT_MULTIPLIER = 1.0
 local SQUARE_HEIGHT = 10
 local MAX_CAPTURE_CHANGE = 0.12
 local OWNERSHIP_THRESHOLD = 1 / math.sqrt(2)
@@ -47,6 +49,7 @@ local cachedMinimapFlipped = nil
 
 local cachedIsMinimapRendering = nil
 local cachedCameraHeights = { min = nil, max = nil }
+local cachedCameraHeightMultiplier = nil
 local cachedHeightmapTexture = nil
 local cameraHeightUpdateNeeded = false
 
@@ -166,6 +169,7 @@ local fragmentShaderSource = [[
 uniform float minCameraDrawHeight;
 uniform float maxCameraDrawHeight;
 uniform float updateFrameRateInterval;
+uniform float cameraHeightMultiplier;
 
 in VertexOutput {
 	vec4 color;
@@ -205,11 +209,13 @@ void main() {
 	
 	vec4 modifiedColor = color;
 	
+	float adjustedCameraHeight = cameraDistance / pow(cameraHeightMultiplier, 2.0);
+	
 	// Fade territory visibility based on camera height
 	float fillFadeAlpha = 1.0;
 	if (isInMinimap < 0.5) {
 		float fadeRange = maxCameraDrawHeight - minCameraDrawHeight;
-		fillFadeAlpha = clamp((cameraDistance - minCameraDrawHeight) / fadeRange, 0.0, 1.0);
+		fillFadeAlpha = clamp((adjustedCameraHeight - minCameraDrawHeight) / fadeRange, 0.0, 1.0);
 		
 		// Add pulsing effect for recently captured territories
 		if (captureTimestamp > 0.0) {
@@ -234,7 +240,7 @@ void main() {
 	
 	// Complex border visibility: show full borders at high camera, only corners at low camera
 	if (isInMinimap < 0.5) {
-		float heightRatio = clamp((cameraDistance - minCameraDrawHeight) / (maxCameraDrawHeight - minCameraDrawHeight), 0.0, 1.0);
+		float heightRatio = clamp((adjustedCameraHeight - minCameraDrawHeight) / (maxCameraDrawHeight - minCameraDrawHeight), 0.0, 1.0);
 		
 		// At low camera: hide interior borders, only show corners
 		float innerFadeRadius = mix(1.41, 0.0, heightRatio);
@@ -323,6 +329,7 @@ local function createShader()
 			minCameraDrawHeight = minCameraHeight,
 			maxCameraDrawHeight = maxCameraHeight,
 			updateFrameInterval = UPDATE_FRAME_RATE_INTERVAL,
+			cameraHeightMultiplier = Spring.GetConfigFloat(HEIGHT_OPACITY_CONFIG_KEY, DEFAULT_CAMERA_HEIGHT_MULTIPLIER),
 		},
 	}, "territorySquareShader")
 
@@ -425,11 +432,18 @@ local function initializeOpenGL4()
 	return createShader()
 end
 
+local HandleInitializeGridSquare
+local HandleInitializeConfigs
+local HandleUpdateGridSquare
+
 function gadget:Initialize()
 	if initializeOpenGL4() == false then
 		gadgetHandler:RemoveGadget()
 		return
 	end
+	gadgetHandler:AddSyncAction("InitializeGridSquare", HandleInitializeGridSquare)
+	gadgetHandler:AddSyncAction("InitializeConfigs", HandleInitializeConfigs)
+	gadgetHandler:AddSyncAction("UpdateGridSquare", HandleUpdateGridSquare)
 
 	amSpectating = Spring.GetSpectatingState()
 	myAllyID = Spring.GetMyAllyTeamID()
@@ -513,59 +527,61 @@ local function updateGridSquareVisuals()
 	uploadAllElements(instanceVBO)
 end
 
-function gadget:RecvFromSynced(messageName, ...)
-	if messageName == "InitializeGridSquare" then
-		local gridID, allyOwnerID, progress, gridMidpointX, gridMidpointZ, visibilityArray = ...
-		local isVisible = getSquareVisibility(allyOwnerID, allyOwnerID, visibilityArray)
-		captureGrid[gridID] = {
-			visibilityArray = visibilityArray,
-			allyOwnerID = allyOwnerID,
-			oldProgress = progress,
-			newProgress = progress,
-			captureChange = 0,
-			gridMidpointX = gridMidpointX,
-			gridMidpointZ = gridMidpointZ,
-			isVisible = isVisible,
-			currentColor = blankColor,
-			showSquareTimestamp = 0
-		}
-	elseif messageName == "InitializeConfigs" then
-		SQUARE_SIZE, UPDATE_FRAME_RATE_INTERVAL = ...
-	elseif messageName == "UpdateGridSquare" then
-		local gridID, allyOwnerID, progress, visibilityArray = ...
-		local gridData = captureGrid[gridID]
-		if gridData then
-			local ignoredProgress = 0.01
-			local oldAllyOwnerID = gridData.allyOwnerID
-			gridData.visibilityArray = visibilityArray
-			gridData.allyOwnerID = allyOwnerID
+HandleInitializeGridSquare = function(_, gridID, allyOwnerID, progress, gridMidpointX, gridMidpointZ, visibilityArray)
+	local isVisible = getSquareVisibility(allyOwnerID, allyOwnerID, visibilityArray)
+	captureGrid[gridID] = {
+		visibilityArray = visibilityArray,
+		allyOwnerID = allyOwnerID,
+		oldProgress = progress,
+		newProgress = progress,
+		captureChange = 0,
+		gridMidpointX = gridMidpointX,
+		gridMidpointZ = gridMidpointZ,
+		isVisible = isVisible,
+		currentColor = blankColor,
+		showSquareTimestamp = 0
+	}
+end
 
-			gridData.isVisible = getSquareVisibility(allyOwnerID, oldAllyOwnerID, visibilityArray)
-			if progress < ignoredProgress and oldAllyOwnerID == myAllyID then
-				gridData.newProgress = 0
-				gridData.allyOwnerID = gaiaAllyTeamID --hidden
-			elseif not gridData.isVisible then
-				gridData.newProgress = gridData.oldProgress
-				gridData.captureChange = 0
-			else
-				gridData.oldProgress = gridData.newProgress
-				gridData.captureChange = progress - gridData.oldProgress
+HandleInitializeConfigs = function(_, squareSize, updateFrameRateInterval)
+	SQUARE_SIZE = squareSize
+	UPDATE_FRAME_RATE_INTERVAL = updateFrameRateInterval
+end
 
-				if math.abs(gridData.captureChange) > MAX_CAPTURE_CHANGE then
-					gridData.oldProgress = progress -- Snap progress if change is too large
-					gridData.captureChange = 0 -- No smooth animation needed if snapping
-				end
-				gridData.newProgress = progress
+HandleUpdateGridSquare = function(_, gridID, allyOwnerID, progress, visibilityArray)
+	local gridData = captureGrid[gridID]
+	if not gridData then
+		return
+	end
+	local ignoredProgress = 0.01
+	local oldAllyOwnerID = gridData.allyOwnerID
+	gridData.visibilityArray = visibilityArray
+	gridData.allyOwnerID = allyOwnerID
 
-				if notifyCapture(gridID) then
-					gridData.playedCapturedSound = true
-					doCaptureEffects(gridID)
-				end
-			end
-			if gridData.newProgress < CAPTURE_SOUND_RESET_THRESHOLD then
-				gridData.playedCapturedSound = false
-			end
+	gridData.isVisible = getSquareVisibility(allyOwnerID, oldAllyOwnerID, visibilityArray)
+	if progress < ignoredProgress and oldAllyOwnerID == myAllyID then
+		gridData.newProgress = 0
+		gridData.allyOwnerID = gaiaAllyTeamID --hidden
+	elseif not gridData.isVisible then
+		gridData.newProgress = gridData.oldProgress
+		gridData.captureChange = 0
+	else
+		gridData.oldProgress = gridData.newProgress
+		gridData.captureChange = progress - gridData.oldProgress
+
+		if math.abs(gridData.captureChange) > MAX_CAPTURE_CHANGE then
+			gridData.oldProgress = progress -- Snap progress if change is too large
+			gridData.captureChange = 0 -- No smooth animation needed if snapping
 		end
+		gridData.newProgress = progress
+
+		if notifyCapture(gridID) then
+			gridData.playedCapturedSound = true
+			doCaptureEffects(gridID)
+		end
+	end
+	if gridData.newProgress < CAPTURE_SOUND_RESET_THRESHOLD then
+		gridData.playedCapturedSound = false
 	end
 end
 
@@ -619,6 +635,16 @@ local function updateCameraHeightUniforms()
 	cameraHeightUpdateNeeded = false
 end
 
+local function updateCameraHeightMultiplierUniform()
+	if not squareShader then return end
+
+	local cameraHeightMultiplier = Spring.GetConfigFloat(HEIGHT_OPACITY_CONFIG_KEY, DEFAULT_CAMERA_HEIGHT_MULTIPLIER)
+	if cachedCameraHeightMultiplier ~= cameraHeightMultiplier then
+		cachedCameraHeightMultiplier = cameraHeightMultiplier
+		squareShader:SetUniformFloat("cameraHeightMultiplier", cameraHeightMultiplier)
+	end
+end
+
 local function updateHeightmapTextureUniform()
 	if not squareShader then return end
 	
@@ -647,6 +673,7 @@ function gadget:DrawWorldPreUnit()
 	squareShader:Activate()
 	updateIsMinimapRenderingUniform(0)
 	updateCameraHeightUniforms()
+	updateCameraHeightMultiplierUniform()
 	updateHeightmapTextureUniform()
 	updateMinimapFlipUniform()
 	instanceVBO.VAO:DrawElements(GL.TRIANGLES, instanceVBO.numVertices, 0, instanceVBO.usedElements)
@@ -664,6 +691,7 @@ function gadget:DrawInMiniMap()
 	squareShader:Activate()
 	updateIsMinimapRenderingUniform(1)
 	updateCameraHeightUniforms()
+	updateCameraHeightMultiplierUniform()
 	updateHeightmapTextureUniform()
 	updateMinimapFlipUniform()
 
@@ -673,6 +701,9 @@ function gadget:DrawInMiniMap()
 end
 
 function gadget:Shutdown()
+	gadgetHandler:RemoveSyncAction("InitializeGridSquare")
+	gadgetHandler:RemoveSyncAction("InitializeConfigs")
+	gadgetHandler:RemoveSyncAction("UpdateGridSquare")
 	if squareVBO then
 		squareVBO:Delete()
 	end
