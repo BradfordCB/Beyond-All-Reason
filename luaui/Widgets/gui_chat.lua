@@ -111,6 +111,7 @@ local allowMultiAutocomplete, allowMultiAutocompleteMax, maxLinesScrollFull = co
 local lineTTL, consoleLineCleanupTarget, soundErrorsLimit = config.lineTTL, config.consoleLineCleanupTarget, config.soundErrorsLimit
 local maxLinesScrollChatInput = config.maxLinesScrollChatInput
 local maxLinesScroll = config.maxLinesScroll
+local scrollingPosY = config.scrollingPosY
 
 -- Color configuration (keep local for performance)
 local colorOther, colorAlly, colorSpec, colorSpecName = {1,1,1}, {0,1,0}, {1,1,0}, {1,1,1}
@@ -145,6 +146,9 @@ local state = {
 	lastUnitShare = nil,
 	lastLineUnitShare = nil,
 	lastDrawUiUpdate = os.clock(),
+	gameFrameHappened = false,
+	deferredDrawWork = false,
+	skipOptionalDrawWork = false,
 	myName = Spring.GetPlayerInfo(Spring.GetMyPlayerID(), false),
 	mySpec = spGetSpectatingState(),
 	myTeamID = spGetMyTeamID(),
@@ -269,7 +273,22 @@ local autocompleteCommandSources = {
 	synced = {},
 	unsynced = {},
 }
-local autocompleteGivecatFilters = { descriptions = {} }
+local autocompleteGivecatFilters = {
+	descriptions = {},
+	configParams = {},
+	unitCodenameCommands = {
+		give = true,
+		givecat = true,
+		removeunitdef = true,
+		spawnunitexplosion = true,
+		benchmark = true,
+		fightertest = true,
+		buildicon = true,
+		buildicons = true,
+		buildblock = true,
+		buildunblock = true,
+	},
+}
 
 local function formatAutocompleteCommand(source, cmd)
 	if source == 'synced' or source == 'unsynced' then
@@ -392,11 +411,25 @@ local function getGivecatAutocompletePrefix(text)
 end
 
 local function refreshGivecatAutocompleteFilters()
-	autocompleteGivecatFilters = { descriptions = {}, cmdTree = nil }
+	autocompleteGivecatFilters = {
+		descriptions = {},
+		cmdTree = nil,
+		configParams = {},
+		unitCodenameCommands = autocompleteGivecatFilters.unitCodenameCommands,
+	}
+	if Spring.GetConfigParams then
+		for _, configParam in ipairs(Spring.GetConfigParams()) do
+			if type(configParam.name) == 'string' and configParam.name ~= '' then
+				autocompleteGivecatFilters.configParams[#autocompleteGivecatFilters.configParams + 1] = configParam.name
+			end
+		end
+		table.sort(autocompleteGivecatFilters.configParams)
+	end
 
 	local language = Spring.GetConfigString('language', 'en')
 	local interfaceFile = VFS.LoadFile('language/' .. language .. '/interface.json') or VFS.LoadFile('language/en/interface.json')
 	clearAutocompleteSource('engine')
+	addAutocompleteCommand('engine', 'set')
 	if not interfaceFile then
 		for _, keybinding in pairs(Spring.GetKeyBindings() or {}) do
 			local cmd = keybinding and keybinding.command
@@ -706,7 +739,7 @@ local function addChatLine(gameFrame, lineType, name, nameText, text, orgLineID,
 			playerName = name,
 			playerNameText = nameText,
 			channelScope = channelScope,
-			textOutline = (lineType ~= LineTypes.Spectator and (playernames[name] and playernames[name][5]) and ColorIsDark(playernames[name][5][1], playernames[name][5][2], playernames[name][5][3])) or false,
+			textOutline = (lineType ~= LineTypes.Spectator and playernames[name] and not playernames[name][2] and playernames[name][5] and ColorIsDark(playernames[name][5][1], playernames[name][5][2], playernames[name][5][3])) or false,
 			text = (i > 1 and lineColor or '')..line,
 			richText = hasEmoji and ChatEmoji.HasEmojiCandidate(line),
 			orgLineID = orgLineID,
@@ -1409,14 +1442,14 @@ drawConsoleLine = function(i)
 end
 
 local function processConsoleLineGL(i)
-	if consoleLines[i] and not consoleLines[i].lineDisplayList then
+	if not state.skipOptionalDrawWork and consoleLines[i] and not consoleLines[i].lineDisplayList then
 		glDeleteList(consoleLines[i].lineDisplayList)
 		consoleLines[i].lineDisplayList = glCreateList(function()
 			drawConsoleLine(i)
 		end)
 	end
 	-- game time (for when viewing history)
-	if consoleLines[i] and not consoleLines[i].timeDisplayList and consoleLines[i].gameFrame then
+	if not state.skipOptionalDrawWork and consoleLines[i] and not consoleLines[i].timeDisplayList and consoleLines[i].gameFrame then
 		glDeleteList(consoleLines[i].timeDisplayList)
 		consoleLines[i].timeDisplayList = glCreateList(function()
 			drawGameTime(consoleLines[i].gameFrame)
@@ -1505,14 +1538,14 @@ drawChatLine = function(i)
 end
 
 local function processChatLineGL(i)
-	if chatLines[i] and not chatLines[i].lineDisplayList then
+	if not state.skipOptionalDrawWork and chatLines[i] and not chatLines[i].lineDisplayList then
 		glDeleteList(chatLines[i].lineDisplayList)
 		chatLines[i].lineDisplayList = glCreateList(function()
 			drawChatLine(i)
 		end)
 	end
 	-- game time (for when viewing history)
-	if chatLines[i] and not chatLines[i].timeDisplayList and chatLines[i].gameFrame then
+	if not state.skipOptionalDrawWork and chatLines[i] and not chatLines[i].timeDisplayList and chatLines[i].gameFrame then
 		glDeleteList(chatLines[i].timeDisplayList)
 		chatLines[i].timeDisplayList = glCreateList(function()
 			drawGameTime(chatLines[i].gameFrame)
@@ -1521,6 +1554,10 @@ local function processChatLineGL(i)
 end
 
 local uiSec = 0
+function widget:GameFrame()
+	state.gameFrameHappened = true
+end
+
 function widget:Update(dt)
 	addLastUnitShareMessage()
 
@@ -2167,6 +2204,11 @@ drawTextInput = function()
 end
 
 function widget:DrawScreen()
+	-- Prefer a draw-only frame for cache rebuilds, but never defer them twice.
+	state.skipOptionalDrawWork = state.gameFrameHappened and not state.deferredDrawWork
+	state.deferredDrawWork = state.skipOptionalDrawWork
+	state.gameFrameHappened = false
+
 	if chobbyInterface then return end
 	if not chatLines[1] and not consoleLines[1] then return end
 
@@ -2328,7 +2370,6 @@ local loadedAutocompleteCommands = false
 autocomplete = function(text, fresh)
 	if not loadedAutocompleteCommands then
 		loadedAutocompleteCommands = true
-		requestGadgetAutocompleteCommands()
 	end
 	refreshWidgetAutocompleteCommands()
 
@@ -2350,6 +2391,29 @@ autocomplete = function(text, fresh)
 		rawWords[#rawWords + 1] = word
 		words[#words+1] = word
 		letters = word
+	end
+	if isCmd and rawWords[1] == 'set' and ((trailingSpace and #rawWords >= 2) or #rawWords > 2) then
+		autocompleteWords = {}
+		prevAutocompleteLetters = nil
+	end
+	if isCmd then
+		if rawWords[1] == 'luarules' and not state.gadgetAutocompleteRequestSent then
+			local hasGadgetActions = false
+			for _ in pairs(autocompleteCommandSources.synced) do
+				hasGadgetActions = true
+				break
+			end
+			if not hasGadgetActions then
+				for _ in pairs(autocompleteCommandSources.unsynced) do
+					hasGadgetActions = true
+					break
+				end
+			end
+			if not hasGadgetActions then
+				state.gadgetAutocompleteRequestSent = true
+				requestGadgetAutocompleteCommands()
+			end
+		end
 	end
 	local givecatLetters = getGivecatAutocompletePrefix(text)
 	-- if there are still suggestions then try to continue before starting fresh with a new word
@@ -2374,6 +2438,9 @@ autocomplete = function(text, fresh)
 	if givecatLetters ~= nil then
 		state.autocompleteDisplayPrefix = givecatLetters
 		runAutocompleteSet(autocompleteGivecatFilters, givecatLetters, allowMultiAutocomplete, true)
+		if not autocompleteWords[1] and rawWords[1] == 'luarules' and rawWords[2] == 'givecat' and #rawWords == 3 then
+			runAutocompleteSet(autocompleteUnitCodename, givecatLetters, allowMultiAutocomplete, true)
+		end
 	elseif autocompleteWords[2] then
 		state.autocompleteDisplayPrefix = letters
 		usedCachedAutocompleteSet = runAutocompleteSet(autocompleteWords, letters, allowMultiAutocomplete, true)
@@ -2388,6 +2455,7 @@ autocomplete = function(text, fresh)
 		end
 		if not autocompleteWords[1] then
 			local commandNode
+			local commandAutocompleteSet
 			if isCmd then
 				local cmdTree = autocompleteGivecatFilters.cmdTree
 				local typedFromLuarulesNode = rawWords[1] == 'luarules' and rawWords[2] ~= nil
@@ -2401,31 +2469,35 @@ autocomplete = function(text, fresh)
 						commandNode = cmdTree[rawWords[1]]
 					end
 				end
+				if rawWords[1] == 'set' and ((trailingSpace and #rawWords == 1) or (not trailingSpace and #rawWords == 2)) then
+					commandAutocompleteSet = autocompleteGivecatFilters.configParams
+				end
 
-				if type(commandNode) == 'table' then
+				if type(commandNode) == 'table' or commandAutocompleteSet then
 					local paramNode = commandNode
 					local paramStart = typedFromLuarulesNode and 3 or 2
-					local paramEnd = trailingSpace and #rawWords or (#rawWords - 1)
-					for i = paramStart, paramEnd do
-						if type(paramNode) ~= 'table' then
-							break
+					if not commandAutocompleteSet then
+						local paramEnd = trailingSpace and #rawWords or (#rawWords - 1)
+						for i = paramStart, paramEnd do
+							if type(paramNode) ~= 'table' then
+								break
+							end
+							local token = rawWords[i]
+							if not token or token == '' then
+								break
+							end
+							local nextNode = paramNode[token]
+							if nextNode == nil and ssub(token, 1, 2) == 'no' and #token > 2 then
+								nextNode = paramNode[ssub(token, 3)]
+							end
+							if nextNode == nil then
+								break
+							end
+							paramNode = nextNode
 						end
-						local token = rawWords[i]
-						if not token or token == '' then
-							break
-						end
-						local nextNode = paramNode[token]
-						if nextNode == nil and ssub(token, 1, 2) == 'no' and #token > 2 then
-							nextNode = paramNode[ssub(token, 3)]
-						end
-						if nextNode == nil then
-							break
-						end
-						paramNode = nextNode
 					end
 
-					local paramAutocompleteSet
-					if type(paramNode) == 'table' then
+					if not commandAutocompleteSet and rawWords[1] ~= 'set' and type(paramNode) == 'table' then
 						local children = {}
 						for key, value in pairs(paramNode) do
 							if key ~= '_description' and (type(value) == 'string' or type(value) == 'table') then
@@ -2434,13 +2506,13 @@ autocomplete = function(text, fresh)
 						end
 						if #children > 0 then
 							table.sort(children)
-							paramAutocompleteSet = children
+							commandAutocompleteSet = children
 						end
 					end
 					local paramLetters = trailingSpace and '' or letters
-					if paramAutocompleteSet and (trailingSpace or paramLetters ~= '') then
+					if commandAutocompleteSet and (trailingSpace or paramLetters ~= '') then
 						state.autocompleteDisplayPrefix = paramLetters
-						runAutocompleteSet(paramAutocompleteSet, paramLetters, allowMultiAutocomplete, true)
+						runAutocompleteSet(commandAutocompleteSet, paramLetters, allowMultiAutocomplete, true)
 					end
 				end
 			end
@@ -2456,7 +2528,7 @@ autocomplete = function(text, fresh)
 				elseif not autocompleteWords[1] and #words <= 1 then
 					state.autocompleteDisplayPrefix = letters
 					runAutocompleteSet(autocompleteCommands, letters, allowMultiAutocomplete)
-				elseif not autocompleteWords[1] then
+				elseif not autocompleteWords[1] and (rawWords[1] == 'give' or (rawWords[1] == 'luarules' and autocompleteGivecatFilters.unitCodenameCommands[rawWords[2]])) then
 					state.autocompleteDisplayPrefix = letters
 					runAutocompleteSet(autocompleteUnitCodename, letters, allowMultiAutocomplete)
 				end
@@ -2537,6 +2609,14 @@ autocomplete = function(text, fresh)
 						break
 					end
 					local nextNode = node[token]
+					if nextNode == nil and commandName == 'set' then
+						for key, value in pairs(node) do
+							if type(key) == 'string' and key:lower() == token:lower() then
+								nextNode = value
+								break
+							end
+						end
+					end
 					if nextNode == nil and ssub(token, 1, 2) == 'no' and #token > 2 then
 						nextNode = node[ssub(token, 3)]
 					end
@@ -2661,6 +2741,16 @@ function widget:KeyPress(key)
 						local command = ssub(inputText, 2)
 						if command == 'lr' then
 							command = 'luaui reload'
+						else
+							local configKey, commandSuffix = command:match('^[sS][eE][tT]%s+(%S+)(.*)$')
+							if configKey then
+								for _, configParam in ipairs(autocompleteGivecatFilters.configParams) do
+									if configParam:lower() == configKey:lower() then
+										command = 'set ' .. configParam .. commandSuffix
+										break
+									end
+								end
+							end
 						end
 						Spring.SendCommands(command)
 					else
@@ -3445,7 +3535,6 @@ function widget:Initialize()
 			autocompletePlayernames[#autocompletePlayernames+1] = historyName
 		end
 	end
-	requestGadgetAutocompleteCommands()
 end
 
 function widget:Shutdown()
